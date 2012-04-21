@@ -17,6 +17,10 @@ For gcc, you will need the original build data from stock Slackware source.
 Recommend to use gcc version >= 4.7.0.  The resulting compiler will replace
 the system compiler.
 
+For XmlAda, the version of 4.2w, xmlada-for-gps-5.0.1-gpl-src.tgz is used.
+
+For GtkAda, GPS, the svn code is used instead of the GPL 2011 version.
+
 For gnatmem, you also need the binutils source and build the binutils first.
 
 It was tested on Slackware64 13.37 with gcc 4.7.0
