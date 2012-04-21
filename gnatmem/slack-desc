@@ -1,0 +1,17 @@
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+       |-----handy-ruler------------------------------------------------------|
+gnatmem:
+gnatmem:
+gnatmem: The gnatmem utility monitors dynamic allocation and deallocation
+gnatmem: activity in an executing program and displays information about
+gnatmem: incorrect deallocations and possible sources of memory leaks.
+gnatmem:
+gnatmem:
+gnatmem:
+gnatmem:
+gnatmem: Homepage: http://libre.adacore.com/
+gnatmem:

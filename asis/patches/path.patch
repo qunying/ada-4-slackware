@@ -1,0 +1,23 @@
+--- asis-gpl-2011-src.org/Makefile	2011-03-21 07:28:26.000000000 -0700
++++ asis-gpl-2011-src/Makefile	2012-04-14 18:32:21.499198811 -0700
+@@ -7,13 +7,16 @@
+ tools = gnatstub gnatelim gnatmetric gnatpp gnatcheck
+ gu_tools = aunitstub aunitglue
+ 
++ifndef libdir
++    libdir=$(prefix)/lib/gnat
++endif
+ I_BIN	= $(prefix)/bin
+ I_INC	= $(prefix)/include/asis
+-I_LIB	= $(prefix)/lib/asis
+-I_GPR	= $(prefix)/lib/gnat
+-I_DOC   = $(prefix)/share/doc/asis
++I_LIB	= $(libdir)/asis
++I_GPR	= $(libdir)/gnat
++I_DOC   = $(prefix)/doc/asis
+ I_GPS   = $(prefix)/share/gps/plug-ins
+-G_DOC   = $(prefix)/share/doc/gnat
++G_DOC   = $(prefix)/doc/gnat
+ 
+ install: install-lib install-asistant
+ 

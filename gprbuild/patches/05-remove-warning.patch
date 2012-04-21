@@ -1,0 +1,68 @@
+diff -ur gprbuild-2011-src.orig//src/buildgpr.adb gprbuild-2011-src/src/buildgpr.adb
+--- gprbuild-2011-src.orig//src/buildgpr.adb	2011-04-28 07:21:25.000000000 -0700
++++ gprbuild-2011-src/src/buildgpr.adb	2012-04-12 21:36:38.254025676 -0700
+@@ -4892,6 +4892,8 @@
+       -- Spawn_Compiler_And_Register --
+       ---------------------------------
+ 
++      pragma Warnings (Off,
++                   "formal parameter ""Source_Project"" is not referenced");
+       procedure Spawn_Compiler_And_Register
+         (Source            : Queue.Source_Info;
+          Source_Project    : Project_Id;
+@@ -4899,6 +4901,8 @@
+          Mapping_File_Path : Path_Name_Type;
+          Last_Switches_For_File : Integer)
+       is
++      pragma Warnings (On,
++                   "formal parameter ""Source_Project"" is not referenced");
+          Pid     : Process_Id;
+          Options : String_List_Access;
+       begin
+--- gprbuild-2011-src.orig/gnat/scng.adb	2011-04-28 07:21:25.000000000 -0700
++++ gprbuild-2011-src/gnat/scng.adb	2012-04-13 22:26:45.746724093 -0700
+@@ -28,8 +28,6 @@
+ with Hostparm; use Hostparm;
+ with Namet;    use Namet;
+ with Opt;      use Opt;
+-with Restrict; use Restrict;
+-with Rident;   use Rident;
+ with Scans;    use Scans;
+ with Sinput;   use Sinput;
+ with Snames;   use Snames;
+--- gprbuild-2011-src.orig/gnat/prj-part.adb	2011-04-28 07:21:25.000000000 -0700
++++ gprbuild-2011-src/gnat/prj-part.adb	2012-04-13 22:35:10.781742239 -0700
+@@ -745,6 +745,7 @@
+    -- Post_Parse_Context_Clause --
+    -------------------------------
+ 
++   pragma Warnings (Off, "formal parameter ""In_Limited"" is not referenced");
+    procedure Post_Parse_Context_Clause
+      (Context_Clause    : With_Id;
+       In_Tree           : Project_Node_Tree_Ref;
+@@ -759,6 +760,7 @@
+       Is_Config_File    : Boolean;
+       Env               : in out Environment)
+    is
++   pragma Warnings (On, "formal parameter ""In_Limited"" is not referenced");
+       Current_With_Clause : With_Id := Context_Clause;
+ 
+       Current_Project  : Project_Node_Id := Imported_Projects;
+--- gprbuild-2011-src.orig/gnat/prj-nmsc.adb	2011-04-28 07:21:25.000000000 -0700
++++ gprbuild-2011-src/gnat/prj-nmsc.adb	2012-04-13 22:36:25.236744100 -0700
+@@ -5529,6 +5529,7 @@
+    -- Compute_Unit_Name --
+    -----------------------
+ 
++   pragma Warnings (Off, "formal parameter ""In_Tree"" is not referenced");
+    procedure Compute_Unit_Name
+      (File_Name : File_Name_Type;
+       Naming    : Lang_Naming_Data;
+@@ -5537,6 +5538,7 @@
+       Project   : Project_Processing_Data;
+       In_Tree   : Project_Tree_Ref)
+    is
++   pragma Warnings (On, "formal parameter ""In_Tree"" is not referenced");
+       Filename : constant String  := Get_Name_String (File_Name);
+       Last     : Integer          := Filename'Last;
+       Sep_Len  : Integer;

@@ -1,0 +1,77 @@
+Description: set default project path to match Debian Ada policy
+Author: Stephen Leake <stephen_leake@stephe-leake.org>
+Forwarded: not-needed
+
+Index: gprbuild-2011/gnat/prj-env.adb
+===================================================================
+--- gprbuild-2011.orig/gnat/prj-env.adb	2011-04-19 06:05:48.000000000 -0400
++++ gprbuild-2011/gnat/prj-env.adb	2011-07-17 20:50:27.000000000 -0400
+@@ -25,7 +25,6 @@
+ 
+ with Fmap;
+ with Hostparm;
+-with Makeutl;  use Makeutl;
+ with Opt;
+ with Osint;    use Osint;
+ with Output;   use Output;
+@@ -1980,59 +1979,7 @@
+       --  Set the initial value of Current_Project_Path
+ 
+       if Add_Default_Dir then
+-         declare
+-            Prefix : String_Ptr;
+-
+-         begin
+-            if Sdefault.Search_Dir_Prefix = null then
+-
+-               --  gprbuild case
+-
+-               Prefix := new String'(Executable_Prefix_Path);
+-
+-            else
+-               Prefix := new String'(Sdefault.Search_Dir_Prefix.all
+-                                     & ".." & Dir_Separator
+-                                     & ".." & Dir_Separator
+-                                     & ".." & Dir_Separator
+-                                     & ".." & Dir_Separator);
+-            end if;
+-
+-            if Prefix.all /= "" then
+-               if Target_Name /= "" then
+-
+-                  --  $prefix/$target/lib/gnat
+-
+-                  Add_Str_To_Name_Buffer
+-                    (Path_Separator & Prefix.all &
+-                     Target_Name);
+-
+-                  --  Note: Target_Name has a trailing / when it comes from
+-                  --  Sdefault.
+-
+-                  if Name_Buffer (Name_Len) /= '/' then
+-                     Add_Char_To_Name_Buffer (Directory_Separator);
+-                  end if;
+-
+-                  Add_Str_To_Name_Buffer
+-                    ("lib" & Directory_Separator & "gnat");
+-               end if;
+-
+-               --  $prefix/share/gpr
+-
+-               Add_Str_To_Name_Buffer
+-                 (Path_Separator & Prefix.all &
+-                  "share" & Directory_Separator & "gpr");
+-
+-               --  $prefix/lib/gnat
+-
+-               Add_Str_To_Name_Buffer
+-                 (Path_Separator & Prefix.all &
+-                  "lib" & Directory_Separator & "gnat");
+-            end if;
+-
+-            Free (Prefix);
+-         end;
++         Add_Str_To_Name_Buffer (Path_Separator & Sdefault.Search_Dir_Prefix.all);
+       end if;
+ 
+       Self.Path := new String'(Name_Buffer (1 .. Name_Len));

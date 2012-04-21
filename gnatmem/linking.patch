@@ -1,0 +1,11 @@
+--- gnatmem-2011-src.org/Makefile	2010-09-27 06:41:10.000000000 -0700
++++ gnatmem-2011-src/Makefile	2012-04-15 17:51:48.560428134 -0700
+@@ -3,7 +3,7 @@
+ force:
+ 
+ gnatmem: force
+-	gprbuild -Pgnatmem.gpr
++	gprbuild -Pgnatmem.gpr -largs -lz -ldl
+ 
+ clean:
+ 	gprclean -Pgnatmem.gpr

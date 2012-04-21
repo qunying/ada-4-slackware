@@ -1,0 +1,34 @@
+Description: fix minor style compiler warnings
+ .
+ Some upstream files generate style warnings; these are annoying,
+ because we have to review them while looking for real errors. So fix
+ them.
+Author: Stephen Leake <stephen_leake@stephe-leake.org>
+Forwarded: not-needed
+
+diff -ur gprbuild-2011-src.orig//src/gpr_version.ads gprbuild-2011-src/src/gpr_version.ads
+--- gprbuild-2011-src.orig//src/gpr_version.ads	2011-04-28 07:21:25.000000000 -0700
++++ gprbuild-2011-src/src/gpr_version.ads	2012-04-12 21:36:38.250025676 -0700
+@@ -36,7 +36,7 @@
+ 
+ package GPR_Version is
+ 
+-   Gpr_Version: constant String := "2011";
++   Gpr_Version : constant String := "2011";
+    --  Static string identifying this version
+ 
+    function Gpr_Version_String return String;
+#Index: gprbuild-2011/gnat/prj-env.adb
+#===================================================================
+#--- gprbuild-2011.orig/gnat/prj-env.adb	2011-07-20 18:53:58.000000000 -0400
+#+++ gprbuild-2011/gnat/prj-env.adb	2011-07-20 18:54:04.000000000 -0400
+#@@ -1979,7 +1979,8 @@
+#       --  Set the initial value of Current_Project_Path
+# 
+#       if Add_Default_Dir then
+#-         Add_Str_To_Name_Buffer (Path_Separator & Sdefault.Search_Dir_Prefix.all);
+#+         Add_Str_To_Name_Buffer
+#+           (Path_Separator & Sdefault.Search_Dir_Prefix.all);
+##       end if;
+ 
+#       Self.Path := new String'(Name_Buffer (1 .. Name_Len));

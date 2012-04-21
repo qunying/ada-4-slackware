@@ -1,0 +1,14 @@
+--- asis-gpl-2011-src.org/asis_bld.gpr	2011-04-19 02:56:08.000000000 -0700
++++ asis-gpl-2011-src/asis_bld.gpr	2012-04-14 00:19:54.242956281 -0700
+@@ -1,8 +1,10 @@
+ with "common";
++with "gnatvsn";
++
+ project Asis_Bld is
+ 
+    for Languages use ("ada");
+-   for Source_Dirs use ("asis", "gnat");
++   for Source_Dirs use ("asis");
+    for Object_Dir use "obj";
+    for Library_Name use "asis";
+    for Library_Dir use "lib";

@@ -1,0 +1,19 @@
+Description: Add INFO-DIR-SECTION to info file, as required by Debian Ada Policy
+Author: Stephen Leake <stephen_leake@stephe-leake.org>
+Forwarded: not-needed
+
+Index: gprbuild-2011/doc/info/gprbuild_ug.info
+===================================================================
+--- gprbuild-2011.orig/doc/info/gprbuild_ug.info	2011-04-19 06:05:47.000000000 -0400
++++ gprbuild-2011/doc/info/gprbuild_ug.info	2011-07-18 03:28:36.000000000 -0400
+@@ -1,5 +1,10 @@
+ This is gprbuild_ug.info, produced by makeinfo version 4.13 from gprbuild_ug.texi.
+ 
++INFO-DIR-SECTION GNU Ada tools
++START-INFO-DIR-ENTRY
++* gprbuild: (gprbuild).    Multi-language build tool
++END-INFO-DIR-ENTRY
++
+ 
+ File: gprbuild_ug.info,  Node: Top,  Next: GNAT Project Manager,  Up: (dir)
+ 

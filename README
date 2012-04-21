@@ -1,0 +1,22 @@
+This is a repository for scripts that build Ada programming environment
+for Slackware.
+
+The build order will be
+* gcc
+* xmlada
+* gtkada
+* gprbuild
+* gps
+* aunit
+* gnatcoll
+* asis
+* florist
+* gnatmem
+
+For gcc, you will need the original build data from stock Slackware source.
+Recommend to use gcc version >= 4.7.0.  The resulting compiler will replace
+the system compiler.
+
+For gnatmem, you also need the binutils source and build the binutils first.
+
+It was tested on Slackware64 13.37 with gcc 4.7.0
