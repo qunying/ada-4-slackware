@@ -1,5 +1,5 @@
 #!/bin/sh
-# ahven package build script (written by zhu.qunyng@gmail.com)
+# ahven package build script (written by zhu.qunying@gmail.com)
 # Copyright 2012, Zhu Qun-Ying
 # All rights reserved.
 #
@@ -23,7 +23,7 @@
 PRGNAM=ahven
 VERSION=${VERSION:-2.2}
 BUILD=${BUILD:-1}
-TAG=${TAR:-_SBo}
+TAG=${TAG:-_SBo}
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then

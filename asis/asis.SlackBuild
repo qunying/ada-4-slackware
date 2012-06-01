@@ -23,7 +23,7 @@
 PRGNAM=asis
 VERSION=${VERSION:-2011}
 BUILD=${BUILD:-1}
-TAG=${TAR:-_SBo}
+TAG=${TAG:-_SBo}
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then

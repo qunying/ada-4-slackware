@@ -23,7 +23,7 @@
 PRGNAM=gps
 VERSION=${VERSION:-git144ae009d5929}
 BUILD=${BUILD:-1}
-TAG=${TAR:-_SBo}
+TAG=${TAG:-_SBo}
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -110,6 +110,10 @@ CXXFLAGS="$SLKCFLAGS" \
     --disable-shared \
     --enable-gpl --with-readline \
     --build=$ARCH-slackware-linux
+
+# update build time
+TODAY=$(date +%F)
+sed --in-place "s/unknown date/$TODAY/" common/src/config.ads
 
 make
 
