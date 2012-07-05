@@ -35,22 +35,22 @@
    (for @command{gnatmake} and @command{gprbuild})
    @end itemize
  
---- gprbuild-2011-src.orig/share/gprconfig/compilers.xml	2011-03-10 11:01:16.000000000 -0800
-+++ gprbuild-2011-src/share/gprconfig/compilers.xml	2012-04-13 23:34:07.107862955 -0700
-@@ -331,9 +331,9 @@
+--- gprbuild-2012-src/share/gprconfig/compilers.xml	2012-06-28 16:31:51.803058266 -0700
++++ b/share/gprconfig/compilers.xml	2012-06-28 16:31:36.971057792 -0700
+@@ -422,9 +422,9 @@
+       <grep regexp="^gcc \S+ (\S+)" group="1"></grep>
      </variable>
-     <languages>Ada</languages>
-     <runtimes default="default,kernel">
+     <runtimes default="default,kernel,native">
 -       <directory group="default" >\.\./lib/gcc(-lib)?/$TARGET/$gcc_version/adalib/</directory>
--       <directory group="default" >\.\./lib/gcc(-lib)?/$TARGET/$gcc_version/ada_source_path</directory>
+-       <directory group="default" contents="^rts-">\.\./lib/gcc(-lib)?/$TARGET/$gcc_version/ada_object_path</directory>
 -       <directory group="2" >\.\./lib/gcc(-lib)?/$TARGET/$gcc_version/rts-(.*)/adalib/</directory>
 +       <directory group="default" >\.\./lib64/gcc(-lib)?/$TARGET/$gcc_version/adalib/</directory>
-+       <directory group="default" >\.\./lib64/gcc(-lib)?/$TARGET/$gcc_version/ada_source_path</directory>
++       <directory group="default" contents="^rts-">\.\./lib64/gcc(-lib)?/$TARGET/$gcc_version/ada_object_path</directory>
 +       <directory group="2" >\.\./lib64/gcc(-lib)?/$TARGET/$gcc_version/rts-(.*)/adalib/</directory>
      </runtimes>
      <target>
        <external>${PREFIX}gcc -dumpmachine</external>
-@@ -352,8 +352,8 @@
+@@ -443,8 +443,8 @@
      </version>
      <languages>Ada</languages>
      <runtimes default="default,kernel">

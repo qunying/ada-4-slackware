@@ -1,0 +1,42 @@
+--- xmlada-4.3w-src/Makefile.in	2011-12-09 04:49:53.000000000 -0800
++++ xmlada-4.3w-src-new/Makefile.in	2012-06-28 17:49:04.610206516 -0700
+@@ -92,7 +92,7 @@
+ # Rule for installing the modules
+ %_inst: force
+ 	${CP} $*/*.ad[bs]        ${includedir}/xmlada
+-	cd $*; ls *.ad[bs] > ${prefix}/lib/gnat/xmlada/xmlada_$*.lgpr
++	cd $*; ls *.ad[bs] > ${libdir}/gnat/xmlada/xmlada_$*.lgpr
+ 	-cd ${xmllib}; ${CHMOD} ugo+w *.ali
+ 	-${CP} $*/lib/${LIBRARY_TYPE}/*.ali   ${xmllib}
+ 	${RM} ${libdir}/libxmlada_$**
+@@ -116,8 +116,7 @@
+ install_dirs: force
+ 	@${MKDIR} ${bindir}
+ 	@${MKDIR} ${xmllib}
+-	@${MKDIR} ${prefix}/lib/gnat/xmlada
+-	@${MKDIR} ${libdir}
++	@${MKDIR} ${libdir}/gnat/xmlada
+ 	@${MKDIR} ${datadir}/doc/xmlada
+ 	@${MKDIR} ${includedir}/xmlada
+ 	@${MKDIR} ${datadir}/gps/plug-ins/
+@@ -125,13 +124,13 @@
+ ## Do the installation for either shared or static, depending on
+ ## $LIBRARY_TYPE
+ install_library_type: install_dirs ${MODULE_INSTALL}
+-	${INSTALL} distrib/xmlada_shared.gpr         ${prefix}/lib/gnat/
+-	${INSTALL} distrib/xmlada.gpr                ${prefix}/lib/gnat/
+-	${INSTALL} distrib/xmlada_dom.gpr            ${prefix}/lib/gnat/
+-	${INSTALL} distrib/xmlada_sax.gpr            ${prefix}/lib/gnat/
+-	${INSTALL} distrib/xmlada_input.gpr          ${prefix}/lib/gnat/
+-	${INSTALL} distrib/xmlada_schema.gpr         ${prefix}/lib/gnat/
+-	${INSTALL} distrib/xmlada_unicode.gpr        ${prefix}/lib/gnat/
++	${INSTALL} distrib/xmlada_shared.gpr         ${libdir}/gnat/
++	${INSTALL} distrib/xmlada.gpr                ${libdir}/gnat/
++	${INSTALL} distrib/xmlada_dom.gpr            ${libdir}/gnat/
++	${INSTALL} distrib/xmlada_sax.gpr            ${libdir}/gnat/
++	${INSTALL} distrib/xmlada_input.gpr          ${libdir}/gnat/
++	${INSTALL} distrib/xmlada_schema.gpr         ${libdir}/gnat/
++	${INSTALL} distrib/xmlada_unicode.gpr        ${libdir}/gnat/
+ 	${INSTALL} xmlada-config  ${bindir}
+ 	-$(CP) -r docs/_build/html/* $(datadir)/doc/xmlada/ 2>/dev/null
+ 	-$(CP) -r docs/_build/latex/XMLAda.pdf $(datadir)/doc/xmlada/ 2>/dev/null

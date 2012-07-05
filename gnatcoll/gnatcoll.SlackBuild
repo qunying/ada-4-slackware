@@ -21,10 +21,11 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gnatcoll
-VERSION=${VERSION:-2011}
+VERSION=${VERSION:-2012}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
+set -e
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
   case "$(uname -m)" in
@@ -96,6 +97,11 @@ find . \
  \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
  -exec chmod 644 {} \; || exit 1
 
+if [ "$ARCH" = "x86_64" ] ; then
+    sed --in-place 's/lib\/gnat/lib64\/gnat/g' Makefile
+    sed --in-place 's/lib\/gnat/lib64\/gnat/g' Makefile.conf.in
+fi
+
 ./configure \
     --prefix=/usr \
     --libdir=/usr/lib$LIBDIRSUFFIX \
@@ -104,7 +110,7 @@ find . \
 
 make
 
-make prefix=$PKG/usr libdir=$PKG/usr/lib$LIBDIRSUFFIX install
+make DESTDIR=$PKG install
 
 cd $PKG
 mv usr/share/doc usr/

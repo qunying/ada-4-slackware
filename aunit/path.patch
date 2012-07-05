@@ -1,5 +1,5 @@
---- aunit-gpl-2011-src.org/Makefile	2010-11-08 05:27:08.000000000 -0800
-+++ aunit-gpl-2011-src/Makefile	2012-04-14 18:55:01.069245326 -0700
+--- aunit-gpl-2012-src/Makefile	2012-06-29 10:21:54.750112769 -0700
++++ a/Makefile	2012-06-29 10:21:47.454112536 -0700
 @@ -23,13 +23,17 @@
  
  CONF_ARGS = $(TARGET_CONF) $(RTS_CONF)
@@ -20,4 +20,13 @@
 +I_DOC   = $(INSTALL)/doc/aunit
  I_PLG   = $(INSTALL)/share/gps/plug-ins
  
- .PHONY: all clean targets installed-targets install_clean install
+ .PHONY: all clean targets install_clean install
+@@ -72,7 +76,7 @@
+         done
+ 	-$(CP) support/aunit.xml $(I_PLG)
+ 
+-	-$(CPR) lib/gnat lib/aunit $(INSTALL)/lib
++	-$(CPR) lib/gnat lib/aunit $(libdir)
+ 	-$(CPR) include/aunit $(INSTALL)/include
+ 	-$(CPR) share/examples $(INSTALL)/share
+ 	@echo '------------------------------------------------------------------'

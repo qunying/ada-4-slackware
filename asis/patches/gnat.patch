@@ -12,3 +12,23 @@
     for Object_Dir use "obj";
     for Library_Name use "asis";
     for Library_Dir use "lib";
+--- asis-gpl-2011-src/asis_gu_bld.gpr	2011-04-19 02:56:08.000000000 -0700
++++ asis-gpl-2011-src.new/asis_gu_bld.gpr	2012-06-29 14:22:46.244575217 -0700
+@@ -4,7 +4,8 @@
+ --  Note that GNATCOLL used in such applications must be based on same
+ --  Gnat_Util library.
+ 
+-with "gnat_util";
++with "gnatprj";
++with "gnatvsn";
+ with "common";
+ project Asis_GU_Bld is
+ 
+@@ -12,7 +13,6 @@
+    for Source_Dirs use ("asis");
+    for Object_Dir use "obj/obj_gu";
+    for Library_Name use "asis";
+-   for Library_Dir use "lib/lib_gu";
+    for Library_Kind use "static";
+ 
+    package Builder renames Common.Builder;

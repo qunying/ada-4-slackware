@@ -8,15 +8,23 @@ Description: remove references to SPARK.
 Author: Stephen Leake <stephen_leake@stephe-leake.org>
 Forwarded: not-needed
 
-Index: gprbuild-2011/gnat/scng.adb
+Index: gprbuild-2012-src/gnat/scng.adb
 ===================================================================
---- gprbuild-2011.orig/gnat/scng.adb	2011-08-01 05:19:05.000000000 -0400
-+++ gprbuild-2011/gnat/scng.adb	2011-08-01 05:19:41.000000000 -0400
-@@ -1792,47 +1792,6 @@
-                   Token := Tok_Comment;
+--- gprbuild-2012-src/gnat/scng.adb	2012-05-10 06:59:03.000000000 -0700
++++ b/gnat/scng.adb	2012-06-28 16:45:46.276084971 -0700
+@@ -28,8 +28,6 @@
+ with Hostparm; use Hostparm;
+ with Namet;    use Namet;
+ with Opt;      use Opt;
+-with Restrict; use Restrict;
+-with Rident;   use Rident;
+ with Scans;    use Scans;
+ with Sinput;   use Sinput;
+ with Snames;   use Snames;
+@@ -1793,46 +1791,6 @@
                    return;
                 end if;
--
+ 
 -               --  If the SPARK restriction is set for this unit, then generate
 -               --  a token Tok_SPARK_Hide for a SPARK HIDE directive.
 -
@@ -60,18 +68,19 @@ Index: gprbuild-2011/gnat/scng.adb
              end if;
           end Minus_Case;
  
-Index: gprbuild-2011/gnat/restrict.adb
+ 
+Index: gprbuild-2012-src/gnat/restrict.adb
 ===================================================================
---- gprbuild-2011.orig/gnat/restrict.adb	2011-09-08 19:12:58.000000000 -0400
-+++ gprbuild-2011/gnat/restrict.adb	2011-09-08 19:11:57.000000000 -0400
-@@ -114,58 +114,32 @@
+--- gprbuild-2012-src/gnat/restrict.adb	2012-06-28 16:23:17.934041823 -0700
++++ b/gnat/restrict.adb	2012-06-28 16:21:57.277039242 -0700
+@@ -143,58 +143,31 @@
        N     : Node_Id;
        Force : Boolean := False)
     is
 -      Msg_Issued          : Boolean;
 -      Save_Error_Msg_Sloc : Source_Ptr;
 -   begin
--      if Force or else Comes_From_Source (N) then
+-      if Force or else Comes_From_Source (Original_Node (N)) then
 -
 -         if Restriction_Check_Required (SPARK)
 -           and then Is_In_Hidden_Part_In_SPARK (Sloc (N))
@@ -104,13 +113,13 @@ Index: gprbuild-2011/gnat/restrict.adb
 +      null;
     end Check_SPARK_Restriction;
  
--   procedure Check_SPARK_Restriction (Msg1, Msg2 : String; N : Node_Id) is
+    procedure Check_SPARK_Restriction (Msg1, Msg2 : String; N : Node_Id) is
 -      Msg_Issued          : Boolean;
 -      Save_Error_Msg_Sloc : Source_Ptr;
 -   begin
 -      pragma Assert (Msg2'Length /= 0 and then Msg2 (Msg2'First) = '\');
 -
--      if Comes_From_Source (N) then
+-      if Comes_From_Source (Original_Node (N)) then
 -
 -         if Restriction_Check_Required (SPARK)
 -           and then Is_In_Hidden_Part_In_SPARK (Sloc (N))
@@ -131,8 +140,6 @@ Index: gprbuild-2011/gnat/restrict.adb
 -            Error_Msg_F (Msg2, N);
 -         end if;
 -      end if;
-+   procedure Check_SPARK_Restriction (Msg1, Msg2 : String; N : Node_Id)
-+   is
 +      pragma Unreferenced (Msg1);
 +      pragma Unreferenced (Msg2);
 +      pragma Unreferenced (N);
@@ -146,8 +153,8 @@ Index: gprbuild-2011/gnat/restrict.adb
 +      null;
     end Check_SPARK_Restriction;
  
-    -----------------------------------------
-@@ -750,11 +724,7 @@
+    --------------------------------
+@@ -929,11 +902,7 @@
           Name_Buffer (1 .. S'Last) := S;
           Name_Len := S'Length;
  

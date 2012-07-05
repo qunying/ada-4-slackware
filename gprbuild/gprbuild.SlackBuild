@@ -21,7 +21,7 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gprbuild
-VERSION=${VERSION:-2011}
+VERSION=${VERSION:-2012}
 BUILD=${BUILD:-1}
 TAG=${TAG-_SBo}
 
@@ -86,7 +86,7 @@ mkdir -p $TMP $PKG $OUTPUT
 
 cd $TMP
 rm -rf $PRGNAM-$VERSION-src
-tar xvf $CWD/$PRGNAM-gpl-$VERSION-1-src.t?z
+tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.t?z
 
 cd $PRGNAM-$VERSION-src
 

@@ -1,10 +1,11 @@
 #!/bin/sh
 # Modified the gnat building part (written by zhu.qunying@gmail.com)
+# Copyright 2012 Zhu Qun-Ying
+#
 # GCC package build script (written by volkerdi@slackware.com)
 #
 # Copyright 2003, 2004  Slackware Linux, Inc., Concord, California, USA
 # Copyright 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012  Patrick J. Volkerding, Sebeka, MN, USA
-# Copyright 2012 Zhu Qun-Ying
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -106,7 +107,8 @@ esac
 CWD=$(pwd)
 # Temporary build location.  This should *NOT* be a directory
 # path a non-root user could create later...
-B_TMP=${B_TMP:-"/gcc-$(mcookie)"}
+#B_TMP=${B_TMP:-"/gcc-$(mcookie)"}
+B_TMP=${B_TMP:-"/gcc47"}
 
 # This is the main DESTDIR target:
 PKG1=$B_TMP/package-gcc
@@ -147,6 +149,11 @@ cp $CWD/ecj-4.5.jar gcc-$VERSION/ecj.jar
 # The runtime can be obtained from:
 #https://oss.sonatype.org/content/repositories/releases/org/antlr/antlr-runtime/
 ANTLJAR=$(echo $CWD/antlr-*.jar | tail -1)
+
+# Upstream -fPIC fix for gnat build:
+cd gcc-$VERSION
+  zcat $CWD/gcc-4.7.1.adalib.pic.diff.gz | patch -p1 --verbose || exit 1
+cd ..
 
 # install docs
 ( cd gcc-$VERSION
@@ -339,14 +346,13 @@ ANTLJAR=$(echo $CWD/antlr-*.jar | tail -1)
   done
   CFLAGS="$SLKCFLAGS" \
   CXXFLAGS="$SLKCFLAGS" \
-  BOOT_CFLAGS="$SLKCFLAGS" \
   ./configure \
      --prefix=/usr \
      --libdir=/usr/lib$LIBDIRSUFFIX \
      --mandir=/usr/man \
      --infodir=/usr/info \
      --build=$TARGET
-  make BOOT_CFLAGS='$SLKCFLAGS' $NUMJOBS || exit 1
+  make $NUMJOBS || exit 1
   make install DESTDIR=$PKG5 || exit 1
   mkdir -p $PKG5/usr/doc/fastjar-$FASTJARVER
   cp -a \
@@ -446,7 +452,7 @@ ANTLJAR=$(echo $CWD/antlr-*.jar | tail -1)
     make $NUMJOBS gnatlib GNATLIBCFLAGS="$SLKCFLAGS"
     # This wants a shared -ladd2line?
     #make gnatlib-shared
-    
+
     CFLAGS="$SLKCFLAGS" \
     CXXFLAGS="$SLKCFLAGS" \
     make $NUMJOBS gnattools
@@ -499,7 +505,7 @@ if [ "$ARCH" = "x86_64" ]; then
     $PKG1/usr/lib${LIBDIRSUFFIX}/gcc/${TARGET}/${VERSION}/specs
 fi
 
-#  make ada.install-ommon DESTDIR=$PKG1
+#  make ada.install-common DESTDIR=$PKG1
 #  make install-gnatlib DESTDIR=$PKG1
 make -i install-info DESTDIR=$PKG1
 
@@ -717,6 +723,8 @@ mv $PKG1/usr/bin/gnative2ascii $PKG5/usr/bin
   mv $PKG1/usr/man/man1/jv-convert.1.gz usr/man/man1
   mv $PKG1/usr/man/man1/jv-scan.1.gz usr/man/man1
   mv $PKG1/usr/man/man1/rebuild-gcj-db.1.gz usr/man/man1
+  mkdir -p usr/man/man3
+  mv $PKG1/usr/man/man3/ffi* usr/man/man3
   mkdir -p usr/share
   mv $PKG1/usr/share/java usr/share
   # The ecj wrapper script:
@@ -728,6 +736,11 @@ mv $PKG1/usr/bin/gnative2ascii $PKG5/usr/bin
   mv $PKG1/usr/lib$LIBDIRSUFFIX/jvm* usr/lib$LIBDIRSUFFIX
   # And add the missing javac symlink:
   ln -s ../../../bin/ecj usr/lib$LIBDIRSUFFIX/jvm/bin/javac
+  # Don't package libffi stuff anymore.  GCC will link the internal version
+  # statically, and we'll need a newer one elsewhere.
+#  find . -name "ffi*.h" | xargs rm
+#  find . -name "libffi*" | xargs rm
+#  rm usr/man/man3/ffi*
 )
 
 # gcc-objc:
@@ -763,8 +776,6 @@ mv $PKG1/usr/bin/gnative2ascii $PKG5/usr/bin
   # it is useful for deploying compiled binaries on machines that do not yet
   # have libgo.so.0.0.0.
   mv $PKG1/usr/lib${LIBDIRSUFFIX}/libgo.a usr/lib${LIBDIRSUFFIX}
-  mkdir -p usr/libexec/gcc/$TARGET/$VERSION
-  mv $PKG1/usr/libexec/gcc/$TARGET/$VERSION/go usr/libexec/gcc/$TARGET/$VERSION/go
   mkdir -p usr/man/man1
   mv $PKG1/usr/man/man1/gccgo.1.gz usr/man/man1
 ) || exit 1

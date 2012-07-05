@@ -13,8 +13,8 @@ diff -ur gprbuild-2011-src.orig//src/gpr_version.ads gprbuild-2011-src/src/gpr_v
  
  package GPR_Version is
  
--   Gpr_Version: constant String := "2011";
-+   Gpr_Version : constant String := "2011";
+-   Gpr_Version: constant String := "2012";
++   Gpr_Version : constant String := "2012";
     --  Static string identifying this version
  
     function Gpr_Version_String return String;
