@@ -1,26 +1,40 @@
-diff -ur gps-git261227eb71714.org/common/common_no_xmlada.gpr.in gps-git261227eb71714/common/common_no_xmlada.gpr.in
---- gps-git261227eb71714.org/common/common_no_xmlada.gpr.in	1969-12-31 16:00:00.000000000 -0800
-+++ gps-git261227eb71714/common/common_no_xmlada.gpr.in	2012-04-14 09:08:06.498043208 -0700
-@@ -1,5 +1,4 @@
+diff -ur gps-gitaee90d/common/common_no_xmlada.gpr.in gps-gitaee90d.new/common/common_no_xmlada.gpr.in
+--- gps-gitaee90d/common/common_no_xmlada.gpr.in	2012-11-15 11:42:06.000000000 -0800
++++ gps-gitaee90d.new/common/common_no_xmlada.gpr.in	2012-11-16 22:02:49.527546803 -0800
+@@ -1,6 +1,5 @@
  with "gtkada";
+ with "../gnatlib/src/gnatcoll_sqlite.gpr";
 -with "../gnat";
  with "../shared";
  with "../gnatlib/src/gnatcoll_gtk";
  
-diff -ur gps-git261227eb71714.org/common/common_with_xmlada.gpr.in gps-git261227eb71714/common/common_with_xmlada.gpr.in
---- gps-git261227eb71714.org/common/common_with_xmlada.gpr.in	1969-12-31 16:00:00.000000000 -0800
-+++ gps-git261227eb71714/common/common_with_xmlada.gpr.in	2012-04-14 09:07:33.985055207 -0700
-@@ -1,5 +1,4 @@
+diff -ur gps-gitaee90d/common/common_with_xmlada.gpr.in gps-gitaee90d.new/common/common_with_xmlada.gpr.in
+--- gps-gitaee90d/common/common_with_xmlada.gpr.in	2012-11-15 11:42:06.000000000 -0800
++++ gps-gitaee90d.new/common/common_with_xmlada.gpr.in	2012-11-16 22:03:00.127546422 -0800
+@@ -1,6 +1,5 @@
  with "gtkada";
+ with "../gnatlib/src/gnatcoll_sqlite.gpr";
 -with "../gnat";
  with "../shared";
  with "xmlada_sax";
  with "../gnatlib/src/gnatcoll_gtk";
-diff -ur gps-git261227eb71714.org/gnatlib/Makefile gps-git261227eb71714/gnatlib/Makefile
---- gps-git261227eb71714.org/gnatlib/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ gps-git261227eb71714/gnatlib/Makefile	2012-04-14 08:16:50.685935319 -0700
+diff -ur gps-gitaee90d/distrib/from_impunit.pl gps-gitaee90d.new/distrib/from_impunit.pl
+--- gps-gitaee90d/distrib/from_impunit.pl	2012-11-15 11:42:06.000000000 -0800
++++ gps-gitaee90d.new/distrib/from_impunit.pl	2012-11-16 21:59:57.327552959 -0800
+@@ -7,7 +7,7 @@
+ $expand_hierarchies = 1;
+ 
+ $output ="../share/plug-ins/runtime.xml";
+-$impunit="../gnatlib/gnat_src/impunit.adb";
++$impunit="/usr/include/gnatprj/impunit.adb";
+ 
+ open (OUT, '>' . $output);
+ open (IMPUNIT, $impunit) || die "File $impunit not found";
+diff -ur gps-gitaee90d/gnatlib/Makefile gps-gitaee90d.new/gnatlib/Makefile
+--- gps-gitaee90d/gnatlib/Makefile	2012-11-15 11:42:06.000000000 -0800
++++ gps-gitaee90d.new/gnatlib/Makefile	2012-11-16 22:03:36.272545130 -0800
 @@ -10,7 +10,7 @@
- install: install_static install_docs
+ all: relocatable
  endif
  
 -include Makefile.gnat
@@ -28,18 +42,18 @@ diff -ur gps-git261227eb71714.org/gnatlib/Makefile gps-git261227eb71714/gnatlib/
  
  ## Builds explicitly the shared or the static libraries
  
-@@ -65,7 +65,7 @@
+@@ -69,7 +69,7 @@
  	-@$(foreach f,$(GNAT_SOURCES_FOR_GNATCOLL), \
- 	   $(LN_S) ../gnat_src/$(f) gnat >/dev/null 2>&1 ;)
+ 	   $(LN_S) -f ../gnat_src/$(f) gnat >/dev/null 2>&1 ;)
  endif
 -	@(cd gnat && gnatmake -q xsnamest && ./xsnamest && mv snames.ns snames.ads && mv snames.nb snames.adb)
 +#	@(cd gnat && gnatmake -q xsnamest && ./xsnamest && mv snames.ns snames.ads && mv snames.nb snames.adb)
+ endif
  
- else
- do_links:
-diff -ur gps-git261227eb71714.org/gnatlib/gnatcoll_build.gpr gps-git261227eb71714/gnatlib/gnatcoll_build.gpr
---- gps-git261227eb71714.org/gnatlib/gnatcoll_build.gpr	1969-12-31 16:00:00.000000000 -0800
-+++ gps-git261227eb71714/gnatlib/gnatcoll_build.gpr	2012-04-14 08:18:27.301938800 -0700
+ ## Only works after installation, so we should install to a local directory
+diff -ur gps-gitaee90d/gnatlib/gnatcoll_build.gpr gps-gitaee90d.new/gnatlib/gnatcoll_build.gpr
+--- gps-gitaee90d/gnatlib/gnatcoll_build.gpr	2012-11-15 11:42:06.000000000 -0800
++++ gps-gitaee90d.new/gnatlib/gnatcoll_build.gpr	2012-11-16 21:59:57.325552961 -0800
 @@ -1,5 +1,7 @@
  --  This project file is used to build all modules that have no external
  --  dependencies on external project files
@@ -56,18 +70,27 @@ diff -ur gps-git261227eb71714.org/gnatlib/gnatcoll_build.gpr gps-git261227eb7171
  project Gnatcoll_Build is
     for Source_Dirs use ();
     for Object_Dir use "src/" & Gnatcoll_Shared'Object_Dir;  --  for auto.cgpr
-diff -ur gps-git261227eb71714.org/gnatlib/gnatcoll_shared.gpr.in gps-git261227eb71714/gnatlib/gnatcoll_shared.gpr.in
---- gps-git261227eb71714.org/gnatlib/gnatcoll_shared.gpr.in	1969-12-31 16:00:00.000000000 -0800
-+++ gps-git261227eb71714/gnatlib/gnatcoll_shared.gpr.in	2012-04-14 08:21:32.730944969 -0700
+diff -ur gps-gitaee90d/gnatlib/gnatcoll_shared.gpr.in gps-gitaee90d.new/gnatlib/gnatcoll_shared.gpr.in
+--- gps-gitaee90d/gnatlib/gnatcoll_shared.gpr.in	2012-11-15 11:42:06.000000000 -0800
++++ gps-gitaee90d.new/gnatlib/gnatcoll_shared.gpr.in	2012-11-16 22:21:36.774506489 -0800
 @@ -1,3 +1,5 @@
 +with "gnatvsn";
 +with "gnatprj";
  project GnatColl_Shared is
     Version := "@PACKAGE_VERSION@";
     Name    := "@PACKAGE_TARNAME@";
-diff -ur gps-git261227eb71714.org/gnatlib/src/Makefile.gnatcoll gps-git261227eb71714/gnatlib/src/Makefile.gnatcoll
---- gps-git261227eb71714.org/gnatlib/src/Makefile.gnatcoll	1969-12-31 16:00:00.000000000 -0800
-+++ gps-git261227eb71714/gnatlib/src/Makefile.gnatcoll	2012-04-14 07:55:28.519891453 -0700
+@@ -53,7 +55,7 @@
+             for Switches ("Ada") use
+               ("-g", "-O1", "-gnata", "-gnatVa", "-gnatQ", "-gnaty", "-gnateE",
+                "-gnatwaCJe", "-gnat05");
+-            for Switches ("C") use ("-g", "-fdump-xref");
++            for Switches ("C") use ("-g");
+          when "Production" =>
+             for Switches ("Ada") use
+               ("-O2", "-gnatn", "-gnatws", "-gnat05");
+diff -ur gps-gitaee90d/gnatlib/src/Makefile.gnatcoll gps-gitaee90d.new/gnatlib/src/Makefile.gnatcoll
+--- gps-gitaee90d/gnatlib/src/Makefile.gnatcoll	2012-11-15 11:42:06.000000000 -0800
++++ gps-gitaee90d.new/gnatlib/src/Makefile.gnatcoll	2012-11-16 21:59:57.326552960 -0800
 @@ -10,6 +10,6 @@
  SRCDIRS=./ ./nosyslog/ ./paragraph_filling/
  endif
@@ -78,62 +101,11 @@ diff -ur gps-git261227eb71714.org/gnatlib/src/Makefile.gnatcoll gps-git261227eb7
 +#ifeq ($(GNAT_SOURCES),copy)
 +#SRCDIRS+= ../gnat/
 +#endif
-diff -ur gps-git261227eb71714.org/gps/Makefile gps-git261227eb71714/gps/Makefile
---- gps-git261227eb71714.org/gps/Makefile	1969-12-31 16:00:00.000000000 -0800
-+++ gps-git261227eb71714/gps/Makefile	2012-04-14 08:39:34.953981994 -0700
-@@ -19,7 +19,7 @@
- 
- default: resources do_links all
- 
--include ../Makefile.gnat
-+#include ../Makefile.gnat
- 
- # NOTE: we need to build gnatcoll separately, since we cannot use
- # gnat.adc (No_Tasking restriction) on all gnatcoll sources.
-diff -ur gps-git261227eb71714.org/gps/gps.gpr gps-git261227eb71714/gps/gps.gpr
---- gps-git261227eb71714.org/gps/gps.gpr	1969-12-31 16:00:00.000000000 -0800
-+++ gps-git261227eb71714/gps/gps.gpr	2012-04-14 08:40:13.319983308 -0700
-@@ -36,6 +36,7 @@
- with "../views/views";
- with "../vfs/vfs";
- with "../vsearch/vsearch";
-+with "gnatprj";
- 
- project GPS is
- 
-diff -ur gps-git261227eb71714.org/kernel/kernel.gpr gps-git261227eb71714/kernel/kernel.gpr
---- gps-git261227eb71714.org/kernel/kernel.gpr	1969-12-31 16:00:00.000000000 -0800
-+++ gps-git261227eb71714/kernel/kernel.gpr	2012-04-14 09:09:18.509044853 -0700
-@@ -1,5 +1,4 @@
- --  The part of the kernel that depends on the GUI
--with "../gnat";
- with "gtkada";
- with "kernel_core";
- with "shared";
-diff -ur gps-git261227eb71714.org/kernel/kernel_core.gpr gps-git261227eb71714/kernel/kernel_core.gpr
---- gps-git261227eb71714.org/kernel/kernel_core.gpr	1969-12-31 16:00:00.000000000 -0800
-+++ gps-git261227eb71714/kernel/kernel_core.gpr	2012-04-14 09:10:19.453044402 -0700
-@@ -1,4 +1,3 @@
--with "../gnat";
- with "../common/common";
- with "../shared";
- with "../gnatlib/src/gnatcoll";
-diff -ur gps-git261227eb71714.org/shared.gpr gps-git261227eb71714/shared.gpr
---- gps-git261227eb71714.org/shared.gpr	1969-12-31 16:00:00.000000000 -0800
-+++ gps-git261227eb71714/shared.gpr	2012-04-14 09:15:25.475055632 -0700
-@@ -35,7 +35,7 @@
-                "-gnatwaCJe", "-gnat05", "-gnateE");
- 
-             for Default_Switches ("C") use
--              ("-g", "-O1", "-fdump-xref") & GnatColl_Shared.Gtk_Include;
-+              ("-g", "-O1") & GnatColl_Shared.Gtk_Include;
- 
-          when "Production" =>
-             for Default_Switches ("Ada") use
---- gps-git261227eb71714.org/gnatlib/src/gnatcoll__copy.gpr	1969-12-31 16:00:00.000000000 -0800
-+++ gps-git261227eb71714/gnatlib/src/gnatcoll__copy.gpr	2012-04-14 12:02:17.003398087 -0700
-@@ -12,9 +12,7 @@
-       "lib" & Project'Library_Name & ".so." & GnatColl_Shared.Version;
+diff -ur gps-gitaee90d/gnatlib/src/gnatcoll__copy.gpr gps-gitaee90d.new/gnatlib/src/gnatcoll__copy.gpr
+--- gps-gitaee90d/gnatlib/src/gnatcoll__copy.gpr	2012-11-15 11:42:06.000000000 -0800
++++ gps-gitaee90d.new/gnatlib/src/gnatcoll__copy.gpr	2012-11-16 21:59:57.326552960 -0800
+@@ -13,9 +13,7 @@
+       & GnatColl_Shared.So_Ext & "." & GnatColl_Shared.Version;
  
     case Gnatcoll_Shared.Projects is
 -      when "yes" =>
@@ -143,7 +115,7 @@ diff -ur gps-git261227eb71714.org/shared.gpr gps-git261227eb71714/shared.gpr
        when "no" =>
           for Excluded_Source_Files use ("gnatcoll-projects.ads",
                                          "gnatcoll-projects.adb",
-@@ -56,8 +54,7 @@
+@@ -55,8 +53,7 @@
        end case;
  
        case GnatColl_Shared.Projects is
@@ -153,14 +125,55 @@ diff -ur gps-git261227eb71714.org/shared.gpr gps-git261227eb71714/shared.gpr
           when "no" =>
              null;
        end case;
---- gps-git261227eb71714.org/distrib/from_impunit.pl	1969-12-31 16:00:00.000000000 -0800
-+++ gps-git261227eb71714/distrib/from_impunit.pl	2012-04-14 16:49:42.845988110 -0700
-@@ -7,7 +7,7 @@
- $expand_hierarchies = 1;
+diff -ur gps-gitaee90d/gps/Makefile gps-gitaee90d.new/gps/Makefile
+--- gps-gitaee90d/gps/Makefile	2012-11-15 11:42:06.000000000 -0800
++++ gps-gitaee90d.new/gps/Makefile	2012-11-16 21:59:57.326552960 -0800
+@@ -19,7 +19,7 @@
  
- $output ="../share/plug-ins/runtime.xml";
--$impunit="../gnatlib/gnat_src/impunit.adb";
-+$impunit="/usr/include/gnatprj/impunit.adb";
+ default: all
  
- open (OUT, '>' . $output);
- open (IMPUNIT, $impunit) || die "File $impunit not found";
+-include ../Makefile.gnat
++#include ../Makefile.gnat
+ 
+ # NOTE: we need to build gnatcoll separately, since we cannot use
+ # gnat.adc (No_Tasking restriction) on all gnatcoll sources.
+diff -ur gps-gitaee90d/gps/gps.gpr gps-gitaee90d.new/gps/gps.gpr
+--- gps-gitaee90d/gps/gps.gpr	2012-11-15 11:42:06.000000000 -0800
++++ gps-gitaee90d.new/gps/gps.gpr	2012-11-16 21:59:57.326552960 -0800
+@@ -36,6 +36,7 @@
+ with "../views/views";
+ with "../vfs/vfs";
+ with "../vsearch/vsearch";
++with "gnatprj";
+ 
+ project GPS is
+ 
+diff -ur gps-gitaee90d/kernel/kernel.gpr gps-gitaee90d.new/kernel/kernel.gpr
+--- gps-gitaee90d/kernel/kernel.gpr	2012-11-15 11:42:06.000000000 -0800
++++ gps-gitaee90d.new/kernel/kernel.gpr	2012-11-16 21:59:57.326552960 -0800
+@@ -1,5 +1,4 @@
+ --  The part of the kernel that depends on the GUI
+-with "../gnat";
+ with "gtkada";
+ with "kernel_core";
+ with "shared";
+diff -ur gps-gitaee90d/kernel/kernel_core.gpr gps-gitaee90d.new/kernel/kernel_core.gpr
+--- gps-gitaee90d/kernel/kernel_core.gpr	2012-11-15 11:42:06.000000000 -0800
++++ gps-gitaee90d.new/kernel/kernel_core.gpr	2012-11-16 21:59:57.326552960 -0800
+@@ -1,4 +1,3 @@
+-with "../gnat";
+ with "../common/common";
+ with "../shared";
+ with "../gnatlib/src/gnatcoll";
+diff -ur gps-gitaee90d/shared.gpr gps-gitaee90d.new/shared.gpr
+--- gps-gitaee90d/shared.gpr	2012-11-15 11:42:06.000000000 -0800
++++ gps-gitaee90d.new/shared.gpr	2012-11-16 21:59:57.326552960 -0800
+@@ -35,7 +35,7 @@
+                "-gnatwaCJe", "-gnat2012", "-gnateE");
+ 
+             for Default_Switches ("C") use
+-              ("-g", "-O1", "-fdump-xref") & GnatColl_Shared.Gtk_Include;
++              ("-g", "-O1") & GnatColl_Shared.Gtk_Include;
+ 
+          when "Production" =>
+             for Default_Switches ("Ada") use

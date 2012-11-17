@@ -21,10 +21,11 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gps
-VERSION=${VERSION:-git346647097c}
+VERSION=${VERSION:-gitaee90d}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
+set -e
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
   case "$(uname -m)" in
@@ -108,7 +109,6 @@ CXXFLAGS="$SLKCFLAGS" \
     --infodir=/usr/info \
     --enable-projects \
     --disable-shared \
-    --enable-gpl --with-readline \
     --build=$ARCH-slackware-linux
 
 # update build time

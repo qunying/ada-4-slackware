@@ -1,10 +1,10 @@
 Description: do not use nonexistent members of struct GObectClass
 Author: Ludovic Brenta <lbrenta@debian.org>
 Date : 2010-01-25
-Index: b/gbuilder/src/utils.c
-===================================================================
---- a/gbuilder/src/utils.c
-+++ b/gbuilder/src/utils.c
+diff --git gps-gitaee90d/gbuilder/src/utils.c gps-gitaee90d.new/gbuilder/src/utils.c
+index 568297a..d7f7c81 100644
+--- gps-gitaee90d/gbuilder/src/utils.c
++++ gps-gitaee90d.new/gbuilder/src/utils.c
 @@ -1,13 +1,5 @@
  #include <glib-object.h>
  
