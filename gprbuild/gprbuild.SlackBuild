@@ -117,8 +117,7 @@ CXXFLAGS="$SLKCFLAGS" \
     --build=$ARCH-slackware-linux
 # patch the build date
 TODAY=$(date +%F)
-PATCH_DATE_CMD="sed --in-place 's/(unknown) /$TODAY/' src/gpr_version.adb"
-eval $PATCH_DATE_CMD
+sed --in-place "s/(unknown) /$TODAY/" src/gpr_version.adb
 make
 
 make prefix=$PKG/usr libdir=$PKG/usr/lib${LIBDIRSUFFIX} \
