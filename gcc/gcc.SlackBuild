@@ -49,7 +49,7 @@
 
 PKGNAM=gcc
 VERSION=${VERSION:-$(echo $PKGNAM-*.tar.xz | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 
 # How many jobs to run in parallel:
 NUMJOBS=" -j 7 "
@@ -423,7 +423,7 @@ cd ..
      --enable-checking=release \
      --enable-objc-gc \
      --with-system-zlib \
-     --with-python-dir=/lib$LIBDIRSUFFIX/python2.6/site-packages \
+     --with-python-dir=/lib$LIBDIRSUFFIX/python2.7/site-packages \
      --disable-libunwind-exceptions \
      --enable-__cxa_atexit \
      --enable-libssp \
@@ -673,11 +673,11 @@ mv $PKG1/usr/bin/gnative2ascii $PKG5/usr/bin
   mv $PKG1/usr/lib${LIBDIRSUFFIX}/gcc/$TARGET/$VERSION/include/jvmpi.h usr/lib${LIBDIRSUFFIX}/gcc/$TARGET/$VERSION/include
   mv $PKG1/usr/lib${LIBDIRSUFFIX}/gcc/$TARGET/$VERSION/include/libffi usr/lib${LIBDIRSUFFIX}/gcc/$TARGET/$VERSION/include
   # aot-compile Python plugins:
-  if [ ! -d $PKG1/usr/lib${LIBDIRSUFFIX}/python2.6 ]; then
-    echo "NO $PKG1/usr/lib${LIBDIRSUFFIX}/python2.6 !"
+  if [ ! -d $PKG1/usr/lib${LIBDIRSUFFIX}/python2.7 ]; then
+    echo "NO $PKG1/usr/lib${LIBDIRSUFFIX}/python2.7 !"
     exit 1
   fi
-  mv $PKG1/usr/lib${LIBDIRSUFFIX}/python2.6 usr/lib${LIBDIRSUFFIX}
+  mv $PKG1/usr/lib${LIBDIRSUFFIX}/python2.7 usr/lib${LIBDIRSUFFIX}
   mkdir -p usr/info
   mv $PKG1/usr/info/gcj.* usr/info
   # mv $PKG1/usr/info/fastjar.* usr/info
