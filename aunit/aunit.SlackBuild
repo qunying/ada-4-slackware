@@ -21,7 +21,8 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=aunit
-VERSION=${VERSION:-2012}
+VERSION=${VERSION:-2014}
+SRC_VERSION=${SRC_VERSION:-3.7.0w}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
@@ -29,66 +30,45 @@ TAG=${TAG:-_SBo}
 if [ -z "$ARCH" ]; then
   case "$(uname -m)" in
     i?86) ARCH=i486 ;;
-    arm*) readelf /usr/bin/file -A | egrep -q "Tag_CPU.*[4,5]" && ARCH=arm || ARCH=armv7lh ;;
+    arm*) ARCH=arm ;;
     # Unless $ARCH is already set, use uname -m for all other archs:
     *) ARCH=$(uname -m) ;;
   esac
-  export ARCH
 fi
 
-if [ "$ARCH" = "i386" ]; then
-  SLKCFLAGS="-O2 -march=i386 -mcpu=i686"
-  LIBDIRSUFFIX=""
-  LIB_ARCH=i386
-elif [ "$ARCH" = "i486" ]; then
+CWD=$(pwd)
+TMP=${TMP:-/tmp/SBo}	# For consistency's sake, use this
+PKG=$TMP/package-$PRGNAM
+OUTPUT=${OUTPUT:-/tmp}	# Drop the package in /tmp
+
+if [ "$ARCH" = "i486" ]; then
   SLKCFLAGS="-O2 -march=i486 -mtune=i686"
   LIBDIRSUFFIX=""
   LIB_ARCH=i386
-elif [ "$ARCH" = "i586" ]; then
-  SLKCFLAGS="-O2 -march=i586 -mtune=i686"
-  LIBDIRSUFFIX=""
-  LIB_ARCH=i386
 elif [ "$ARCH" = "i686" ]; then
-  SLKCFLAGS="-O2 -march=i686"
+  SLKCFLAGS="-O2 -march=i686 -mtune=i686"
   LIBDIRSUFFIX=""
   LIB_ARCH=i386
-elif [ "$ARCH" = "s390" ]; then
-  SLKCFLAGS="-O2"
-  LIBDIRSUFFIX=""
-  LIB_ARCH=s390
 elif [ "$ARCH" = "x86_64" ]; then
   SLKCFLAGS="-O2 -fPIC"
   LIBDIRSUFFIX="64"
   LIB_ARCH=amd64
-elif [ "$ARCH" = "armv7hl" ]; then
-  SLKCFLAGS="-O3 -march=armv7-a -mfpu=vfpv3-d16"
-  LIBDIRSUFFIX=""
-  LIB_ARCH=armv7hl
 else
   SLKCFLAGS="-O2"
   LIBDIRSUFFIX=""
   LIB_ARCH=$ARCH
 fi
 
-case "$ARCH" in
-    arm*) TARGET=$ARCH-slackware-linux-gnueabi ;;
-    *)    TARGET=$ARCH-slackware-linux ;;
-esac
 
-
-CWD=$(pwd)
-TMP=${TMP:-"/tmp/SBo"}
-PKG=${TMP}/package-$PRGNAM
-OUTPUT=${OUTPUT:-/tmp}
+set -e # Exit on most errors
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
-
 cd $TMP
-rm -rf $PRGNAM-gpl-$VERSION-src
-tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.tgz
+rm -rf $PRGNAM-$SRC_VERSION-src
+tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.tar.gz
 
-cd $PRGNAM-gpl-$VERSION-src
+cd $PRGNAM-$SRC_VERSION-src
 chown -R root:root .
 find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
@@ -98,14 +78,21 @@ find . \
 
 patch -p1 < $CWD/path.patch
 
+# change gps plugin document path
+sed -i "s/share\/doc\/aunit/doc\/aunit-$VERSION/" support/$PRGNAM.xml
+
 make INSTALL=/usr libdir=/usr/lib$LIBDIRSUFFIX
 
 make INSTALL=$PKG/usr libdir=$PKG/usr/lib$LIBDIRSUFFIX install
 
-cd $PKG
-mkdir usr/info
-mv usr/doc/aunit/aunit.info usr/info
-gzip usr/info/*
+mkdir $PKG/usr/info
+mv $PKG/usr/doc/$PRGNAM-$VERSION/aunit.info $PKG/usr/info
+gzip $PKG/usr/info/*
+mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION/examples
+mv $PKG/usr/share/examples/aunit/* $PKG/usr/doc/$PRGNAM-$VERSION/examples
+rm -rf $PKG/usr/share/examples
+cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-$VERSION/
+cp README COPYING3 features* known-problem* $PKG/usr/doc/$PRGNAM-$VERSION/
 
 cd $PKG
 mkdir -p $PKG/install

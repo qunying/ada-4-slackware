@@ -17,7 +17,7 @@
 +I_GPR   = $(libdir)/gnat
  I_TPL   = $(INSTALL)/share/examples/aunit
 -I_DOC   = $(INSTALL)/share/doc/aunit
-+I_DOC   = $(INSTALL)/doc/aunit
++I_DOC   = $(INSTALL)/doc/aunit-2014
  I_PLG   = $(INSTALL)/share/gps/plug-ins
  
  .PHONY: all clean targets install_clean install
