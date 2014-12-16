@@ -1,0 +1,15 @@
+Description: spelling
+Author: Nicolas Boulenguez <nicolas@debian.org>
+Forwarded: no
+
+--- a/src/gnatcoll-pools.adb
++++ b/src/gnatcoll-pools.adb
+@@ -227,7 +227,7 @@
+                         Unchecked_Free (R);
+                      elsif R /= null then
+                         Trace
+-                          (Me, "One ressource still in use, can't be freed");
++                          (Me, "One resource still in use, can't be freed");
+                      end if;
+                   end loop;
+ 

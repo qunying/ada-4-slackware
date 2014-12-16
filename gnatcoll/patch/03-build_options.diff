@@ -1,0 +1,96 @@
+Description: allow choosing builder options
+ The default behaviour should not change, but more settings can be
+ overriden on the command line if necessary, like -q and --target.
+ .
+ The effect may change in case PROCESSORS=2 is transmitted via the
+ Make command line. In that case, Processors would take the default
+ value 1 in the project, because it is not tranmitted via -X or the
+ environment. I believe such a conflict should be avoided.
+ .
+ I suggest that -q is removed from the third GPRBUILD, or added to
+ GPRBUILD_OPTIONS, but partial echoing is quite confusing.
+Author: Nicolas Boulenguez <nicolas@debian.org>
+Forwarded: no
+
+--- a/Makefile.conf.in
++++ b/Makefile.conf.in
+@@ -44,14 +44,18 @@
+ 
+ TARGET_WIN32=no
+ 
++GPRCLEAN=gprclean
++GPRCLEAN_OPTIONS=-q
++
++GPRBUILD=gprbuild
++GPRBUILD_OPTIONS=-m -j${PROCESSORS}
+ TARGET=@TARGET@
+ ifeq ($(TARGET),)
+-GPRBUILD=gprbuild
+ ifeq (${OS},Windows_NT)
+      TARGET_WIN32=yes
+ endif
+ else
+-GPRBUILD=gprbuild --target=${TARGET}
++GPRBUILD_OPTIONS+=--target=${TARGET}
+ ifeq ($(filter-out %mingw32,${TARGET}),)
+      TARGET_WIN32=yes
+ endif
+--- a/Makefile
++++ b/Makefile
+@@ -24,19 +24,19 @@
+ 
+ build_library_type/%: generate_sources do_links
+ 	@echo "====== Building $(@F) libraries ======"
+-	${GPRBUILD} -m -j${PROCESSORS} -XLIBRARY_TYPE=$(@F) -Pgnatcoll_build -p
++	${GPRBUILD} ${GPRBUILD_OPTIONS} -XLIBRARY_TYPE=$(@F) -Pgnatcoll_build -p
+ 
+ 	@# Need to build libgnatcoll_gtk separately, because its project files
+ 	@# requires gtkada.gpr, which might not exist on the machine.
+ ifeq (${WITH_GTK},yes)
+-	${GPRBUILD} -m -j${PROCESSORS} -XLIBRARY_TYPE=$(@F) -Psrc/gnatcoll_gtk -p
++	${GPRBUILD} ${GPRBUILD_OPTIONS} -XLIBRARY_TYPE=$(@F) -Psrc/gnatcoll_gtk -p
+ endif
+ 
+ 	@# Build the tools (the list is the project's Main attribute)
+ 	@# They are not build as part of the above because only the Main from
+ 	@# gnatcoll_build.gpr are build. We could use aggregate projects to speed
+ 	@# things up.
+-	${GPRBUILD} -q -m -j${PROCESSORS} -XLIBRARY_TYPE=$(@F) -Psrc/gnatcoll_tools
++	${GPRBUILD} -q ${GPRBUILD_OPTIONS} -XLIBRARY_TYPE=$(@F) -Psrc/gnatcoll_tools
+ 
+ # Regenerate part of the sources. Unfortunately, this can be run only after
+ # we have build GNATCOLL, and then its tools, even though GNATCOLL itself
+@@ -138,11 +138,11 @@
+ ## Clean either type of library, based on the value of (%)
+ 
+ clean_library/%:
+-	-gprclean -r -q -Pgnatcoll_build -XLIBRARY_TYPE=$(@F)
++	-${GPRCLEAN} ${GPRCLEAN_OPTIONS} -r -Pgnatcoll_build -XLIBRARY_TYPE=$(@F)
+ 	@# Separate pass to also remove the Main
+-	-gprclean -r -q -Psrc/gnatcoll_tools -XLIBRARY_TYPE=$(@F)
++	-${GPRCLEAN} ${GPRCLEAN_OPTIONS} -r -Psrc/gnatcoll_tools -XLIBRARY_TYPE=$(@F)
+ ifeq (${WITH_GTK},yes)
+-	-gprclean -r -q -Psrc/gnatcoll_gtk -XLIBRARY_TYPE=$(@F)
++	-${GPRCLEAN} ${GPRCLEAN_OPTIONS} -r -Psrc/gnatcoll_gtk -XLIBRARY_TYPE=$(@F)
+ endif
+ 
+ clean: clean_library/static clean_library/relocatable
+--- a/gnatcoll_shared.gpr.in
++++ b/gnatcoll_shared.gpr.in
+@@ -9,8 +9,6 @@
+    type Build_Type is ("Debug", "Production");
+    Build : Build_Type := External ("Gnatcoll_Build", "@BUILD_TYPE@");
+ 
+-   Processors := External ("PROCESSORS", "1");
+-
+    type Yes_No is ("yes", "no");
+    Gtk    : Yes_No := External ("GTK", "@WITH_GTK@");
+    Python : Yes_No := External ("PYTHON", "@WITH_PYTHON@");
+@@ -98,7 +96,6 @@
+    end Binder;
+ 
+    package Builder is
+-      for Switches ("Ada") use ("-m", "-j" & Processors);
+       case Build is
+          when "Debug" =>
+             for Global_Configuration_Pragmas use "gnat_debug.adc";

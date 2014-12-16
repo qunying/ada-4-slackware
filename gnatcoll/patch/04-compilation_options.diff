@@ -1,0 +1,159 @@
+Description: handle ADAFLAGS CFLAGS CPPFLAGS
+ ./configure eventually ignores them despite its claims in --help.
+Author: Nicolas Boulenguez <nicolas@debian.org>
+Forwarded: no
+
+--- a/gnatcoll_shared.gpr.in
++++ b/gnatcoll_shared.gpr.in
+@@ -26,6 +26,11 @@
+    Postgres_Has_PQprepare : Yes_No :=
+       External ("HAS_PQPREPARE", "@HAS_PQPREPARE@");
+ 
++   Adaflags := External_As_List ("ADAFLAGS", " ");
++   Cppflags := External_As_List ("CPPFLAGS", " ");
++   Cflags := External_As_List ("CFLAGS", " ");
++   Ldflags := External_As_List ("LDFLAGS", " ");
++
+    So_Ext := "@SO_EXT@";
+ 
+    type Library_Type_Type is ("relocatable", "static");
+@@ -60,8 +65,8 @@
+             for Switches ("C") use ("-g", "-fdump-xref", "-Wunreachable-code");
+          when "Production" =>
+             for Switches ("Ada") use
+-              ("-O2", "-gnatn", "-gnatws", "-gnat05");
+-            for Switches ("C") use ("-O2", "-Wunreachable-code");
++              ("-O2", "-gnatn", "-gnatws", "-gnat05") & Adaflags;
++            for Switches ("C") use ("-O2", "-Wunreachable-code") & Cppflags & Cflags;
+       end case;
+ 
+       case Syslog is
+@@ -83,7 +88,7 @@
+    --  broken libiconv, which prevents linking applications
+    System_Linker_Flags := (Iconv_Dir) & (@EXTRA_LINK_SWITCHES@);
+    package Linker is
+-      for Switches ("Ada") use System_Linker_Flags;
++      for Switches ("Ada") use Ldflags & System_Linker_Flags;
+    end Linker;
+ 
+    package Binder is
+--- a/src/gnatcoll__copy.gpr
++++ b/src/gnatcoll__copy.gpr
+@@ -1,6 +1,7 @@
+ with "../gnatcoll_shared";
+ 
+ project GnatColl is
++   for Leading_Library_Options use GnatColl_Shared.Ldflags;
+    for Source_Dirs     use (".", "paragraph_filling");
+    for Library_Kind    use GnatColl_Shared.Library_Type;
+    for Object_Dir
+--- a/src/gnatcoll__gnat_util.gpr
++++ b/src/gnatcoll__gnat_util.gpr
+@@ -2,6 +2,7 @@
+ with "gnat_util";
+ 
+ project GnatColl is
++   for Leading_Library_Options use GnatColl_Shared.Ldflags;
+    for Source_Dirs     use (".", "paragraph_filling");
+    for Library_Kind    use GnatColl_Shared.Library_Type;
+    for Object_Dir
+--- a/src/gnatcoll_gmp.gpr.in
++++ b/src/gnatcoll_gmp.gpr.in
+@@ -16,6 +16,7 @@
+ 
+          --  When linking a shared library (see Linker_Options below)
+          for Library_Options use (@GMP_LIBS_GPR@);
++         for Leading_Library_Options use GnatColl_Shared.Ldflags;
+       when "no" =>
+          for Source_Dirs use ();
+    end case;
+--- a/src/gnatcoll_gtk.gpr
++++ b/src/gnatcoll_gtk.gpr
+@@ -5,6 +5,7 @@
+ 
+ project GnatColl_Gtk is
+ 
++   for Leading_Library_Options use GnatColl_Shared.Ldflags;
+    for Library_Kind    use GnatColl_Shared.Library_Type;
+    for Object_Dir
+       use Gnatcoll_Shared'Object_Dir & "/gtk/" & Project'Library_Kind;
+@@ -42,7 +43,8 @@
+         & GnatColl_Shared.Python_Cflags
+         & GnatColl_Shared.Pygtk_Include
+         & GnatColl_Shared.PyGobject_Include
+-        & GnatColl_Shared.Gtk_Include;
++        & GnatColl_Shared.Gtk_Include
++        & GnatColl_Shared.Cppflags & GnatColl_Shared.Cflags;
+    end Compiler;
+ 
+    package Linker is
+--- a/src/gnatcoll_iconv.gpr
++++ b/src/gnatcoll_iconv.gpr
+@@ -4,6 +4,7 @@
+ project GnatColl_Iconv is
+    Name := "iconv";
+ 
++   for Leading_Library_Options use GnatColl_Shared.Ldflags;
+    for Library_Kind    use GnatColl_Shared.Library_Type;
+    for Object_Dir
+       use Gnatcoll_Shared'Object_Dir & "/" & Name & "/" & Project'Library_Kind;
+--- a/src/gnatcoll_postgres.gpr
++++ b/src/gnatcoll_postgres.gpr
+@@ -3,6 +3,7 @@
+ 
+ project GnatColl_Postgres is
+ 
++   for Leading_Library_Options use GnatColl_Shared.Ldflags;
+    for Library_Kind    use GnatColl_Shared.Library_Type;
+    for Object_Dir
+       use Gnatcoll_Shared'Object_Dir & "/postgres/" & Project'Library_Kind;
+--- a/src/gnatcoll_python.gpr.in
++++ b/src/gnatcoll_python.gpr.in
+@@ -12,6 +12,7 @@
+ 
+    --  When linking a shared library (see Linker_Options below in addition)
+    for Library_Options use GnatColl_Shared.Python_Libs;
++   for Leading_Library_Options use GnatColl_Shared.Ldflags;
+ 
+    case GnatColl_Shared.Python is
+       when "yes" =>
+@@ -30,7 +31,8 @@
+         GnatColl_Shared.Compiler'Switches ("Ada");
+ 
+       for Switches ("C") use
+-        ("-g", "-O2") & GnatColl_Shared.Python_Cflags;
++        ("-g", "-O2") & GnatColl_Shared.Python_Cflags
++         & GnatColl_Shared.Cppflags & GnatColl_Shared.Cflags;
+    end Compiler;
+ 
+    package Linker is
+--- a/src/gnatcoll_readline.gpr.in
++++ b/src/gnatcoll_readline.gpr.in
+@@ -11,6 +11,7 @@
+          for Source_Dirs use ("readline", "readline/no_readline");
+    end case;
+ 
++   for Leading_Library_Options use GnatColl_Shared.Ldflags;
+    for Library_Kind    use GnatColl_Shared.Library_Type;
+    for Library_Dir     use "lib/readline/" & Project'Library_Kind;
+    for Object_Dir      use "obj/readline/" & Project'Library_Kind;
+--- a/src/gnatcoll_sqlite.gpr
++++ b/src/gnatcoll_sqlite.gpr
+@@ -4,6 +4,7 @@
+ 
+ project GnatColl_Sqlite is
+ 
++   for Leading_Library_Options use GnatColl_Shared.Ldflags;
+    for Library_Kind    use GnatColl_Shared.Library_Type;
+    for Object_Dir
+       use Gnatcoll_Shared'Object_Dir & "/sqlite/" & Project'Library_Kind;
+@@ -60,7 +61,8 @@
+ 
+                   --  force full optimization for sqlite, we do not debug it
+                   --  in any case.
+-                  "-O3") & Gnatcoll_Shared.Sqlite_Switches;
++                  "-O3") & Gnatcoll_Shared.Sqlite_Switches
++               & GnatColl_Shared.Cppflags & GnatColl_Shared.Cflags;
+       end case;
+    end Compiler;
+ 
