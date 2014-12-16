@@ -117,6 +117,9 @@ mv $PKG/usr/share/doc $PKG/usr
 mv $PKG/usr/doc/gprbuild/info $PKG/usr
 gzip $PKG/usr/info/*
 mv $PKG/usr/doc/$PRGNAM $PKG/usr/doc/$PRGNAM-$VERSION
+mv $PKG/usr/share/examples/gprbuild $PKG/usr/doc/$PRGNAM-$VERSION/examples
+rmdir $PKG/usr/share/examples
+
 cp README COPYING3 CHANGES $PKG/usr/doc/$PRGNAM-$VERSION
 cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
 strip $PKG/usr/bin/*
@@ -125,4 +128,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-gpl$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
