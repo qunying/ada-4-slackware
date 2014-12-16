@@ -1,11 +1,8 @@
 #!/bin/sh
-# Modified the gnat building part (written by zhu.qunying@gmail.com)
-# Copyright 2012 Zhu Qun-Ying
-#
 # GCC package build script (written by volkerdi@slackware.com)
 #
 # Copyright 2003, 2004  Slackware Linux, Inc., Concord, California, USA
-# Copyright 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012  Patrick J. Volkerding, Sebeka, MN, USA
+# Copyright 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014  Patrick J. Volkerding, Sebeka, MN, USA
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -107,23 +104,22 @@ esac
 CWD=$(pwd)
 # Temporary build location.  This should *NOT* be a directory
 # path a non-root user could create later...
-#B_TMP=${B_TMP:-"/gcc-$(mcookie)"}
-B_TMP=${B_TMP:-"/gcc47"}
+TMP=${TMP:-"/root/build-gcc"}
 
 # This is the main DESTDIR target:
-PKG1=$B_TMP/package-gcc
+PKG1=$TMP/package-gcc
 # These are the directories to build other packages in:
-PKG2=$B_TMP/package-gcc-g++
-PKG3=$B_TMP/package-gcc-gfortran
-PKG4=$B_TMP/package-gcc-gnat
-PKG5=$B_TMP/package-gcc-java
-PKG6=$B_TMP/package-gcc-objc
-PKG7=$B_TMP/package-gcc-g++-gch
-PKG8=$B_TMP/package-gcc-go
+PKG2=$TMP/package-gcc-g++
+PKG3=$TMP/package-gcc-gfortran
+PKG4=$TMP/package-gcc-gnat
+PKG5=$TMP/package-gcc-java
+PKG6=$TMP/package-gcc-objc
+PKG7=$TMP/package-gcc-g++-gch
+PKG8=$TMP/package-gcc-go
 
 # Clear the build locations:
-if [ -d $B_TMP ]; then
-  rm -rf $B_TMP
+if [ -d $TMP ]; then
+  rm -rf $TMP
 fi
 mkdir -p $PKG{1,2,3,4,5,6,7,8}/usr/doc/gcc-$VERSION
 
@@ -138,8 +134,13 @@ cat $CWD/slack-desc.gcc-objc > $PKG6/install/slack-desc
 # cat $CWD/slack-desc.gcc-g++-gch > $PKG7/install/slack-desc
 cat $CWD/slack-desc.gcc-go > $PKG8/install/slack-desc
 
-cd $B_TMP
+cd $TMP
 tar xvf $CWD/gcc-$VERSION.tar.?z*
+
+# Apply patches:
+#( cd gcc-$VERSION
+#   zcat $CWD/gcc.pr61801.diff.gz | patch -p1 --verbose || exit 1
+#) || exit 1
 
 # Copy ecj.jar into the TLD of the source. Needed for java compiler.
 # This can be retrieved from ftp://sourceware.org/pub/java
@@ -149,11 +150,6 @@ cp $CWD/ecj-4.5.jar gcc-$VERSION/ecj.jar
 # The runtime can be obtained from:
 #https://oss.sonatype.org/content/repositories/releases/org/antlr/antlr-runtime/
 ANTLJAR=$(echo $CWD/antlr-*.jar | tail -1)
-
-# Upstream -fPIC fix for gnat build:
-cd gcc-$VERSION
-  zcat $CWD/gcc-4.7.1.adalib.pic.diff.gz | patch -p1 --verbose || exit 1
-cd ..
 
 # install docs
 ( cd gcc-$VERSION
@@ -327,14 +323,14 @@ cd ..
 )
 
 # Add fastjar to the gcc-java package:
-( cd $B_TMP
+( cd $TMP
   FASTJARVER=$(echo $CWD/fastjar-*.tar.xz | rev | cut -f 3- -d . | cut -f 1 -d - | rev)
   echo
   echo "Building fastjar-$FASTJARVER first"
   echo
   rm -rf fastjar-$FASTJARVER
   tar xvf $CWD/fastjar-$FASTJARVER.tar.xz || exit 1
-  cd fastjar-$FASTJARVER || exit
+  cd fastjar-$FASTJARVER || exit 1
   chown -R root:root .
   find . \
     \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
@@ -446,13 +442,13 @@ cd ..
   # Start the build:
 
   # Include all debugging info (for now):
-  make BOOT_CFLAGS="$SLKCFLAGS" $NUMJOBS bootstrap;
+  make $NUMJOBS bootstrap;
 
   ( cd gcc
     make $NUMJOBS gnatlib GNATLIBCFLAGS="$SLKCFLAGS"
     # This wants a shared -ladd2line?
     #make gnatlib-shared
-
+    
     CFLAGS="$SLKCFLAGS" \
     CXXFLAGS="$SLKCFLAGS" \
     make $NUMJOBS gnattools
@@ -466,28 +462,6 @@ cd ..
 
   make install DESTDIR=$PKG1
 
-  # build libgnatvsn
-  GNAT_LIB_MK_OPTS="build=${TARGET} host=${TARGET} \
-    srcdir=$B_TMP/gcc-$VERSION/gnattools libdir=/usr/lib$LIBDIRSUFFIX \
-    prefix=/usr includedir=/usr/include"
-  ( mkdir libgnatvsn
-    cd libgnatvsn
-    ln -s $CWD/Makefile.libgnatvsn Makefile
-    make ${NUMJOBS} ${GNAT_LIB_MK_OPTS} || exit 1
-    make ${GNAT_LIB_MK_OPTS} DESTDIR=$PKG4 install
-    if [ ! -a $PKG4/usr/lib${LIBDIRSUFFIX}/gnat ]; then
-	mkdir -p $PKG4/usr/lib${LIBDIRSUFFIX}/gnat
-    fi
-    cat $CWD/gnatvsn.gpr | m4 -D LIBDIR=/usr/lib${LIBDIRSUFFIX} > $PKG4/usr/lib${LIBDIRSUFFIX}/gnat/gnatvsn.gpr
-  )
-  # build libgnatprj
-  ( mkdir libgnatprj
-    cd libgnatprj
-    ln -sf $CWD/Makefile.libgnatprj Makefile
-    make ${NUMJOBS} ${GNAT_LIB_MK_OPTS} || exit 1
-    make ${GNAT_LIB_MK_OPTS} DESTDIR=$PKG4 install
-    cat $CWD/gnatprj.gpr | m4 -D LIBDIR=/usr/lib${LIBDIRSUFFIX} > $PKG4/usr/lib${LIBDIRSUFFIX}/gnat/gnatprj.gpr
-  )
 # KLUDGE ALERT
 # These *gdb.py files are causing ldconfig to complain, so they are going
 # to be REMOVED for now...  at some point, they might be moved somewhere
@@ -515,10 +489,6 @@ chmod 755 $PKG1/usr/lib${LIBDIRSUFFIX}/libgcc_s.so.1
 # cases one or more dependencies will not be available as static anyway.
 rm -f $PKG1/usr/lib${LIBDIRSUFFIX}/libgcj.a
 rm -f $PKG1/usr/lib${LIBDIRSUFFIX}/libgcj-tools.a
-
-# This is provided by binutils, so delete it here:
-rm -f $PKG1/usr/lib${LIBDIRSUFFIX}/libiberty.a
-rm -f $PKG1/usr/lib/libiberty.a # catch-all
 
 # Fix stuff up:
 ( cd $PKG1/usr/info ; rm dir ; gzip -9 * )
@@ -567,10 +537,10 @@ rm -f $PKG1/usr/lib/libiberty.a # catch-all
 ## build the txz package
 #(
 #  cd $PKG1;
-#  makepkg -l y -c n $B_TMP/gcc-$VERSION-$ARCH-$BUILD.txz
+#  makepkg -l y -c n $TMP/gcc-$VERSION-$ARCH-$BUILD.txz
 #)
 # keep a log
-) 2>&1 | tee $B_TMP/gcc.build.log
+) 2>&1 | tee $TMP/gcc.build.log
 
 # OK, time to split the big package where needed:
 
@@ -617,11 +587,6 @@ mkdir -p $PKG5/usr/bin
 mv $PKG1/usr/bin/gnative2ascii $PKG5/usr/bin
 # Now make the gcc-gnat package tree:
 ( cd $PKG4
-  mkdir -p etc/profile.d
-  cat $CWD/gnat-prjpath.csh | m4 -D LIB_SUBDIR=lib${LIBDIRSUFFIX} > etc/profile.d/gnat-prjpath.csh
-  cat $CWD/gnat-prjpath.sh | m4 -D LIB_SUBDIR=lib${LIBDIRSUFFIX} > etc/profile.d/gnat-prjpath.sh
-  chmod +x etc/profile.d/*
-
   mkdir -p usr/bin
   mv $PKG1/usr/bin/gnat* usr/bin
   mv $PKG1/usr/bin/gpr* usr/bin
@@ -646,6 +611,7 @@ mv $PKG1/usr/bin/gnative2ascii $PKG5/usr/bin
   mv $PKG1/usr/bin/gij usr/bin
   mv $PKG1/usr/bin/gjar usr/bin
   mv $PKG1/usr/bin/gjarsigner usr/bin
+  mv $PKG1/usr/bin/gjdoc usr/bin
   mv $PKG1/usr/bin/gkeytool usr/bin
   mv $PKG1/usr/bin/grepjar usr/bin
   mv $PKG1/usr/bin/grmid usr/bin
@@ -738,9 +704,10 @@ mv $PKG1/usr/bin/gnative2ascii $PKG5/usr/bin
   ln -s ../../../bin/ecj usr/lib$LIBDIRSUFFIX/jvm/bin/javac
   # Don't package libffi stuff anymore.  GCC will link the internal version
   # statically, and we'll need a newer one elsewhere.
-#  find . -name "ffi*.h" | xargs rm
-#  find . -name "libffi*" | xargs rm
-#  rm usr/man/man3/ffi*
+  find . -name "ffi*.h" | xargs rm
+  find . -name "libffi*" | xargs rm
+  rm -f usr/man/man3/ffi*
+  rm -f usr/info/libffi*
 )
 
 # gcc-objc:
@@ -771,7 +738,7 @@ mv $PKG1/usr/bin/gnative2ascii $PKG5/usr/bin
   mv $PKG1/usr/info/gccgo.info.gz usr/info
   mkdir -p usr/lib${LIBDIRSUFFIX}
   mv $PKG1/usr/lib${LIBDIRSUFFIX}/go usr/lib${LIBDIRSUFFIX}
-  mv $PKG1/usr/lib${LIBDIRSUFFIX}/{libgo.la,libgo.so.0.*,libgobegin.a} usr/lib${LIBDIRSUFFIX} || exit 1
+  mv $PKG1/usr/lib${LIBDIRSUFFIX}/{libgo.la,libgo.so*,libgobegin.a} usr/lib${LIBDIRSUFFIX} || exit 1
   # Ordinarily Slackware doesn't package static libraries, but in this case
   # it is useful for deploying compiled binaries on machines that do not yet
   # have libgo.so.0.0.0.
@@ -781,12 +748,12 @@ mv $PKG1/usr/bin/gnative2ascii $PKG5/usr/bin
 ) || exit 1
 
 # Filter all .la files (thanks much to Mark Post for the sed script):
-( cd $B_TMP
+( cd $TMP
   for file in $(find . -type f -name "*.la") ; do
-    cat $file | sed -e 's%-L/gcc-[[:graph:]]* % %g' > $B_TMP/tmp-la-file
-    cat $B_TMP/tmp-la-file > $file
+    cat $file | sed -e 's%-L/gcc-[[:graph:]]* % %g' > $TMP/tmp-la-file
+    cat $TMP/tmp-la-file > $file
   done
-  rm $B_TMP/tmp-la-file
+  rm $TMP/tmp-la-file
 )
 
 ## Strip bloated binaries and libraries:
@@ -801,21 +768,21 @@ for dir in $PKG{1,2,3,4,5,6,8}; do
 done
 
 ( cd $PKG1
-  makepkg -l y -c n $B_TMP/gcc-$VERSION-$ARCH-$BUILD.txz )
+  makepkg -l y -c n $TMP/gcc-$VERSION-$ARCH-$BUILD.txz )
 ( cd $PKG2
-  makepkg -l y -c n $B_TMP/gcc-g++-$VERSION-$ARCH-$BUILD.txz )
+  makepkg -l y -c n $TMP/gcc-g++-$VERSION-$ARCH-$BUILD.txz )
 ( cd $PKG3
-  makepkg -l y -c n $B_TMP/gcc-gfortran-$VERSION-$ARCH-$BUILD.txz )
+  makepkg -l y -c n $TMP/gcc-gfortran-$VERSION-$ARCH-$BUILD.txz )
 ( cd $PKG4
-  makepkg -l y -c n $B_TMP/gcc-gnat-$VERSION-$ARCH-$BUILD.txz )
+  makepkg -l y -c n $TMP/gcc-gnat-$VERSION-$ARCH-$BUILD.txz )
 ( cd $PKG5
-  makepkg -l y -c n $B_TMP/gcc-java-$VERSION-$ARCH-$BUILD.txz )
+  makepkg -l y -c n $TMP/gcc-java-$VERSION-$ARCH-$BUILD.txz )
 ( cd $PKG6
-  makepkg -l y -c n $B_TMP/gcc-objc-$VERSION-$ARCH-$BUILD.txz )
+  makepkg -l y -c n $TMP/gcc-objc-$VERSION-$ARCH-$BUILD.txz )
 #( cd $PKG7
-#  makepkg -l y -c n $B_TMP/gcc-g++-gch-$VERSION-$ARCH-$BUILD.txz )
+#  makepkg -l y -c n $TMP/gcc-g++-gch-$VERSION-$ARCH-$BUILD.txz )
 ( cd $PKG8
-  makepkg -l y -c n $B_TMP/gcc-go-$VERSION-$ARCH-$BUILD.txz )
+  makepkg -l y -c n $TMP/gcc-go-$VERSION-$ARCH-$BUILD.txz )
 
 echo
 echo "Slackware GCC package build complete!"

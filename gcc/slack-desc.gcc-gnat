@@ -8,11 +8,12 @@
         |-----handy-ruler------------------------------------------------------|
 gcc-gnat: gcc-gnat (Ada support for GCC)
 gcc-gnat:
-gcc-gnat: Ada 2005 support for the GNU Compiler Collection.
+gcc-gnat: Ada 2012 support for the GNU Compiler Collection.
 gcc-gnat:
-gcc-gnat: This package contains those parts of the compiler collection needed
-gcc-gnat: to compile Ada 2005 code.  Ada2005 is the object oriented successor
-gcc-gnat: to the Ada83 language.  The base gcc package is also required.
+gcc-gnat: This package contains those parts of the compiler collection needed to
+gcc-gnat: compile Ada 2012 code.  Ada is the object oriented successor to the
+gcc-gnat: Ada83/05/2005 language.  The base gcc package is also required.
+gcc-gnat:
 gcc-gnat:
 gcc-gnat:
 gcc-gnat:
