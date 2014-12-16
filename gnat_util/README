@@ -1,0 +1,18 @@
+gnat_util - GNAT compiler components
+
+With GNAT GPL 2013, AdaCore have extracted internal compiler
+components into a library called gnat_util, which is used by
+(at least) ASIS and GNATColl.
+
+gnat_util contains components from the GNAT FSF compiler.
+
+At least for ASIS, the components used to build it must match the
+components in the compiler, so if building ASIS for use with
+(for example) FSF GCC 4.9.2 a version of GNAT Util is needed which
+contains components from FSF GCC 4.9.2.
+
+This project provides such a library.
+
+You need to define GCC_SRC_BASE and GCC_BLD_BASE for the corresponding
+GCC source and build tree. Otherwise it won't work.
+

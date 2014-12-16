@@ -1,0 +1,48 @@
+library project Gnat_Util is
+   type BUILD_KIND is ("static", "relocatable");
+   BUILD : BUILD_KIND := external("LIBRARY_TYPE", "static");
+
+   for Languages use ("Ada", "C");
+
+   case BUILD is
+      when "relocatable" =>
+         for Source_Dirs use ("../../include/gnat_util/");
+         for Library_Dir use "../gnat_util/relocatable/";
+         for Library_Kind use "relocatable";
+      when "static" =>
+         for Source_Dirs use ("../../include/gnat_util/");
+         for Library_Dir use "../gnat_util/static/";
+         for Library_Kind use "static";
+   end case;
+
+   for Library_Name use "gnat_util";
+
+   package Naming is
+      for dot_replacement use "-";
+      for casing use "lowercase";
+      
+      case BUILD is
+         when "relocatable" =>
+            for spec_suffix ("c") use ".h";
+            for spec_suffix ("ada") use ".ads";
+            for body_suffix ("c") use ".c";
+            for body_suffix ("ada") use ".adb";
+         when "static" =>
+            for spec_suffix ("c") use ".h";
+            for spec_suffix ("ada") use ".ads";
+            for body_suffix ("c") use ".c";
+            for body_suffix ("ada") use ".adb";
+      end case;
+   end Naming;
+
+   package Linker is
+      case BUILD is
+         when "relocatable" =>
+            null;
+         when "static" =>
+            null;
+      end case;
+   end Linker;
+
+   for Externally_Built use "True";
+end Gnat_Util;
