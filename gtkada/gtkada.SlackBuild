@@ -97,7 +97,11 @@ sed -i 's/share\/doc\/gtkada/doc\/gtkada-3.8.2/' xml/gtkada.xml
 make DESTDIR=$PKG install
 
 mkdir -p $PKG/install
-mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
+mkdir -p $PKG/usr/doc
+mv $PKG/usr/share/doc/gtkada $PKG/usr/doc/$PRGNAM-$VERSION
+rmdir $PKG/usr/share/doc
+mv $PKG/usr/share/examples/gtkada $PKG/usr/doc/$PRGNAM-$VERSION/examples
+rmdir $PKG/usr/share/examples
 cp COPYING3 COPYING.RUNTIME README INSTALL ANNOUNCE AUTHORS \
     $PKG/usr/doc/$PRGNAM-$VERSION
 cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-$VERSION
