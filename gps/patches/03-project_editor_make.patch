@@ -1,0 +1,11 @@
+--- gps-release-ide-6.0.1-src/prj_editor/src/project_properties.adb	2013-09-11 03:57:08.000000000 -0700
++++ gps-new/prj_editor/src/project_properties.adb	2014-12-15 14:22:58.930788875 -0800
+@@ -4061,7 +4061,7 @@
+       P                    : Project_Editor_Page;
+       Flags                : Selector_Flags;
+    begin
+-      if Page >= Pages_From_XML_Count
++      if Page > Pages_From_XML_Count
+         and then not Ed.In_Destruction
+       then
+          --  Some pages might not be visible though...

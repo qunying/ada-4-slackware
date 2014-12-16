@@ -4,24 +4,18 @@ for Slackware.
 The build order will be
 * gcc
 * xmlada
-* gtkada
 * gprbuild
-* gps
+* gnat_util
+* gtkada
 * aunit
 * gnatcoll
+* gps
 * asis
 * florist
 * gnatmem
 
-For gcc, you will need the original build data from stock Slackware source.
-It is updated to to use gcc version 4.7.1.  The resulting compiler will replace
-the system compiler.
+The resulting compiler will replace the system compiler.
 
-For GtkAda, GPS, the svn code is used instead of the GPL 2012 version.
-
-It has been updated for Slackware 1.40 and gnt GPL 2012.
-
-ASIS still use the 2011 version as gcc 4.7.1 lack some functionality
-used by ASIS 2012.
+It has been updated for Slackware 14.1, GCC 4.9.2 and gnat GPL 2014.
 
 For gnatmem, you also need the binutils source and build the binutils first.

@@ -1,0 +1,175 @@
+diff -ru gps-release-ide-6.0.1-src/common/common_no_xmlada.gpr.in gps-release-ide-6.0.1-src-new/common/common_no_xmlada.gpr.in
+--- gps-release-ide-6.0.1-src/common/common_no_xmlada.gpr.in	2013-09-12 06:42:56.000000000 -0700
++++ gps-release-ide-6.0.1-src-new/common/common_no_xmlada.gpr.in	2014-12-15 14:53:02.351928456 -0800
+@@ -1,5 +1,5 @@
+ with "../gnatlib/src/gnatcoll_sqlite.gpr";
+-with "../gnat";
++with "gnat_util";
+ with "../shared";
+ 
+ project Common is
+diff -ru gps-release-ide-6.0.1-src/common/common_with_xmlada.gpr.in gps-release-ide-6.0.1-src-new/common/common_with_xmlada.gpr.in
+--- gps-release-ide-6.0.1-src/common/common_with_xmlada.gpr.in	2013-09-12 06:42:56.000000000 -0700
++++ gps-release-ide-6.0.1-src-new/common/common_with_xmlada.gpr.in	2014-12-15 14:53:07.647928866 -0800
+@@ -1,5 +1,5 @@
+ with "../gnatlib/src/gnatcoll_sqlite.gpr";
+-with "../gnat";
++with "gnat_util";
+ with "../shared";
+ with "xmlada_sax";
+ 
+diff -ru gps-release-ide-6.0.1-src/distrib/from_impunit.pl gps-release-ide-6.0.1-src-new/distrib/from_impunit.pl
+--- gps-release-ide-6.0.1-src/distrib/from_impunit.pl	2013-07-05 06:07:32.000000000 -0700
++++ gps-release-ide-6.0.1-src-new/distrib/from_impunit.pl	2014-12-15 14:54:21.454934578 -0800
+@@ -7,7 +7,7 @@
+ $expand_hierarchies = 1;
+ 
+ $output ="../share/support/core/runtime.py";
+-$impunit="../gnatlib/gnat_src/impunit.adb";
++$impunit="/usr/include/gnat_util/impunit.adb";
+ 
+ open (OUT, '>' . $output);
+ open (IMPUNIT, $impunit) || die "File $impunit not found";
+diff -ru gps-release-ide-6.0.1-src/gnatlib/Makefile gps-release-ide-6.0.1-src-new/gnatlib/Makefile
+--- gps-release-ide-6.0.1-src/gnatlib/Makefile	2013-07-17 05:18:22.000000000 -0700
++++ gps-release-ide-6.0.1-src-new/gnatlib/Makefile	2014-12-15 14:55:11.181938427 -0800
+@@ -13,7 +13,7 @@
+ all: static
+ endif
+ 
+-include Makefile.gnat
++#include Makefile.gnat
+ 
+ ## Builds explicitly the shared or the static libraries
+ 
+@@ -75,7 +75,7 @@
+ 	-@$(foreach f,$(GNAT_SOURCES_FOR_GNATCOLL), \
+ 	   $(LN_S) -f ../gnat_src/$(f) gnat >/dev/null 2>&1 ;)
+ endif
+-	@(cd gnat && gnatmake -q xsnamest && ./xsnamest && mv snames.ns snames.ads && mv snames.nb snames.adb)
++#	@(cd gnat && gnatmake -q xsnamest && ./xsnamest && mv snames.ns snames.ads && mv snames.nb snames.adb)
+ endif
+ 
+ ## Only works after installation, so we should install to a local directory
+diff -ru gps-release-ide-6.0.1-src/gnatlib/gnatcoll_build.gpr gps-release-ide-6.0.1-src-new/gnatlib/gnatcoll_build.gpr
+--- gps-release-ide-6.0.1-src/gnatlib/gnatcoll_build.gpr	2013-02-27 09:28:20.000000000 -0800
++++ gps-release-ide-6.0.1-src-new/gnatlib/gnatcoll_build.gpr	2014-12-15 14:56:08.525942865 -0800
+@@ -1,5 +1,6 @@
+ --  This project file is used to build all modules that have no external
+ --  dependencies on external project files
++with "gnat_util";
+ with "src/gnatcoll";
+ with "src/gnatcoll_python";
+ with "src/gnatcoll_postgres";
+diff -ru gps-release-ide-6.0.1-src/gnatlib/gnatcoll_shared.gpr.in gps-release-ide-6.0.1-src-new/gnatlib/gnatcoll_shared.gpr.in
+--- gps-release-ide-6.0.1-src/gnatlib/gnatcoll_shared.gpr.in	2013-10-14 08:46:46.000000000 -0700
++++ gps-release-ide-6.0.1-src-new/gnatlib/gnatcoll_shared.gpr.in	2014-12-15 14:57:01.012946927 -0800
+@@ -1,3 +1,4 @@
++with "gnat_util";
+ project GnatColl_Shared is
+    Version := "@PACKAGE_VERSION@";
+    Name    := "@PACKAGE_TARNAME@";
+@@ -58,7 +59,7 @@
+             for Switches ("Ada") use
+               ("-g", "-O1", "-gnata", "-gnatVa", "-gnatQ", "-gnaty", "-gnateE",
+                "-gnatwaCJe", "-gnat05");
+-            for Switches ("C") use ("-g", "-fdump-xref");
++            for Switches ("C") use ("-g");
+          when "Production" =>
+             for Switches ("Ada") use
+               ("-O2", "-gnatn", "-gnatws", "-gnat05");
+diff -ru gps-release-ide-6.0.1-src/gnatlib/src/Makefile.gnatcoll gps-release-ide-6.0.1-src-new/gnatlib/src/Makefile.gnatcoll
+--- gps-release-ide-6.0.1-src/gnatlib/src/Makefile.gnatcoll	2010-11-24 09:24:09.000000000 -0800
++++ gps-release-ide-6.0.1-src-new/gnatlib/src/Makefile.gnatcoll	2014-12-15 14:57:30.956949245 -0800
+@@ -10,6 +10,6 @@
+ SRCDIRS=./ ./nosyslog/ ./paragraph_filling/
+ endif
+ 
+-ifeq ($(GNAT_SOURCES),copy)
+-SRCDIRS+= ../gnat/
+-endif
++#ifeq ($(GNAT_SOURCES),copy)
++#SRCDIRS+= ../gnat/
++#endif
+diff -ru gps-release-ide-6.0.1-src/gnatlib/src/gnatcoll__copy.gpr gps-release-ide-6.0.1-src-new/gnatlib/src/gnatcoll__copy.gpr
+--- gps-release-ide-6.0.1-src/gnatlib/src/gnatcoll__copy.gpr	2013-09-12 10:29:27.000000000 -0700
++++ gps-release-ide-6.0.1-src-new/gnatlib/src/gnatcoll__copy.gpr	2014-12-15 14:58:47.084955137 -0800
+@@ -13,9 +13,9 @@
+       & GnatColl_Shared.So_Ext & "." & GnatColl_Shared.Version;
+ 
+    case Gnatcoll_Shared.Projects is
+-      when "yes" =>
+-         for Source_Dirs use
+-            Project'Source_Dirs & ("../gnat", "../gnat/sdefault");
++      when "yes" => null;
++--         for Source_Dirs use
++--           Project'Source_Dirs & ("../gnat", "../gnat/sdefault");
+       when "no" =>
+          for Excluded_Source_Files use ("gnatcoll-projects.ads",
+                                         "gnatcoll-projects.adb",
+@@ -57,8 +57,9 @@
+       end case;
+ 
+       case GnatColl_Shared.Projects is
+-         when "yes" => for Implementation ("mlib.tgt.specific")
+-            use "mlib-tgt-specific-linux.adb";
++         when "yes" => null;
++	 --for Implementation ("mlib.tgt.specific")
++         --   use "mlib-tgt-specific-linux.adb";
+          when "no" =>
+             null;
+       end case;
+diff -ru gps-release-ide-6.0.1-src/gps/Makefile gps-release-ide-6.0.1-src-new/gps/Makefile
+--- gps-release-ide-6.0.1-src/gps/Makefile	2012-08-01 01:55:47.000000000 -0700
++++ gps-release-ide-6.0.1-src-new/gps/Makefile	2014-12-15 14:59:03.692956423 -0800
+@@ -19,7 +19,7 @@
+ 
+ default: all
+ 
+-include ../Makefile.gnat
++#include ../Makefile.gnat
+ 
+ # NOTE: we need to build gnatcoll separately, since we cannot use
+ # gnat.adc (No_Tasking restriction) on all gnatcoll sources.
+diff -ru gps-release-ide-6.0.1-src/gps/gps.gpr gps-release-ide-6.0.1-src-new/gps/gps.gpr
+--- gps-release-ide-6.0.1-src/gps/gps.gpr	2013-09-11 07:52:12.000000000 -0700
++++ gps-release-ide-6.0.1-src-new/gps/gps.gpr	2014-12-15 14:59:28.163958317 -0800
+@@ -38,6 +38,7 @@
+ with "../vsearch/vsearch";
+ 
+ with "../gnatlib/src/gnatcoll_tools.gpr";
++with "gnat_util";
+ 
+ project GPS is
+ 
+diff -ru gps-release-ide-6.0.1-src/kernel/kernel.gpr gps-release-ide-6.0.1-src-new/kernel/kernel.gpr
+--- gps-release-ide-6.0.1-src/kernel/kernel.gpr	2013-09-12 05:54:45.000000000 -0700
++++ gps-release-ide-6.0.1-src-new/kernel/kernel.gpr	2014-12-15 14:59:47.971959850 -0800
+@@ -1,5 +1,5 @@
+ --  The part of the kernel that depends on the GUI
+-with "../gnat";
++with "gnat_util";
+ with "gtkada";
+ with "kernel_core";
+ with "shared";
+diff -ru gps-release-ide-6.0.1-src/kernel/kernel_core.gpr gps-release-ide-6.0.1-src-new/kernel/kernel_core.gpr
+--- gps-release-ide-6.0.1-src/kernel/kernel_core.gpr	2013-05-21 07:42:07.000000000 -0700
++++ gps-release-ide-6.0.1-src-new/kernel/kernel_core.gpr	2014-12-15 15:00:01.723960914 -0800
+@@ -1,4 +1,4 @@
+-with "../gnat";
++with "gnat_util";
+ with "../common/common";
+ with "../shared";
+ with "../gnatlib/src/gnatcoll";
+diff -ru gps-release-ide-6.0.1-src/shared.gpr gps-release-ide-6.0.1-src-new/shared.gpr
+--- gps-release-ide-6.0.1-src/shared.gpr	2014-01-13 18:33:07.000000000 -0800
++++ gps-release-ide-6.0.1-src-new/shared.gpr	2014-12-15 15:00:33.651963385 -0800
+@@ -35,7 +35,7 @@
+                "-gnatwaCJe", "-gnat2012", "-gnateE");
+ 
+             for Default_Switches ("C") use
+-              ("-g", "-O1", "-fdump-xref") & GnatColl_Shared.Gtk_Include;
++              ("-g", "-O1") & GnatColl_Shared.Gtk_Include;
+ 
+          when "Production" =>
+             for Default_Switches ("Ada") use
