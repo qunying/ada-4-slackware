@@ -54,8 +54,8 @@ else
   LIBDIRSUFFIX=""
 fi
 
-
 set -e # Exit on most errors
+
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
@@ -75,7 +75,7 @@ for file in $CWD/patches/*.patch ; do
 done
 (cd gnat; ln -s $CWD/gnat_ugn.texi)
 
-sed -i "s/share\/doc\/gnatcoll/doc\/$PRGNAM-$VERSION" distrib/gnatcoll/__init__.py
+sed -i "s/share\/doc\/gps/doc\/gps-$VERSION/" docs/Makefile.in
 
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
@@ -85,7 +85,13 @@ CXXFLAGS="$SLKCFLAGS" \
     --infodir=/usr/info \
     --enable-projects \
     --disable-shared \
+    --docdir=/usr/doc/$PRGNAM-$VERSION \
     --build=$ARCH-slackware-linux
+
+# fix document path
+sed -i "s/share\/doc\/gps/doc\/gps-$VERSION/" docs/gps_index.xml
+sed -i "s/share\/doc\/gprbuild/doc\/gprbuild-2014/" docs/gps_index.xml
+sed -i "s/share\/doc\//doc\//" docs/gps_index.xml
 
 make
 
@@ -93,12 +99,14 @@ make prefix=$PKG/usr libdir=$PKG/usr/lib${LIBDIRSUFFIX} install
 #     infodir=$PKG/usr/info \
 #     install
 
-cd $PKG
 
 strip $PKG/usr/bin/*
-mv usr/share/doc usr
-mv usr/doc/$PRGNAM usr/doc/$PRGNAM-$VERSION
-mv usr/share/examples usr/doc/$PRGNAM-$VERSION
+mv $PKG/usr/share/examples $PKG/usr/doc/$PRGNAM-$VERSION
+cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-$VERSION
+cp README INSTALL COPYING3 $PKG/usr/doc/$PRGNAM-$VERSION
+
 mkdir -p $PKG/install
 cp $CWD/slack-desc $PKG/install
+
+cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}

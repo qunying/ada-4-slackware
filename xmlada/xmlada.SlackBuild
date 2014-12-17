@@ -78,6 +78,8 @@ find . \
 
 patch -p1 < $CWD/path.diff
 
+sed -i "s/share\/doc\/xmlada/doc\/xmlada-$VERSION/" distrib/xmlada_gps.py
+
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
 ./configure \
@@ -85,6 +87,7 @@ CXXFLAGS="$SLKCFLAGS" \
     --libdir=/usr/lib${LIBDIRSUFFIX} \
     --infodir=/usr/info \
     --enable-shared \
+    --docdir=/usr/doc/$PRGNAM-$VERSION \
     --build=$ARCH-slackware-linux
 
 make

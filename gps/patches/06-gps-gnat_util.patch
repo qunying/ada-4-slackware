@@ -18,18 +18,6 @@ diff -ru gps-release-ide-6.0.1-src/common/common_with_xmlada.gpr.in gps-release-
  with "../shared";
  with "xmlada_sax";
  
-diff -ru gps-release-ide-6.0.1-src/distrib/from_impunit.pl gps-release-ide-6.0.1-src-new/distrib/from_impunit.pl
---- gps-release-ide-6.0.1-src/distrib/from_impunit.pl	2013-07-05 06:07:32.000000000 -0700
-+++ gps-release-ide-6.0.1-src-new/distrib/from_impunit.pl	2014-12-15 14:54:21.454934578 -0800
-@@ -7,7 +7,7 @@
- $expand_hierarchies = 1;
- 
- $output ="../share/support/core/runtime.py";
--$impunit="../gnatlib/gnat_src/impunit.adb";
-+$impunit="/usr/include/gnat_util/impunit.adb";
- 
- open (OUT, '>' . $output);
- open (IMPUNIT, $impunit) || die "File $impunit not found";
 diff -ru gps-release-ide-6.0.1-src/gnatlib/Makefile gps-release-ide-6.0.1-src-new/gnatlib/Makefile
 --- gps-release-ide-6.0.1-src/gnatlib/Makefile	2013-07-17 05:18:22.000000000 -0700
 +++ gps-release-ide-6.0.1-src-new/gnatlib/Makefile	2014-12-15 14:55:11.181938427 -0800
