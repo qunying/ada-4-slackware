@@ -92,18 +92,19 @@ CXXFLAGS="$SLKCFLAGS" \
 sed -i "s/share\/doc\/gps/doc\/gps-$VERSION/" docs/gps_index.xml
 sed -i "s/share\/doc\/gprbuild/doc\/gprbuild-2014/" docs/gps_index.xml
 sed -i "s/share\/doc\//doc\//" docs/gps_index.xml
+sed -i "s/share\/doc\/gps/doc\/gps-$VERSION/" help/src/help_module.adb
 
 make
 
 make prefix=$PKG/usr libdir=$PKG/usr/lib${LIBDIRSUFFIX} install
-#     infodir=$PKG/usr/info \
-#     install
-
 
 strip $PKG/usr/bin/*
 mv $PKG/usr/share/examples $PKG/usr/doc/$PRGNAM-$VERSION
 cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-$VERSION
 cp README INSTALL COPYING3 $PKG/usr/doc/$PRGNAM-$VERSION
+
+#remove the local gnatcoll install
+rm -rf $PKG/usr/share/gps/support/core/gnatcoll
 
 mkdir -p $PKG/install
 cp $CWD/slack-desc $PKG/install
