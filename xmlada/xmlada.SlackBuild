@@ -96,13 +96,14 @@ make prefix=$PKG/usr libdir=$PKG/usr/lib${LIBDIRSUFFIX} \
      infodir=$PKG/usr/info \
      install
 
-cd $PKG
+mv $PKG/usr/share/doc $PKG/usr
+mv $PKG/usr/doc/$PRGNAM $PKG/usr/doc/$PRGNAM-$VERSION
+cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-$VERSION
+cp README TODO COPYING3 AUTHORS features* known-problems* \
+    $PKG/usr/doc/$PRGNAM-$VERSION
 
-mv usr/share/doc usr
-mv usr/doc/$PRGNAM usr/doc/$PRGNAM-$VERSION
-cp $CWD/$PRGNAM.SlackBuild usr/doc/$PRGNAM-$VERSION
-
-cd $PKG
 mkdir -p $PKG/install
 cp $CWD/slack-desc $PKG/install
+
+cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
