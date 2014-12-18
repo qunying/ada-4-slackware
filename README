@@ -10,8 +10,8 @@ The build order will be
 * aunit
 * gnatcoll
 * gps
-* asis
 * florist
+* asis
 * gnatmem
 
 The resulting compiler will replace the system compiler.
