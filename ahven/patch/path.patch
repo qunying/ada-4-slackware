@@ -1,7 +1,8 @@
---- Makefile.org	2012-04-24 22:51:05.485128589 -0700
-+++ Makefile	2012-04-24 22:53:29.216123458 -0700
-@@ -91,15 +91,15 @@
- install_lib:
+diff -ru ahven-2.4/Makefile ahven-2.4-new/Makefile
+--- ahven-2.4/Makefile	2014-02-08 13:21:51.000000000 -0800
++++ ahven-2.4-new/Makefile	2014-12-18 10:28:36.088761898 -0800
+@@ -93,11 +93,11 @@
+ install_lib: build_lib
  	mkdir -p $(PREFIX)/include/ahven
  	mkdir -p $(LIBDIR)/ahven
 -	mkdir -p $(PREFIX)/lib/gnat
@@ -12,11 +13,5 @@
 -	$(INSTALL) -m 644 $(GPR_FILE) $(PREFIX)/lib/gnat
 +	$(INSTALL) -m 644 $(GPR_FILE) $(LIBDIR)/gnat
  
- install_docs:
--	mkdir -p $(PREFIX)/share/doc/ahven
--	cp -r doc/manual/en/build/html $(PREFIX)/share/doc/ahven
-+	mkdir -p $(PREFIX)/doc/ahven
-+	cp -r doc/manual/en/build/html $(PREFIX)/doc/ahven
- 
- check: build_tests
- 	./tester -c
+ install_docs: userguide
+ 	mkdir -p $(PREFIX)/share/doc/ahven
