@@ -1,23 +1,39 @@
---- asis-gpl-2011-src.org/Makefile	2011-03-21 07:28:26.000000000 -0700
-+++ asis-gpl-2011-src/Makefile	2012-04-14 18:32:21.499198811 -0700
-@@ -7,13 +7,16 @@
- tools = gnatstub gnatelim gnatmetric gnatpp gnatcheck
- gu_tools = aunitstub aunitglue
+--- asis-gpl-2014-src/Makefile	2014-01-22 03:04:22.000000000 -0800
++++ asis-gpl-2014-src-new/Makefile	2014-12-17 17:08:43.809932886 -0800
+@@ -7,9 +7,9 @@
+ BLD=prod
+ tools = gnatstub gnatelim gnatmetric gnatpp gnatcheck gnattest
  
-+ifndef libdir
-+    libdir=$(prefix)/lib/gnat
-+endif
- I_BIN	= $(prefix)/bin
- I_INC	= $(prefix)/include/asis
--I_LIB	= $(prefix)/lib/asis
--I_GPR	= $(prefix)/lib/gnat
 -I_DOC   = $(prefix)/share/doc/asis
-+I_LIB	= $(libdir)/asis
-+I_GPR	= $(libdir)/gnat
-+I_DOC   = $(prefix)/doc/asis
++I_DOC   = $(prefix)/doc/asis-$(asis_version)
  I_GPS   = $(prefix)/share/gps/plug-ins
 -G_DOC   = $(prefix)/share/doc/gnat
 +G_DOC   = $(prefix)/doc/gnat
  
+ .PHONY: install
  install: install-lib install-asistant
+@@ -55,7 +55,7 @@
  
+ install-gnat%: gnat%
+ 	gprinstall -p -f --prefix=$(prefix) --mode=usage \
+-		--project-subdir=lib/gnat \
++		--project-subdir=lib$(LIBDIR_SUFFIX)/gnat \
+ 		-XBLD=$(BLD) -XOPSYS=$(OPSYS) tools/gnat$*/gnat$*.gpr
+ 
+ .PHONY: install-gnatcheck-doc
+@@ -72,13 +72,13 @@
+ .PHONY: install-lib
+ install-lib: install-asis-doc
+ 	gprinstall -p -f --prefix=$(prefix) --sources-subdir=include/asis \
+-		--lib-subdir=lib/asis --project-subdir=lib/gnat \
++		--lib-subdir=lib$(LIBDIR_SUFFIX)/asis --project-subdir=lib$(LIBDIR_SUFFIX)/gnat \
+ 		-XBLD=$(BLD) -XOPSYS=$(OPSYS) asis.gpr
+ 
+ .PHONY: install-asistant
+ install-asistant:
+ 	gprinstall -p -f --prefix=$(prefix) --mode=usage \
+-		--project-subdir=lib/gnat \
++		--project-subdir=lib$(LIBDIR_SUFFIX)/gnat \
+ 		-XBLD=$(BLD) -XOPSYS=$(OPSYS) tools/asistant/asistant.gpr
+ 
+ atre:
