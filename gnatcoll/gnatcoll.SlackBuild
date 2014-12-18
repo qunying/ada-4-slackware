@@ -25,7 +25,6 @@ VERSION=${VERSION:-2014}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
-set -e
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
   case "$(uname -m)" in
