@@ -21,7 +21,7 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gnatmem
-VERSION=${VERSION:-2011}
+VERSION=${VERSION:-2014}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
@@ -29,65 +29,41 @@ TAG=${TAG:-_SBo}
 if [ -z "$ARCH" ]; then
   case "$(uname -m)" in
     i?86) ARCH=i486 ;;
-    arm*) readelf /usr/bin/file -A | egrep -q "Tag_CPU.*[4,5]" && ARCH=arm || ARCH=armv7lh ;;
+    arm*) ARCH=arm ;;
     # Unless $ARCH is already set, use uname -m for all other archs:
     *) ARCH=$(uname -m) ;;
   esac
-  export ARCH
 fi
-
-if [ "$ARCH" = "i386" ]; then
-  SLKCFLAGS="-O2 -march=i386 -mcpu=i686"
-  LIBDIRSUFFIX=""
-  LIB_ARCH=i386
-elif [ "$ARCH" = "i486" ]; then
-  SLKCFLAGS="-O2 -march=i486 -mtune=i686"
-  LIBDIRSUFFIX=""
-  LIB_ARCH=i386
-elif [ "$ARCH" = "i586" ]; then
-  SLKCFLAGS="-O2 -march=i586 -mtune=i686"
-  LIBDIRSUFFIX=""
-  LIB_ARCH=i386
-elif [ "$ARCH" = "i686" ]; then
-  SLKCFLAGS="-O2 -march=i686"
-  LIBDIRSUFFIX=""
-  LIB_ARCH=i386
-elif [ "$ARCH" = "s390" ]; then
-  SLKCFLAGS="-O2"
-  LIBDIRSUFFIX=""
-  LIB_ARCH=s390
-elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O2 -fPIC"
-  LIBDIRSUFFIX="64"
-  LIB_ARCH=amd64
-elif [ "$ARCH" = "armv7hl" ]; then
-  SLKCFLAGS="-O3 -march=armv7-a -mfpu=vfpv3-d16"
-  LIBDIRSUFFIX=""
-  LIB_ARCH=armv7hl
-else
-  SLKCFLAGS="-O2"
-  LIBDIRSUFFIX=""
-  LIB_ARCH=$ARCH
-fi
-
-case "$ARCH" in
-    arm*) TARGET=$ARCH-slackware-linux-gnueabi ;;
-    *)    TARGET=$ARCH-slackware-linux ;;
-esac
-
 
 CWD=$(pwd)
 TMP=${TMP:-"/tmp/SBo"}
 PKG=${TMP}/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
 
+if [ "$ARCH" = "i486" ]; then
+  SLKCFLAGS="-O2 -march=i486 -mtune=i686"
+  LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+  SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+  LIBDIRSUFFIX=""
+elif [ "$ARCH" = "x86_64" ]; then
+  SLKCFLAGS="-O2 -fPIC"
+  LIBDIRSUFFIX="64"
+else
+  SLKCFLAGS="-O2"
+  LIBDIRSUFFIX=""
+  LIB_ARCH=$ARCH
+fi
+
+set -e # Exit on most errors
+
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 
 cd $TMP
-rm -rf $PRGNAM-$VERSION-src
-tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.tgz
-cd $PRGNAM-$VERSION-src
+rm -rf $PRGNAM-gpl-$VERSION-src
+tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.tar.gz
+cd $PRGNAM-gpl-$VERSION-src
 chown -R root:root .
 find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
@@ -100,7 +76,7 @@ patch -p1 < $CWD/linking.patch
 ./configure \
     --prefix=/usr \
     --libdir=/usr/lib$LIBDIRSUFFIX \
-    --with-binutils-buildtree=/tmp/binutils-2.21.51.0.6 \
+    --with-binutils-buildtree=/tmp/binutils-2.24.51.0.3 \
     --build=$ARCH-slackware-linux
 
 make
@@ -110,7 +86,10 @@ mkdir -p $PKG/usr/lib$LIBDIRSUFFIX
 
 cp obj/gnatmem $PKG/usr/bin
 strip $PKG/usr/bin/gnatmem
+mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
+cp COPYING3 README $PKG/usr/doc/$PRGNAM-$VERSION
 cp obj/libgnatmem.a $PKG/usr/lib$LIBDIRSUFFIX/
+
 #cp $CWD/gnatmem.gpr $PKG/usr/lib$LIBDIRSUFFIX/gnat
 
 cd $PKG
