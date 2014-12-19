@@ -13,6 +13,7 @@ The build order will be
 * florist
 * asis
 * gnatmem
+* addctl
 
 The resulting compiler will replace the system compiler.
 
