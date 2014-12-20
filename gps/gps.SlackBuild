@@ -56,6 +56,16 @@ fi
 
 set -e # Exit on most errors
 
+# do pygobject3 test
+if ! [ -f /var/log/packages/pygobject3* ]; then
+    echo "GPS depends on pygobject3, please install it first."
+    echo "You could use the build script from SlackBuilds.org."
+    echo "http://slackbuilds.org/repository/14.1/python/pygobject3/?search=pygobject"
+    exit 1
+else
+    echo "Found pygobject3."
+fi
+
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
