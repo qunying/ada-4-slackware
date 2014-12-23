@@ -6,7 +6,7 @@
 # customary to leave one space after the ':' except on otherwise blank lines.
 
        |-----handy-ruler------------------------------------------------------|
-florist: the POSIX Ada Bindings
+florist: florist - the POSIX Ada Bindings
 florist:
 florist: FLORIST, animplementation of the IEEE Standards 1003.5: 1992,
 florist: IEEE STD 1003.5b: 1996, and parts of IEEE STD 1003.5c: 1998,
