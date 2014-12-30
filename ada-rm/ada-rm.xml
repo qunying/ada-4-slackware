@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <GPS>
-   <doc_path>doc/arm-2012/html</doc_path>
+   <doc_path>doc/ada-rm-2012/html</doc_path>
 
    <submenu before="About">
       <title>/Help/Ada</title>

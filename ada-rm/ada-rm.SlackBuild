@@ -22,7 +22,7 @@
 #  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-PRGNAM=arm # replace with name of program
+PRGNAM=ada-rm # replace with name of program
 VERSION=${VERSION:-2012}	# replace with version of program
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}		# the "_SBo" is required
