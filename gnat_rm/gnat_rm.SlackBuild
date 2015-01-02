@@ -38,14 +38,14 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 
-mkdir -p $PKG/usr/doc/gnat-$VERSION/html
-cd $PKG/usr/doc/gnat-$VERSION/html
+mkdir -p $PKG/usr/doc/gcc-$VERSION/html
+cd $PKG/usr/doc/gcc-$VERSION/html
 tar xvf $CWD/gnat_rm-html.tar.gz
 
 mkdir -p $PKG/usr/share/gps/plug-ins/
 cp $CWD/${PRGNAM}.xml $PKG/usr/share/gps/plug-ins/${PRGNAM}${VERSION}.xml
 
-cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/gnat-$VERSION/$PRGNAM.SlackBuild
+cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/gcc-$VERSION/$PRGNAM.SlackBuild
 
 chown -R root:root .
 
