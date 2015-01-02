@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<GPS>
+   <doc_path>doc/gnat-4.9.2/html/gnat_rm</doc_path>
+
+   <submenu before="About">
+      <title>/Help/GNAT</title>
+   </submenu>
+   <documentation_file>
+      <name>index.html</name>
+      <descr>GNAT Reference Munual</descr>
+      <category>GNAT</category>
+      <menu>/Help/GNAT/GNAT Reference Manual</menu>
+   </documentation_file>
+</GPS>
