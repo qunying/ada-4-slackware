@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+     |-----handy-ruler------------------------------------------------------|
+gnoga: Gnoga - The GNU Omnificent GUI for Ada
+gnoga:
+gnoga: Gnoga is an open source development platform for the creation of
+gnoga: mission critical and enterprise applications that can be deployed
+gnoga: to multiple channels, cloud, desktop or mobile devices. Gnoga
+gnoga: applications are written using the open source Gnoga framework
+gnoga: and tools licensed under the GPLv3 with Runtime Exceptions for
+gnoga: creating free or proprietary software and Ada 2012.
+gnoga:
+gnoga: Homepage: http://gnoga.com/
+gnoga:
