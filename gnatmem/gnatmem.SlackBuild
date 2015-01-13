@@ -76,7 +76,7 @@ patch -p1 < $CWD/linking.patch
 ./configure \
     --prefix=/usr \
     --libdir=/usr/lib$LIBDIRSUFFIX \
-    --with-binutils-buildtree=/tmp/binutils-2.24.51.0.3 \
+    --with-binutils-buildtree=/tmp/binutils-2.25 \
     --build=$ARCH-slackware-linux
 
 make
