@@ -28,7 +28,7 @@ TAG=${TAG-_SBo}
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
   case "$(uname -m)" in
-    i?86) ARCH=i486 ;;
+    i?86) ARCH=i586 ;;
     arm*) ARCH=arm ;;
     # Unless $ARCH is already set, use uname -m for all other archs:
     *) ARCH=$(uname -m) ;;
@@ -40,8 +40,8 @@ TMP=${TMP:-"/tmp/SBo"}   # For consistency's sake, use this
 PKG=${TMP}/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}   # Drop the package in /tmp
 
-if [ "$ARCH" = "i486" ]; then
-  SLKCFLAGS="-O2 -march=i486 -mtune=i686"
+if [ "$ARCH" = "i586" ]; then
+  SLKCFLAGS="-O2 -march=i586 -mtune=i686"
   LIBDIRSUFFIX=""
   LIB_ARCH=i386
 elif [ "$ARCH" = "i686" ]; then
@@ -83,8 +83,8 @@ sed -i '/No_Fixed_IO/d' gnat/restrict.ads
 sed -i '/No_Long_Long_Integers/d' gnat/restrict.ads
 sed -i '/No_Multiple_Elaboration/d' gnat/restrict.ads
 
-cp $CWD/g-rewdat.* gnat/
-cp $CWD/gprbuild_os*  src/
+#cp $CWD/g-rewdat.* gnat/
+#cp $CWD/gprbuild_os*  src/
 
 chown -R root:root .
 find . \
@@ -104,10 +104,16 @@ CXXFLAGS="$SLKCFLAGS" \
 # patch the build date
 TODAY=$(date +%F)
 sed --in-place "s/(unknown) /$TODAY/" src/gpr_version.adb
+sed --in-place "s/or\ Hostparm.OpenVMS//" src/gprconfig-main.adb
+sed --in-place "s/Pool (C) := S/Pool.Replace_Element (C, s)/" src/gprbuild-compilation-slave.adb
+#sed --in-place "/Gnatpro/,+1d" src/gpr_version.adb
+sed --in-place -e "/Gnat_VMSp : Integer/,+2d" \
+    -e "s/Gnat_VMSp \/= 0/False/" gnat/hostparm.ads
 # compile the g-rewdat separately
-gnatmake -D obj -c -gnat12 -gnaty -gnatQ -O2 -gnatpn -Ignat -gnatws -I- -gnatA gnat/g-rewdat.adb
+#gnatmake -D obj -c -gnat12 -gnaty -gnatQ -O2 -gnatpn -Ignat -gnatws -I- -gnatA gnat/g-rewdat.adb
 # compile the support functions
-gcc $SLKCFLAGS -c -o obj/gprbuild_os_lib_c.o src/gprbuild_os_lib_c.c
+#gcc $SLKCFLAGS -c -o obj/gprbuild_os_lib_c.o src/gprbuild_os_lib_c.c
+
 make  LIBRARY_TYPE=relocatable
 
 make prefix=$PKG/usr libdir=$PKG/usr/lib${LIBDIRSUFFIX} \
