@@ -2,7 +2,7 @@
 # GCC package build script (written by volkerdi@slackware.com)
 #
 # Copyright 2003, 2004  Slackware Linux, Inc., Concord, California, USA
-# Copyright 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014  Patrick J. Volkerding, Sebeka, MN, USA
+# Copyright 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015  Patrick J. Volkerding, Sebeka, MN, USA
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -44,9 +44,17 @@
 # I see no reason to continue 386 support in the latest Slackware (and indeed
 # it's no longer easily possible).
 
+# Some more notes, Mon Aug  3 19:49:51 UTC 2015:
+#
+# Changing to -march=i586 for 32-bit x86 as several things (Mesa being one of
+# them) no longer work if constrained to -march=i486.  We're not going to use
+# -march=i686 since the only additional opcode is CMOV, which is actually less
+# efficient on modern CPUs running in 32-bit mode than the alternate i586
+# instructions.  No need to throw i586 CPUs under the bus (yet).
+
 PKGNAM=gcc
 VERSION=${VERSION:-$(echo $PKGNAM-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 # How many jobs to run in parallel:
 NUMJOBS=" -j 7 "
@@ -54,8 +62,8 @@ NUMJOBS=" -j 7 "
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
   case "$(uname -m)" in
-    i?86) ARCH=i486 ;;
-    arm*) readelf /usr/bin/file -A | egrep -q "Tag_CPU.*[4,5]" && ARCH=arm || ARCH=armv7lh ;;
+    i?86) ARCH=i586 ;;
+    arm*) readelf /usr/bin/file -A | egrep -q "Tag_CPU.*[4,5]" && ARCH=arm || ARCH=armv7hl ;;
     # Unless $ARCH is already set, use uname -m for all other archs:
     *) ARCH=$(uname -m) ;;
   esac
@@ -137,14 +145,13 @@ cat $CWD/slack-desc.gcc-go > $PKG8/install/slack-desc
 cd $TMP
 tar xvf $CWD/gcc-$VERSION.tar.?z*
 
-# Apply patches:
 #( cd gcc-$VERSION
-#   zcat $CWD/gcc.pr61801.diff.gz | patch -p1 --verbose || exit 1
+#  If we had any patches, we would apply them here, but we're .diff free now.
 #) || exit 1
 
 # Copy ecj.jar into the TLD of the source. Needed for java compiler.
 # This can be retrieved from ftp://sourceware.org/pub/java
-cp $CWD/ecj-4.5.jar gcc-$VERSION/ecj.jar
+cp $CWD/ecj-4.9.jar gcc-$VERSION/ecj.jar
 
 # Use an antlr runtime to compile javadoc.
 # The runtime can be obtained from:
@@ -394,7 +401,7 @@ ANTLJAR=$(echo $CWD/antlr-*.jar | tail -1)
   # If enough people need "treelang" support for it may be considered.
   #  --enable-languages=ada,c,c++,fortran,java,objc,treelang
   # I think it's incorrect to include this option (as it'll end up set
-  # to i486 on x86 platforms), and we want to tune the binary structure
+  # to i586 on x86 platforms), and we want to tune the binary structure
   # for i686, as that's where almost all of the optimization speedups
   # are to be found.
   # Correct me if my take on this is wrong.
@@ -402,8 +409,6 @@ ANTLJAR=$(echo $CWD/antlr-*.jar | tail -1)
  
   if [ "$ARCH" != "x86_64" ]; then
     GCC_ARCHOPTS="--with-arch=$ARCH"
-  else
-    GCC_ARCHOPTS="--disable-multilib"
   fi
  
   CFLAGS="$SLKCFLAGS" \
@@ -424,6 +429,9 @@ ANTLJAR=$(echo $CWD/antlr-*.jar | tail -1)
      --enable-__cxa_atexit \
      --enable-libssp \
      --enable-lto \
+     --enable-install-libiberty \
+     --with-default-libstdcxx-abi=gcc4-compatible \
+     --disable-multilib \
      --with-gnu-ld \
      --verbose \
      --enable-java-home \
@@ -525,6 +533,9 @@ rm -f $PKG1/usr/lib${LIBDIRSUFFIX}/libgcj-tools.a
   ln -sf gfortran-gcc-$VERSION ${TARGET}-g77
   ln -sf gfortran g77
   ln -sf gfortran f77
+  cat $CWD/c89.sh > c89
+  cat $CWD/c99.sh > c99
+  chmod 755 c89 c99
 )
 
 ( cd $PKG1/usr/man
