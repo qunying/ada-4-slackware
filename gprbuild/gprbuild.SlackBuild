@@ -21,7 +21,7 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gprbuild
-VERSION=${VERSION:-2014}
+VERSION=${VERSION:-2015}
 BUILD=${BUILD:-1}
 TAG=${TAG-_SBo}
 
@@ -48,7 +48,7 @@ elif [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O2 -march=i686 -mtune=i686"
   LIBDIRSUFFIX=""
 elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O2 -fPIC"
+  SLKCFLAGS="-O2"
   LIBDIRSUFFIX="64"
 else
   SLKCFLAGS="-O2"
@@ -62,7 +62,7 @@ mkdir -p $TMP $PKG $OUTPUT
 
 cd $TMP
 rm -rf $PRGNAM-gpl-$VERSION-src
-tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.tar.gz
+tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.tar.gz || tar xvf c9d9271952a829ff1d355a01285a8558f24baf93
 
 cd $PRGNAM-gpl-$VERSION-src
 
@@ -76,55 +76,25 @@ if [ "$ARCH" = "x86_64" ]; then
 	share/gprconfig/compilers.xml
 fi
 
-# patch Try_Help to Usage
-sed -i 's/Try_Help/Usage/g' src/gprbuild-main.adb src/gprbuild-main.adb \
-    src/gprconfig-main.adb  src/gprinstall-main.adb src/gprclean-main.adb
-sed -i '/No_Fixed_IO/d' gnat/restrict.ads
-sed -i '/No_Long_Long_Integers/d' gnat/restrict.ads
-sed -i '/No_Multiple_Elaboration/d' gnat/restrict.ads
-
-#cp $CWD/g-rewdat.* gnat/
-#cp $CWD/gprbuild_os*  src/
+ln -s $CWD/Makefile.SlackBuild
 
 chown -R root:root .
-find . \
- \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
- -exec chmod 755 {} \; -o \
- \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
- -exec chmod 644 {} \; || exit 1
+sed -e "s/@host@/Slackware/g" src/gprconfig-sdefault.ads.in > src/gprconfig-sdefault.ads
 
-CFLAGS="$SLKCFLAGS" \
-CXXFLAGS="$SLKCFLAGS" \
-./configure \
-    --prefix=/usr \
-    --libdir=/usr/lib${LIBDIRSUFFIX} \
-    --infodir=/usr/info \
-    --mandir=/usr/man \
-    --build=$ARCH-slackware-linux
-# patch the build date
-TODAY=$(date +%F)
-sed --in-place "s/(unknown) /$TODAY/" src/gpr_version.adb
-sed --in-place "s/or\ Hostparm.OpenVMS//" src/gprconfig-main.adb
-sed --in-place "s/Pool (C) := S/Pool.Replace_Element (C, s)/" src/gprbuild-compilation-slave.adb
-#sed --in-place "/Gnatpro/,+1d" src/gpr_version.adb
-sed --in-place -e "/Gnat_VMSp : Integer/,+2d" \
-    -e "s/Gnat_VMSp \/= 0/False/" gnat/hostparm.ads
-# compile the g-rewdat separately
-#gnatmake -D obj -c -gnat12 -gnaty -gnatQ -O2 -gnatpn -Ignat -gnatws -I- -gnatA gnat/g-rewdat.adb
-# compile the support functions
-#gcc $SLKCFLAGS -c -o obj/gprbuild_os_lib_c.o src/gprbuild_os_lib_c.c
+echo "make -f Makefile.SlackBuild PREFIX=/usr LIBDIR=/usr/lib$LIBDIRSUFFIX \
+EXTRA_FLAGS=\"$SLKCFLAGS\""
+make -f Makefile.SlackBuild PREFIX=/usr LIBDIR=/usr/lib$LIBDIRSUFFIX \
+EXTRA_FLAGS=\"$SLKCFLAGS\"
 
-make  LIBRARY_TYPE=relocatable
+make -f Makefile.SlackBuild PREFIX=/usr LIBDIR=/usr/lib$LIBDIRSUFFIX \
+DESTDIR=$PKG install
 
-make prefix=$PKG/usr libdir=$PKG/usr/lib${LIBDIRSUFFIX} \
-    infodir=$PKG/usr/info mandir=$PKG/usr/man \
-    install
-mv $PKG/usr/share/doc $PKG/usr
-mv $PKG/usr/doc/gprbuild/info $PKG/usr
+mkdir -p $PKG/usr/doc/gprbuild-$VERSION
+mkdir -p $PKG/usr/info
+cp -a doc/html $PKG/usr/doc/gprbuild-$VERSION
+cp doc/info/*info $PKG/usr/info
 gzip $PKG/usr/info/*
-mv $PKG/usr/doc/$PRGNAM $PKG/usr/doc/$PRGNAM-$VERSION
-mv $PKG/usr/share/examples/gprbuild $PKG/usr/doc/$PRGNAM-$VERSION/examples
-rmdir $PKG/usr/share/examples
+cp -a examples $PKG/usr/doc/$PRGNAM-$VERSION/
 
 cp README COPYING3 CHANGES $PKG/usr/doc/$PRGNAM-$VERSION
 cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
@@ -134,4 +104,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-${VERSION}-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
