@@ -79,12 +79,12 @@ fi
 ln -s $CWD/Makefile.SlackBuild
 
 chown -R root:root .
-sed -e "s/@host@/Slackware/g" src/gprconfig-sdefault.ads.in > src/gprconfig-sdefault.ads
+sed -e "s/@host@/$ARCH-slackware-linux/g" src/gprconfig-sdefault.ads.in > src/gprconfig-sdefault.ads
 
 echo "make -f Makefile.SlackBuild PREFIX=/usr LIBDIR=/usr/lib$LIBDIRSUFFIX \
 EXTRA_FLAGS=\"$SLKCFLAGS\""
 make -f Makefile.SlackBuild PREFIX=/usr LIBDIR=/usr/lib$LIBDIRSUFFIX \
-EXTRA_FLAGS=\"$SLKCFLAGS\"
+EXTRA_FLAGS="$SLKCFLAGS"
 
 make -f Makefile.SlackBuild PREFIX=/usr LIBDIR=/usr/lib$LIBDIRSUFFIX \
 DESTDIR=$PKG install
