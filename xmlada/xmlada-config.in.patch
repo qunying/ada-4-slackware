@@ -1,0 +1,54 @@
+--- xmlada-gpl-2015-src/xmlada-config.in	2014-09-29 10:38:49.000000000 -0700
++++ new/xmlada-config.in	2015-09-01 16:24:51.858325491 -0700
+@@ -8,8 +8,6 @@
+ exec_prefix=@exec_prefix@
+ libdir=@libdir@/xmlada
+ 
+-cflags_static=""
+-cflags_relocatable=""
+ mflags_static=""
+ mflags_relocatable=""
+ libs_relocatable=""
+@@ -18,24 +16,23 @@
+ full_libs_static=""
+ 
+ for module in dom sax schema unicode input; do
+-    cflags_static="${cflags_static} -I@includedir@/xmlada_${module}.static"
+-    cflags_relocatble="${cflags_relocatable} -I@includedir@/xmlada_${module}.relocatable"
++    cflags_relocatble="-I@includedir@/xmlada/${module}"
+ 
+-    mflags_static="${mflags_static} -aI@includedir@/xmlada_${module}.static -aO@libdir@/xmlada_${module}.static"
+-    mflags_relocatable="${mflags_relocatable} -aI@includedir@/xmlada_${module}.relocatable -aO@libdir@/xmlada_${module}.relocatable"
++    mflags_static="${mflags_static} -aI@includedir@/xmlada/${module} -aO@libdir@/xmlada/${module}/static"
++    mflags_relocatable="${mflags_relocatable} -aI@includedir@/xmlada/${module} -aO@libdir@/xmlada/${module}/relocatable"
+ done
+ 
+ for module in sax unicode; do
+-   libs_static="${libs_static} @libdir@/xmlada_${module}.static/libxmlada_${module}.a"
+-   libs_relocatable="${libs_relocatable} -L@libdir@/xmlada_${module}.relocatable -lxmlada_${module}"
++   libs_static="${libs_static} @libdir@/xmlada/${module}/static/libxmlada_${module}.a"
++   libs_relocatable="${libs_relocatable} -L@libdir@/xmlada/${module}/relocatable -lxmlada_${module}"
+ done
+ 
+-libs_static="${libs_static} @libdir@/xmlada_input.static/libxmlada_input_sources.a"
+-libs_relocatable="${libs_relocatable} -L@libdir@/xmlada_input.relocatable -lxmlada_input_sources"
++libs_static="${libs_static} @libdir@/xmlada/input/static/libxmlada_input_sources.a"
++libs_relocatable="${libs_relocatable} -L@libdir@/xmlada/input/relocatable -lxmlada_input_sources"
+ 
+ for module in dom schema; do
+-    full_libs_static="${full_libs_static} @libdir@/xmlada_${module}.static/libxmlada_${module}.a"
+-    full_libs_relocatable="${full_libs_relocatable} -lxmlada_${module}"
++    full_libs_static="${full_libs_static} @libdir@/xmlada/${module}/static/libxmlada_${module}.a"
++    full_libs_relocatable="${full_libs_relocatable} -lxmlada/${module}"
+ done
+ 
+ show_cflags=0
+@@ -118,7 +115,7 @@
+ done
+ 
+ ## Force static if relocatable was not installed
+-if [ -d $libdir/relocatable ]; then
++if [ -d $libdir/xmlada/dom/relocatable ]; then
+    :
+ else
+    libtype=static

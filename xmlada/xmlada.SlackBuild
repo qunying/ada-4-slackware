@@ -21,15 +21,16 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=xmlada
-VERSION=${VERSION:-4.4.0w}
+VERSION=${VERSION:-2015}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
-GPS_VERSION=6.0.1
+SRC_NAME=$PRGNAM-gpl-$VERSION-src
+PKG_VERSION=4.6.0.0
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
   case "$(uname -m)" in
-    i?86) ARCH=i486 ;;
+    i?86) ARCH=i586 ;;
     arm*) ARCH=arm ;;
     # Unless $ARCH is already set, use uname -m for all other archs:
     *) ARCH=$(uname -m) ;;
@@ -42,8 +43,8 @@ TMP=${TMP:-"/tmp/SBo"}
 PKG=${TMP}/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
 
-if [ "$ARCH" = "i486" ]; then
-  SLKCFLAGS="-O2 -march=i486 -mtune=i686"
+if [ "$ARCH" = "i586" ]; then
+  SLKCFLAGS="-O2 -march=i586 -mtune=i686"
   LIBDIRSUFFIX=""
   LIB_ARCH=i386
 elif [ "$ARCH" = "i686" ]; then
@@ -51,7 +52,7 @@ elif [ "$ARCH" = "i686" ]; then
   LIBDIRSUFFIX=""
   LIB_ARCH=i386
 elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O2 -fPIC"
+  SLKCFLAGS="-O2"
   LIBDIRSUFFIX="64"
   LIB_ARCH=amd64
 else
@@ -65,10 +66,10 @@ set -e # Exit on most errors
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-release-ide-src
-tar xvf $CWD/$PRGNAM-for-gps-$GPS_VERSION-src.tgz
+rm -rf $SRC_NAME
+tar xvf $CWD/$SRC_NAME.tar.gz || tar xvf $CWD/949752df2432aed8d06c48d57cea71f38d0517cc
 
-cd $PRGNAM-release-ide-src
+cd $SRC_NAME
 chown -R root:root .
 find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
@@ -76,34 +77,94 @@ find . \
  \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
  -exec chmod 644 {} \; || exit 1
 
-patch -p1 < $CWD/path.diff
+echo "Copy Makefile.SlackBuild"
+cp $CWD/Makefile.SlackBuild .
+echo "Create dummy function for compilation"
+XMLADA_MODULES=(unicode input_sources sax dom schema)
+for idx in ${!XMLADA_MODULES[*]} ; do
+    submodule=${XMLADA_MODULES[$idx]}
+    (cd $submodule; \
+	grep --no-filename ^package $submodule-*ads | \
+	awk '{print "with " $2 ";"}' | sort > dummy_${submodule}.adb
+    cat << EOF >> dummy_${submodule}.adb
+procedure dummy_$submodule is
+begin
+   null;
+end dummy_$submodule;
+EOF
+)
+done
 
-sed -i "s/share\/doc\/xmlada/doc\/xmlada-$VERSION/" distrib/xmlada_gps.py
+PREFIX=/usr
+LIBDIR=$PREFIX/lib$LIBDIRSUFFIX
 
-CFLAGS="$SLKCFLAGS" \
-CXXFLAGS="$SLKCFLAGS" \
-./configure \
-    --prefix=/usr \
-    --libdir=/usr/lib${LIBDIRSUFFIX} \
-    --infodir=/usr/info \
-    --enable-shared \
-    --docdir=/usr/doc/$PRGNAM-$VERSION \
-    --build=$ARCH-slackware-linux
+echo "Start to build"
+make -f Makefile.SlackBuild EXTRA_FLAGS="$SLKCFLAGS" PREFIX=/usr \
+    LIBSUFFIX=${LIBDIRSUFFIX}
 
-make
+echo "Build HTML documents"
+make -C docs html
 
-make prefix=$PKG/usr libdir=$PKG/usr/lib${LIBDIRSUFFIX} \
-     infodir=$PKG/usr/info \
-     install
+echo "Create project file for XMLAda"
+# project files
+mkdir -p $PKG/$LIBDIR/gnat
+cp $CWD/xmlada.gpr $PKG/$LIBDIR/gnat
+submodule=""
+gpr_module=""
 
-mv $PKG/usr/share/doc $PKG/usr
-mv $PKG/usr/doc/$PRGNAM $PKG/usr/doc/$PRGNAM-$VERSION
-cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-$VERSION
+for idx in ${!XMLADA_MODULES[*]} ; do
+    submodule=${XMLADA_MODULES[$idx]}
+    if [ "$submodule" == "input_sources" ]; then
+	gpr_module="input"
+    else
+	gpr_module="$submodule"
+    fi
+    mkdir -p $PKG/$PREFIX/include/xmlada/$gpr_module
+    mkdir -p $PKG/$LIBDIR/xmlada/$gpr_module/relocatable
+    mkdir -p $PKG/$LIBDIR/xmlada/$gpr_module/static
+    install $submodule/*ads $submodule/*adb $PKG/usr/include/xmlada/$gpr_module
+    rm $PKG/usr/include/xmlada/$gpr_module/dummy_*.adb
+    install $submodule/lib/static/libxmlada_$submodule.a \
+	    $PKG/$LIBDIR/xmlada/$gpr_module/static
+    install $submodule/obj/static/*ali \
+	    $PKG/$LIBDIR/xmlada/$gpr_module/static
+    cp -a $submodule/lib/relocatable/* \
+	    $PKG/$LIBDIR/xmlada/$gpr_module/relocatable
+    install $submodule/obj/relocatable/*ali \
+	    $PKG/$LIBDIR/xmlada/$gpr_module/relocatable
+    (cd $PKG/$LIBDIR;
+     for file in xmlada/$gpr_module/relocatable/libxmlada_$submodule* ; do
+	 ln -s $file
+     done)
+    sed -e "s/@module@/$gpr_module/" \
+	-e "s/@lib_name@/${submodule}/" $CWD/xmlada_module.gpr \
+    > $PKG/$LIBDIR/gnat/xmlada_${gpr_module}.gpr
+done
+
+# gps related
+mkdir -p $PKG/usr/share/gps/plug-ins
+sed "s/share\/doc\/xmlada/doc\/xmlada-${VERSION}gpl\/html/" \
+    distrib/xmlada_gps.py  > $PKG/usr/share/gps/plug-ins/xmlada_gps.py
+# xmlada-config
+mkdir -p $PKG/usr/bin
+patch -p1 < $CWD/xmlada-config.in.patch
+sed -e 's|@exec_prefix@|/usr|' \
+    -e "s|@libdir@|$LIBDIR|" \
+    -e 's|@includedir@|/usr/include|' \
+    -e 's|@DEFAULT_LIBRARY_TYPE@|static|' \
+    -e "s|@PACKAGE_VERSION@|${VERSION}gpl|" xmlada-config.in > \
+$PKG/usr/bin/xmlada-config
+chmod +x $PKG/usr/bin/xmlada-config
+
+mkdir -p $PKG/usr/doc/$PRGNAM-${VERSION}gpl
+cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-${VERSION}gpl
 cp README TODO COPYING3 AUTHORS features* known-problems* \
-    $PKG/usr/doc/$PRGNAM-$VERSION
+    $PKG/usr/doc/$PRGNAM-${VERSION}gpl
+cp -a docs/_build/html $PKG/usr/doc/$PRGNAM-${VERSION}gpl
 
 mkdir -p $PKG/install
 cp $CWD/slack-desc $PKG/install
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-${VERSION}gpl-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+

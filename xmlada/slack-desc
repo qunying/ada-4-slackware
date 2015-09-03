@@ -8,7 +8,7 @@
       |-----handy-ruler------------------------------------------------------|
 xmlada: XML/Ada - a full XML suite
 xmlada:
-xmlada: This library includes a set of Ada95 packages to manipulate XML
+xmlada: This library includes a set of Ada packages to manipulate XML
 xmlada: input.  It implements the XML 1.0 standard, as well as support for
 xmlada: namespaces and a number of other optional standards related to XML.
 xmlada:
