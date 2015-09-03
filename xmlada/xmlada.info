@@ -5,6 +5,6 @@ DOWNLOAD="http://mirrors.cdn.adacore.com/art/949752df2432aed8d06c48d57cea71f38d0
 MD5SUM="98c96b8c6a877617ec4da3ef6a03288a"
 DOWNLOAD_x86_64=""
 MD5SUM_x86_64=""
-REQUIRE="Sphinx"
+REQUIRES="Sphinx"
 MAINTAINER="Zhu Qun-Ying"
 EMAIL="zhu.qunying@gmail.com"

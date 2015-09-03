@@ -25,7 +25,6 @@ VERSION=${VERSION:-2015}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 SRC_NAME=$PRGNAM-gpl-$VERSION-src
-PKG_VERSION=4.6.0.0
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -112,6 +111,9 @@ cp $CWD/xmlada.gpr $PKG/$LIBDIR/gnat
 submodule=""
 gpr_module=""
 
+mkdir -p $PKG/$PREFIX/include/xmlada
+mkdir -p $PKG/$LIBDIR/xmlada/relocatable
+mkdir -p $PKG/$LIBDIR/xmlada/static
 for idx in ${!XMLADA_MODULES[*]} ; do
     submodule=${XMLADA_MODULES[$idx]}
     if [ "$submodule" == "input_sources" ]; then
@@ -119,52 +121,49 @@ for idx in ${!XMLADA_MODULES[*]} ; do
     else
 	gpr_module="$submodule"
     fi
-    mkdir -p $PKG/$PREFIX/include/xmlada/$gpr_module
-    mkdir -p $PKG/$LIBDIR/xmlada/$gpr_module/relocatable
-    mkdir -p $PKG/$LIBDIR/xmlada/$gpr_module/static
-    install $submodule/*ads $submodule/*adb $PKG/usr/include/xmlada/$gpr_module
-    rm $PKG/usr/include/xmlada/$gpr_module/dummy_*.adb
+    install $submodule/*ads $submodule/*adb $PKG/usr/include/xmlada/
     install $submodule/lib/static/libxmlada_$submodule.a \
-	    $PKG/$LIBDIR/xmlada/$gpr_module/static
+	    $PKG/$LIBDIR/xmlada/static
     install $submodule/obj/static/*ali \
-	    $PKG/$LIBDIR/xmlada/$gpr_module/static
+	    $PKG/$LIBDIR/xmlada/static
     cp -a $submodule/lib/relocatable/* \
-	    $PKG/$LIBDIR/xmlada/$gpr_module/relocatable
+	    $PKG/$LIBDIR/xmlada/relocatable
     install $submodule/obj/relocatable/*ali \
-	    $PKG/$LIBDIR/xmlada/$gpr_module/relocatable
+	    $PKG/$LIBDIR/xmlada/relocatable
     (cd $PKG/$LIBDIR;
-     for file in xmlada/$gpr_module/relocatable/libxmlada_$submodule* ; do
+     for file in xmlada/relocatable/libxmlada_$submodule* ; do
 	 ln -s $file
      done)
     sed -e "s/@module@/$gpr_module/" \
 	-e "s/@lib_name@/${submodule}/" $CWD/xmlada_module.gpr \
     > $PKG/$LIBDIR/gnat/xmlada_${gpr_module}.gpr
 done
+rm $PKG/usr/include/xmlada/dummy_*.adb
 
 # gps related
 mkdir -p $PKG/usr/share/gps/plug-ins
-sed "s/share\/doc\/xmlada/doc\/xmlada-${VERSION}gpl\/html/" \
+sed "s/share\/doc\/xmlada/doc\/xmlada-${VERSION}\/html/" \
     distrib/xmlada_gps.py  > $PKG/usr/share/gps/plug-ins/xmlada_gps.py
 # xmlada-config
 mkdir -p $PKG/usr/bin
 patch -p1 < $CWD/xmlada-config.in.patch
 sed -e 's|@exec_prefix@|/usr|' \
-    -e "s|@libdir@|$LIBDIR|" \
-    -e 's|@includedir@|/usr/include|' \
+    -e "s|@libdir@|${LIBDIR}/xmlada|" \
+    -e 's|@includedir@|/usr/include/xmlada|' \
     -e 's|@DEFAULT_LIBRARY_TYPE@|static|' \
-    -e "s|@PACKAGE_VERSION@|${VERSION}gpl|" xmlada-config.in > \
+    -e "s|@PACKAGE_VERSION@|${VERSION}|" xmlada-config.in > \
 $PKG/usr/bin/xmlada-config
 chmod +x $PKG/usr/bin/xmlada-config
 
-mkdir -p $PKG/usr/doc/$PRGNAM-${VERSION}gpl
-cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-${VERSION}gpl
+mkdir -p $PKG/usr/doc/$PRGNAM-${VERSION}
+cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-${VERSION}
 cp README TODO COPYING3 AUTHORS features* known-problems* \
-    $PKG/usr/doc/$PRGNAM-${VERSION}gpl
-cp -a docs/_build/html $PKG/usr/doc/$PRGNAM-${VERSION}gpl
+    $PKG/usr/doc/$PRGNAM-${VERSION}
+cp -a docs/_build/html $PKG/usr/doc/$PRGNAM-${VERSION}
 
 mkdir -p $PKG/install
 cp $CWD/slack-desc $PKG/install
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-${VERSION}gpl-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-${VERSION}-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
 

@@ -6,12 +6,12 @@ library project XmlAda_@module@ is
 
    case BUILD is
       when "relocatable" =>
-         for Source_Dirs use ("../../include/xmlada/@module@");
-         for Library_Dir use "../xmlada/@module@/relocatable";
+         for Source_Dirs use ("../../include/xmlada");
+         for Library_Dir use "../xmlada/relocatable";
          for Library_Kind use "relocatable";
       when "static" =>
-         for Source_Dirs use ("../../include/xmlada/@module@");
-         for Library_Dir use "../xmlada/@module@/static";
+         for Source_Dirs use ("../../include/xmlada");
+         for Library_Dir use "../xmlada/static";
          for Library_Kind use "static";
    end case;
 
