@@ -1,6 +1,6 @@
 library project Gnat_Util is
    type BUILD_KIND is ("static", "relocatable");
-   BUILD : BUILD_KIND := external("LIBRARY_TYPE", "relocatable");
+   BUILD : BUILD_KIND := external("LIBRARY_TYPE", "static");
 
    for Languages use ("Ada", "C");
 

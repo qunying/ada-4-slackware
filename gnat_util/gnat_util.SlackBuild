@@ -21,14 +21,15 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gnat_util
-VERSION=${VERSION:-4.9.0}
+VERSION=${VERSION:-5.1.0}
 BUILD=${BUILD:-1}
 TAG=${TAG-_SBo}
+GCC_VERSION=${GCC_VERSION:-5.2.0}
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
   case "$(uname -m)" in
-    i?86) ARCH=i486 ;;
+    i?86) ARCH=i586 ;;
     arm*) ARCH=arm ;;
     # Unless $ARCH is already set, use uname -m for all other archs:
     *) ARCH=$(uname -m) ;;
@@ -40,13 +41,12 @@ TMP=${TMP:-"/tmp/SBo"}   # For consistency's sake, use this
 PKG=${TMP}/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}   # Drop the package in /tmp
 
-GCC_SRC_BASE=${GCC_SRC_BASE:-/root/build-gcc/gcc-4.9.2}
+GCC_SRC_BASE=${GCC_SRC_BASE:-/root/build-gcc/gcc-${GCC_VERSION}}
 GCC_BLD_BASE=${GCC_BLD_BASE:-/root/build-gcc/gcc.build.lnx}
 
-if [ "$ARCH" = "i486" ]; then
-  SLKCFLAGS="-O2 -march=i486 -mtune=i686"
+if [ "$ARCH" = "i586" ]; then
+  SLKCFLAGS="-O2 -march=i586 -mtune=i686"
   LIBDIRSUFFIX=""
-  LIB_ARCH=i386
 elif [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O2 -march=i686 -mtune=i686"
   LIBDIRSUFFIX=""
@@ -64,10 +64,10 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 
 cd $TMP
-rm -rf $PRGNAM-$VERSION-1
-tar xvf $CWD/$PRGNAM-$VERSION-1.tar.gz
+rm -rf $PRGNAM-$VERSION
+tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
 
-cd $PRGNAM-$VERSION-1
+cd $PRGNAM-$VERSION
 
 chown -R root:root .
 find . \
