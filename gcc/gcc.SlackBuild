@@ -608,6 +608,10 @@ mv $PKG1/usr/bin/gnative2ascii $PKG5/usr/bin
   mkdir -p usr/lib${LIBDIRSUFFIX}/gcc/$TARGET/$VERSION
   mv $PKG1/usr/lib${LIBDIRSUFFIX}/gcc/$TARGET/$VERSION/adainclude usr/lib${LIBDIRSUFFIX}/gcc/$TARGET/$VERSION
   mv $PKG1/usr/lib${LIBDIRSUFFIX}/gcc/$TARGET/$VERSION/adalib usr/lib${LIBDIRSUFFIX}/gcc/$TARGET/$VERSION
+  (cd usr/lib${LIBDIRSUFFIX}/gcc/$TARGET/$VERSION/adalib
+      MAJOR=$(echo $VERSION | cut -d . -f 1)
+      GPR_VER=$(echo $VERSION| rev | cut -d . -f 2- | rev)
+      ln -s libgnat-$MAJOR.so libgnat-$GPR_VER.so)
 )
 
 # gcc-java:
