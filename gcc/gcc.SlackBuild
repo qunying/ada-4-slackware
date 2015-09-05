@@ -611,7 +611,8 @@ mv $PKG1/usr/bin/gnative2ascii $PKG5/usr/bin
   (cd usr/lib${LIBDIRSUFFIX}/gcc/$TARGET/$VERSION/adalib
       MAJOR=$(echo $VERSION | cut -d . -f 1)
       GPR_VER=$(echo $VERSION| rev | cut -d . -f 2- | rev)
-      ln -s libgnat-$MAJOR.so libgnat-$GPR_VER.so)
+      ln -s libgnat-$MAJOR.so libgnat-$GPR_VER.so
+      ln -s libgnarl-$MAJOR.so libgnarl-$GPR_VER.so)
 )
 
 # gcc-java:
