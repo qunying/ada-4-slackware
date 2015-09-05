@@ -84,9 +84,9 @@ sed -i "s/share\/doc\/$PRGNAM/doc\/$PRGNAM-$VERSION/" distrib/gnatcoll/__init__.
     --enable-shared \
     --build=$ARCH-slackware-linux
 
-make
+make Gnatcoll_Build=Production
 
-make DESTDIR=$PKG install
+make  Gnatcoll_Build=Production DESTDIR=$PKG install
 
 mv $PKG/usr/share/doc $PKG/usr/doc
 mv $PKG/usr/doc/$PRGNAM $PKG/usr/doc/$PRGNAM-$VERSION
