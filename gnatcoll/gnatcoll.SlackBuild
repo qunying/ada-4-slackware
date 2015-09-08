@@ -77,13 +77,12 @@ if [ "$ARCH" = "x86_64" ] ; then
 fi
 
 sed -i "s/share\/doc\/$PRGNAM/doc\/$PRGNAM-$VERSION/" distrib/gnatcoll/__init__.py
-
+sed -i "s/\"-fdump-xref\",//" gnatcoll_shared.gpr.in
 ./configure \
     --prefix=/usr \
     --libdir=/usr/lib$LIBDIRSUFFIX \
     --enable-shared \
     --build=$ARCH-slackware-linux
-
 make Gnatcoll_Build=Production
 
 make  Gnatcoll_Build=Production DESTDIR=$PKG install
