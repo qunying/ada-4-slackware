@@ -6,16 +6,24 @@ AFLAGS := -gnat12 -gnaty -gnatQ -gnatpn -gnatws -g1 ${NUM_JOBS} ${EXTRA_FLAGS}
 COBJS := obj/link.o obj/gprbuild_dummies.o
 
 LOOK := -aI./gnat -aI./gen_src \
-	-aL${PREFIX}/lib/xmlada/static \
-	-aI${PREFIX}/include/xmlada
+	-aL${PREFIX}/lib/xmlada/dom/static \
+	-aL${PREFIX}/lib/xmlada/input/static \
+	-aL${PREFIX}/lib/xmlada/sax/static \
+	-aL${PREFIX}/lib/xmlada/schema/static \
+	-aL${PREFIX}/lib/xmlada/unicode/static \
+	-aI${PREFIX}/include/xmlada/dom \
+	-aI${PREFIX}/include/xmlada/input \
+	-aI${PREFIX}/include/xmlada/sax \
+	-aI${PREFIX}/include/xmlada/schema \
+	-aI${PREFIX}/include/xmlada/unicode \
 
 LARGS := -largs ./obj/link.o \
 	-largs ./obj/gprbuild_dummies.o \
-	-largs ${LIBDIR}/xmlada/static/libxmlada_dom.a \
-	-largs ${LIBDIR}/xmlada/static/libxmlada_input_sources.a \
-	-largs ${LIBDIR}/xmlada/static/libxmlada_sax.a \
-	-largs ${LIBDIR}/xmlada/static/libxmlada_schema.a \
-	-largs ${LIBDIR}/xmlada/static/libxmlada_unicode.a
+	-largs ${LIBDIR}/xmlada/dom/static/libxmlada_dom.a \
+	-largs ${LIBDIR}/xmlada/input/static/libxmlada_input_sources.a \
+	-largs ${LIBDIR}/xmlada/sax/static/libxmlada_sax.a \
+	-largs ${LIBDIR}/xmlada/schema/static/libxmlada_schema.a \
+	-largs ${LIBDIR}/xmlada/unicode/static/libxmlada_unicode.a
 
 GENDIR   := gen_src
 GEN_SRCS := ${GENDIR}/snames.adb ${GENDIR}/snames.ads
