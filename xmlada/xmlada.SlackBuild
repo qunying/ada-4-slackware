@@ -111,9 +111,6 @@ cp $CWD/xmlada.gpr $PKG/$LIBDIR/gnat
 submodule=""
 gpr_module=""
 
-mkdir -p $PKG/$PREFIX/include/xmlada
-mkdir -p $PKG/$LIBDIR/xmlada/relocatable
-mkdir -p $PKG/$LIBDIR/xmlada/static
 for idx in ${!XMLADA_MODULES[*]} ; do
     submodule=${XMLADA_MODULES[$idx]}
     if [ "$submodule" == "input_sources" ]; then
@@ -121,24 +118,27 @@ for idx in ${!XMLADA_MODULES[*]} ; do
     else
 	gpr_module="$submodule"
     fi
-    install $submodule/*ads $submodule/*adb $PKG/usr/include/xmlada/
+    mkdir -p $PKG/$PREFIX/include/xmlada/$gpr_module
+    mkdir -p $PKG/$LIBDIR/xmlada/$gpr_module/relocatable
+    mkdir -p $PKG/$LIBDIR/xmlada/$gpr_module/static
+    install $submodule/*ads $submodule/*adb $PKG/usr/include/xmlada/$gpr_module
+    rm $PKG/usr/include/xmlada/$gpr_module/dummy_*.adb
     install $submodule/lib/static/libxmlada_$submodule.a \
-	    $PKG/$LIBDIR/xmlada/static
+	    $PKG/$LIBDIR/xmlada/$gpr_module/static
     install $submodule/obj/static/*ali \
-	    $PKG/$LIBDIR/xmlada/static
+	    $PKG/$LIBDIR/xmlada/$gpr_module/static
     cp -a $submodule/lib/relocatable/* \
-	    $PKG/$LIBDIR/xmlada/relocatable
+	    $PKG/$LIBDIR/xmlada/$gpr_module/relocatable
     install $submodule/obj/relocatable/*ali \
-	    $PKG/$LIBDIR/xmlada/relocatable
+	    $PKG/$LIBDIR/xmlada/$gpr_module/relocatable
     (cd $PKG/$LIBDIR;
-     for file in xmlada/relocatable/libxmlada_$submodule* ; do
+     for file in xmlada/$gpr_module/relocatable/libxmlada_$submodule* ; do
 	 ln -s $file
      done)
     sed -e "s/@module@/$gpr_module/" \
 	-e "s/@lib_name@/${submodule}/" $CWD/xmlada_module.gpr \
     > $PKG/$LIBDIR/gnat/xmlada_${gpr_module}.gpr
 done
-rm $PKG/usr/include/xmlada/dummy_*.adb
 
 # gps related
 mkdir -p $PKG/usr/share/gps/plug-ins
