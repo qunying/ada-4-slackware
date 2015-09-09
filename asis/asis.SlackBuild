@@ -21,14 +21,14 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=asis
-VERSION=${VERSION:-2014}
+VERSION=${VERSION:-2015}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
   case "$(uname -m)" in
-    i?86) ARCH=i486 ;;
+    i?86) ARCH=i586 ;;
     arm*) ARCH=arm ;;
     # Unless $ARCH is already set, use uname -m for all other archs:
     *) ARCH=$(uname -m) ;;
@@ -40,8 +40,8 @@ TMP=${TMP:-"/tmp/SBo"}
 PKG=${TMP}/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
 
-if [ "$ARCH" = "i486" ]; then
-  SLKCFLAGS="-O2 -march=i486 -mtune=i686"
+if [ "$ARCH" = "i586" ]; then
+  SLKCFLAGS="-O2 -march=i586 -mtune=i686"
   LIBDIRSUFFIX=""
 elif [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O2 -march=i686 -mtune=i686"
@@ -75,13 +75,14 @@ for file in $CWD/patches/*.patch ; do
     patch -p1 < $file;
 done
 
-sed -i "/Try_Help/d" tools/tool_utils/asis_ul-environment.adb
-sed -i "s/share\/doc\/asis/doc\/asis-$VERSION/" documentation/gps_index.xml
+sed -i "s/share\/doc\/asis/doc\/asis-$VERSION/" documentation/asis.xml
 
 make prefix=/usr LIBDIR_SUFFIX=$LIBDIRSUFFIX asis_version=$VERSION all tools
 
 make prefix=$PKG/usr LIBDIR_SUFFIX=$LIBDIRSUFFIX asis_version=$VERSION install install-tools
 
+mv $PKG/usr/share/doc $PKG/usr/
+mv $PKG/usr/doc/$PRGNAM $PKG/usr/doc/$PRGNAM-$VERSION
 mv $PKG/usr/doc/$PRGNAM-$VERSION/info $PKG/usr/
 gzip $PKG/usr/info/*
 cp README features* asis-2005-transition.txt $PKG/usr/doc/$PRGNAM-$VERSION

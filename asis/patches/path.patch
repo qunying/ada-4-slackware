@@ -1,39 +1,30 @@
---- asis-gpl-2014-src/Makefile	2014-01-22 03:04:22.000000000 -0800
-+++ asis-gpl-2014-src-new/Makefile	2014-12-17 17:08:43.809932886 -0800
-@@ -7,9 +7,9 @@
- BLD=prod
- tools = gnatstub gnatelim gnatmetric gnatpp gnatcheck gnattest
+--- asis-gpl-2015-src/Makefile	2014-12-21 03:30:41.000000000 -0800
++++ new/Makefile	2015-09-09 14:44:37.772251524 -0700
+@@ -29,23 +29,23 @@
+ install-clean:
+ ifneq (,$(wildcard $(prefix)/lib/gnat/manifests/asislib))
+ 	-$(GPRINSTALL) --uninstall --prefix=$(prefix) \
+-		--project-subdir=lib/gnat asislib
++		--project-subdir=lib$(LIBDIR_SUFFIX)/gnat asislib
+ endif
  
--I_DOC   = $(prefix)/share/doc/asis
-+I_DOC   = $(prefix)/doc/asis-$(asis_version)
- I_GPS   = $(prefix)/share/gps/plug-ins
--G_DOC   = $(prefix)/share/doc/gnat
-+G_DOC   = $(prefix)/doc/gnat
+ install: install-clean
+ 	$(GPRINSTALL) -p -f --prefix=$(prefix) --sources-subdir=include/asis \
+-		--lib-subdir=lib/asis --project-subdir=lib/gnat -XBLD=$(BLD) \
++		--lib-subdir=lib$(LIBDIR_SUFFIX)/asis --project-subdir=lib$(LIBDIR_SUFFIX)/gnat -XBLD=$(BLD) \
+ 		-XOPSYS=$(OPSYS) -XASIS_COMPONENTS=lib build_asis.gpr
  
- .PHONY: install
- install: install-lib install-asistant
-@@ -55,7 +55,7 @@
+ install-tools-clean:
+ ifneq (,$(wildcard $(prefix)/lib/gnat/manifests/asistools))
+ 	-$(GPRINSTALL) --uninstall --prefix=$(prefix) \
+-		--project-subdir=lib/gnat asistools
++		--project-subdir=lib$(LIBDIR_SUFFIX)/gnat asistools
+ endif
  
- install-gnat%: gnat%
- 	gprinstall -p -f --prefix=$(prefix) --mode=usage \
--		--project-subdir=lib/gnat \
-+		--project-subdir=lib$(LIBDIR_SUFFIX)/gnat \
- 		-XBLD=$(BLD) -XOPSYS=$(OPSYS) tools/gnat$*/gnat$*.gpr
+ install-tools: install-tools-clean
+ 	$(GPRINSTALL) -p -f --prefix=$(prefix) --sources-subdir=include/asis \
+-		--lib-subdir=lib/asis --project-subdir=lib/gnat -XBLD=$(BLD) \
++		--lib-subdir=lib$(LIBDIR_SUFFIX)/asis --project-subdir=lib$(LIBDIR_SUFFIX)/gnat -XBLD=$(BLD) \
+ 		-XOPSYS=$(OPSYS) -XASIS_COMPONENTS=tools build_asis.gpr
  
- .PHONY: install-gnatcheck-doc
-@@ -72,13 +72,13 @@
- .PHONY: install-lib
- install-lib: install-asis-doc
- 	gprinstall -p -f --prefix=$(prefix) --sources-subdir=include/asis \
--		--lib-subdir=lib/asis --project-subdir=lib/gnat \
-+		--lib-subdir=lib$(LIBDIR_SUFFIX)/asis --project-subdir=lib$(LIBDIR_SUFFIX)/gnat \
- 		-XBLD=$(BLD) -XOPSYS=$(OPSYS) asis.gpr
- 
- .PHONY: install-asistant
- install-asistant:
- 	gprinstall -p -f --prefix=$(prefix) --mode=usage \
--		--project-subdir=lib/gnat \
-+		--project-subdir=lib$(LIBDIR_SUFFIX)/gnat \
- 		-XBLD=$(BLD) -XOPSYS=$(OPSYS) tools/asistant/asistant.gpr
- 
- atre:
+ # ==================================================== test
