@@ -21,14 +21,14 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=florist
-VERSION=${VERSION:-2014}
+VERSION=${VERSION:-2015}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
   case "$(uname -m)" in
-    i?86) ARCH=i486 ;;
+    i?86) ARCH=i586 ;;
     arm*) ARCH=arm ;;
     # Unless $ARCH is already set, use uname -m for all other archs:
     *) ARCH=$(uname -m) ;;
@@ -41,8 +41,8 @@ TMP=${TMP:-"/tmp/SBo"}
 PKG=${TMP}/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
 
-if [ "$ARCH" = "i486" ]; then
-  SLKCFLAGS="-O2 -march=i486 -mtune=i686"
+if [ "$ARCH" = "i586" ]; then
+  SLKCFLAGS="-O2 -march=i586 -mtune=i686"
   LIBDIRSUFFIX=""
 elif [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O2 -march=i686"
@@ -61,10 +61,10 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 
 cd $TMP
-rm -rf $PRGNAM-src
-tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.tar.gz
+rm -rf $PRGNAM-gpl-$VERSION-src
+tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.tar.gz || tar xvf 01a5a83b6c52f1abc8ffa8983d0ad32b0d34ce4b
 
-cd $PRGNAM-src
+cd $PRGNAM-gpl-$VERSION-src
 chown -R root:root .
 find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
@@ -72,17 +72,47 @@ find . \
  \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
  -exec chmod 644 {} \; || exit 1
 
-patch -p1 < $CWD/path.patch
+sed -i -e 's/sources-subdir=floristlib/sources-subdir=$(SRC_DIR)/' \
+    -e 's/sources-subdir=floristlib/sources-subdir=$(LIB_DIR)/' \
+    -e 's/lib-subdir=floristlib/lib-subdir=$(LIB_DIR)/' \
+    -e 's/link-lib-subdir=floristlib/link-lib-subdir=$(LIB_DIR)/' \
+    -e 's/\/floristlib\//\/*\/florist\//' Makefile.in
 
+# build static library
 ./configure \
     --prefix=/usr \
     --libdir=/usr/lib$LIBDIRSUFFIX \
+    --with-build-type=Production \
     --build=$ARCH-slackware-linux
 
 make
 
-make DESTDIR=$PKG install
+make PREFIX=$PKG/usr SRC_DIR=include/florist \
+LIB_DIR=lib$LIBDIRSUFFIX/florist/static install
 
+# build shared library
+make distclean
+
+./configure \
+    --prefix=/usr \
+    --libdir=/usr/lib$LIBDIRSUFFIX \
+    --with-build-type=Production \
+    --enable-shared \
+    --build=$ARCH-slackware-linux
+make
+
+# remove the source to avoid gprinstall complains
+rm -rf $PKG/usr/include/florist
+
+make PREFIX=$PKG/usr SRC_DIR=include/florist \
+LIB_DIR=lib$LIBDIRSUFFIX/florist/relocatable install
+
+(cd $PKG/usr/lib$LIBDIRSUFFIX;
+ ln -s florist/relocatable/libflorist.so.1;
+ ln -s florist/relocatable/libflorist.so.1 libflorist.so;)
+
+mkdir -p $PKG/usr/lib$LIBDIRSUFFIX/gnat
+cp $CWD/florist.gpr $PKG/usr/lib$LIBDIRSUFFIX/gnat
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
 cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-$VERSION
 cp README INSTALL COPYING3 COPYING $PKG/usr/doc/$PRGNAM-$VERSION

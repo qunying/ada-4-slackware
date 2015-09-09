@@ -1,0 +1,35 @@
+library project Florist is
+   type BUILD_KIND is ("static", "relocatable");
+   BUILD : BUILD_KIND := external("LIBRARY_TYPE", "relocatable");
+
+   for Languages use ("Ada");
+
+   case BUILD is
+      when "relocatable" =>
+         for Source_Dirs use ("../../include/florist/");
+         for Library_Dir use "../florist/relocatable/";
+         for Library_Kind use "relocatable";
+      when "static" =>
+         for Source_Dirs use ("../../include/florist/");
+         for Library_Dir use "../florist/static/";
+         for Library_Kind use "static";
+   end case;
+
+   for Library_Name use "florist";
+
+   package Naming is
+      for dot_replacement use "-";
+      for casing use "lowercase";
+      
+      case BUILD is
+         when "relocatable" =>
+            for spec_suffix ("ada") use ".ads";
+            for body_suffix ("ada") use ".adb";
+         when "static" =>
+            for spec_suffix ("ada") use ".ads";
+            for body_suffix ("ada") use ".adb";
+      end case;
+   end Naming;
+
+   for Externally_Built use "True";
+end Florist;
