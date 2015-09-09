@@ -99,7 +99,7 @@ LIBDIR=$PREFIX/lib$LIBDIRSUFFIX
 
 echo "Start to build"
 make -f Makefile.SlackBuild EXTRA_FLAGS="$SLKCFLAGS" PREFIX=/usr \
-    LIBSUFFIX=${LIBDIRSUFFIX}
+    #LIBSUFFIX=${LIBDIRSUFFIX}
 
 echo "Build HTML documents"
 make -C docs html
@@ -133,11 +133,27 @@ for idx in ${!XMLADA_MODULES[*]} ; do
 	    $PKG/$LIBDIR/xmlada/$gpr_module/relocatable
     (cd $PKG/$LIBDIR;
      for file in xmlada/$gpr_module/relocatable/libxmlada_$submodule* ; do
-	 ln -s $file
+	 ln -sf $file
      done)
+    submodule_file=$PKG/$LIBDIR/gnat/xmlada_${gpr_module}.gpr
     sed -e "s/@module@/$gpr_module/" \
-	-e "s/@lib_name@/${submodule}/" $CWD/xmlada_module.gpr \
-    > $PKG/$LIBDIR/gnat/xmlada_${gpr_module}.gpr
+	-e "s/@lib_name@/${submodule}/" $CWD/xmlada_module.gpr > $submodule_file
+    case "$gpr_module" in
+    "input")
+	sed -i 's/-- with/with "xmlada_unicode";/' $submodule_file
+	;;
+    "sax")
+	sed -i 's/-- with/with "xmlada_input";/' $submodule_file
+	;;
+    "dom")
+	sed -i 's/-- with/with "xmlada_sax";/' $submodule_file
+	;;
+    "schema")
+	sed -i 's/-- with/with "xmlada_dom";/' $submodule_file
+	;;
+    *)
+	;;
+    esac
 done
 
 # gps related
@@ -146,7 +162,7 @@ sed "s/share\/doc\/xmlada/doc\/xmlada-${VERSION}\/html/" \
     distrib/xmlada_gps.py  > $PKG/usr/share/gps/plug-ins/xmlada_gps.py
 # xmlada-config
 mkdir -p $PKG/usr/bin
-patch -p1 < $CWD/xmlada-config.in.patch
+#patch -p1 < $CWD/xmlada-config.in.patch
 sed -e 's|@exec_prefix@|/usr|' \
     -e "s|@libdir@|${LIBDIR}/xmlada|" \
     -e 's|@includedir@|/usr/include/xmlada|' \

@@ -1,3 +1,5 @@
+-- with
+
 library project XmlAda_@module@ is
    type BUILD_KIND is ("static", "relocatable");
    BUILD : BUILD_KIND := external("XMLADA_BUILD", "static");
@@ -10,7 +12,7 @@ library project XmlAda_@module@ is
          for Library_Dir use "../xmlada/@module@/relocatable";
          for Library_Kind use "relocatable";
       when "static" =>
-         for Source_Dirs use ("../../include/xmlada");
+         for Source_Dirs use ("../../include/xmlada/@module@");
          for Library_Dir use "../xmlada/@module@/static";
          for Library_Kind use "static";
    end case;
