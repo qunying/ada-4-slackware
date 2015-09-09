@@ -1,7 +1,0 @@
-project gnatmem is
-   for Languages use ("ada");
-   for Source_Dirs use ("../../include/gnatmem");
-   for Library_Name use "gnatmem";
-   for Library_Dir use  "../gnatmem";
-   for Externally_Built use "true";
-end gnatmem;

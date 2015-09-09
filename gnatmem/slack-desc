@@ -4,7 +4,7 @@
 # customary to leave one space after the ':' except on otherwise blank lines.
 
        |-----handy-ruler------------------------------------------------------|
-gnatmem:
+gnatmem: gnatmem - memory allocation/deallocatoin monitor
 gnatmem:
 gnatmem: The gnatmem utility monitors dynamic allocation and deallocation
 gnatmem: activity in an executing program and displays information about
