@@ -21,14 +21,17 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gps
-VERSION=${VERSION:-6.0.1}
+VERSION=${VERSION:-6.1.1}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
+
+GPRBUILD_VERSION=${GPRBUILD_VERSION:-2015}
+GNATCOLL_VERSION=${GNATCOLL_VERSION:-2015}
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
   case "$(uname -m)" in
-    i?86) ARCH=i486 ;;
+    i?86) ARCH=i586 ;;
     arm*) ARCH=arm ;;
     # Unless $ARCH is already set, use uname -m for all other archs:
     *) ARCH=$(uname -m) ;;
@@ -40,8 +43,8 @@ TMP=${TMP:-"/tmp/SBo"}
 PKG=${TMP}/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
 
-if [ "$ARCH" = "i486" ]; then
-  SLKCFLAGS="-O2 -march=i486 -mtune=i686"
+if [ "$ARCH" = "i586" ]; then
+  SLKCFLAGS="-O2 -march=i586 -mtune=i686"
   LIBDIRSUFFIX=""
 elif [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O2 -march=i686 -mtune=i686"
@@ -69,10 +72,10 @@ fi
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-release-ide-$VERSION-src
-tar xvf $CWD/$PRGNAM-$VERSION-src.tgz
+rm -rf $PRGNAM-$VERSION-src
+tar xvf $CWD/$PRGNAM-$VERSION-src.tar.gz || tar xvf eabc020e818b1c6b8a6dc5ea3f665a479a49bb14
 
-cd $PRGNAM-release-ide-$VERSION-src
+cd $PRGNAM-$VERSION-src
 chown -R root:root .
 find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
@@ -83,7 +86,7 @@ find . \
 for file in $CWD/patches/*.patch ; do
     patch -p1 < $file ;
 done
-(cd gnat; ln -s $CWD/gnat_ugn.texi)
+#(cd gnat; ln -s $CWD/gnat_ugn.texi)
 
 sed -i "s/share\/doc\/gps/doc\/gps-$VERSION/" docs/Makefile.in
 
@@ -100,11 +103,13 @@ CXXFLAGS="$SLKCFLAGS" \
 
 # fix document path
 sed -i "s/share\/doc\/gps/doc\/gps-$VERSION/" docs/gps_index.xml
-sed -i "s/share\/doc\/gprbuild/doc\/gprbuild-2014/" docs/gps_index.xml
+sed -i "s/share\/doc\/gprbuild/doc\/gprbuild-$GPRBUILD_VERSION/" docs/gps_index.xml
 sed -i "s/share\/doc\//doc\//" docs/gps_index.xml
 sed -i "s/share\/doc\/gps/doc\/gps-$VERSION/" help/src/help_module.adb
 
-make
+ln -s ../gnatcoll-gpl-$GNATCOLL_VERSION-src gnatlib
+
+make Build=Production OS=unix
 
 make prefix=$PKG/usr libdir=$PKG/usr/lib${LIBDIRSUFFIX} install
 
