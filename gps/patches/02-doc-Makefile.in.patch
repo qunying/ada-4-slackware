@@ -1,0 +1,11 @@
+--- gps-6.1.1-src/docs/Makefile.in	2014-11-13 10:15:57.000000000 -0800
++++ gps-6.1.1-new/docs/Makefile.in	2015-09-04 17:54:15.060791546 -0700
+@@ -1,6 +1,6 @@
+ prefix = @prefix@
+-docdir = $(prefix)/share/doc/gps
+-sharedir = $(prefix)/share/gps
++docdir = $(DESTDIR)$(prefix)/share/doc/gps
++sharedir = $(DESTDIR)$(prefix)/share/gps
+ 
+ MKDIR = mkdir -p
+ INSTALL = @INSTALL@
