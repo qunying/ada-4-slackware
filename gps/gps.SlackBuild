@@ -86,7 +86,6 @@ find . \
 for file in $CWD/patches/*.patch ; do
     patch -p1 < $file ;
 done
-#(cd gnat; ln -s $CWD/gnat_ugn.texi)
 
 sed -i "s/share\/doc\/gps/doc\/gps-$VERSION/" docs/Makefile.in
 
