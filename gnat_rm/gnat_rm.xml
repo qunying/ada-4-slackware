@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <GPS>
-    <doc_path>doc/gcc-4.9.2/html/gnat_rm</doc_path>
+    <doc_path>doc/gcc-@version@/html/gnat_rm</doc_path>
 
    <submenu before="About">
       <title>/Help/GNAT</title>
