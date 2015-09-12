@@ -96,6 +96,10 @@ cp doc/info/*info $PKG/usr/info
 gzip $PKG/usr/info/*
 cp -a examples $PKG/usr/doc/$PRGNAM-$VERSION/
 
+mkdir -p $PKG/usr/share/gps/plug-ins
+sed "s/@version@/$VERSION/" $CWD/gprbuild_gps.xml > \
+    $PKG/usr/share/gps/plug-ins/gprbuild_gps.xml
+
 cp README COPYING3 CHANGES $PKG/usr/doc/$PRGNAM-$VERSION
 cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
 strip $PKG/usr/bin/*
