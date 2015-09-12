@@ -158,8 +158,8 @@ done
 
 # gps related
 mkdir -p $PKG/usr/share/gps/plug-ins
-sed "s/share\/doc\/xmlada/doc\/xmlada-${VERSION}\/html/" \
-    distrib/xmlada_gps.py  > $PKG/usr/share/gps/plug-ins/xmlada_gps.py
+sed "s/@version@/$VERSION/" $CWD/xmlada_gps.xml > \
+    $PKG/usr/share/gps/plug-ins/xmlada_gps.xml
 # xmlada-config
 mkdir -p $PKG/usr/bin
 #patch -p1 < $CWD/xmlada-config.in.patch
