@@ -84,6 +84,10 @@ make prefix=$PKG/usr LIBDIR_SUFFIX=$LIBDIRSUFFIX asis_version=$VERSION install i
 mv $PKG/usr/share/doc $PKG/usr/
 mv $PKG/usr/doc/$PRGNAM $PKG/usr/doc/$PRGNAM-$VERSION
 mv $PKG/usr/doc/$PRGNAM-$VERSION/info $PKG/usr/
+# move gnatcheck info to the system info directory
+mv $PKG/usr/doc/gnat/info/* $PKG/usr/info
+rmdir $PKG/usr/doc/gnat/info
+
 gzip $PKG/usr/info/*
 cp README features* asis-2005-transition.txt $PKG/usr/doc/$PRGNAM-$VERSION
 
