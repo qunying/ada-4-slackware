@@ -1,0 +1,20 @@
+
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+         |-----handy-ruler------------------------------------------------------|
+sparforte: SparForte - the Business Shell 
+sparforte:
+sparforte: SparForte is an interepreted programming language with a shell,
+sparforte: intrinsic database efatures and a web template engine.  It is
+sparforte: intended for fast, scalable, well-designed projects.
+sparforte: Documentation is available on the project website.
+sparforte: 
+sparforte:
+sparforte:
+sparforte: Homepage: http://www.sparforte.com
+sparforte:
