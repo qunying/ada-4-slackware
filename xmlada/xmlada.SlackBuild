@@ -1,6 +1,6 @@
 #!/bin/sh
-# XMLAda package build script (written by zhu.qunying@gmail.com)
-# Copyright 2012,2015, Zhu Qun-Ying
+# XMLAda package build script
+# Copyright 2012,2015,2016, Zhu Qun-Ying
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -21,7 +21,7 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=xmlada
-VERSION=${VERSION:-2015}
+VERSION=${VERSION:-2016}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 SRC_NAME=$PRGNAM-gpl-$VERSION-src
@@ -66,7 +66,7 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $SRC_NAME
-tar xvf $CWD/$SRC_NAME.tar.gz || tar xvf $CWD/949752df2432aed8d06c48d57cea71f38d0517cc
+tar xvf $CWD/$SRC_NAME.tar.gz || tar xvf $CWD/57399978c7a447658e0affc0
 
 cd $SRC_NAME
 chown -R root:root .
@@ -160,20 +160,10 @@ done
 mkdir -p $PKG/usr/share/gps/plug-ins
 sed "s/@version@/$VERSION/" $CWD/xmlada_gps.xml > \
     $PKG/usr/share/gps/plug-ins/xmlada_gps.xml
-# xmlada-config
-mkdir -p $PKG/usr/bin
-#patch -p1 < $CWD/xmlada-config.in.patch
-sed -e 's|@exec_prefix@|/usr|' \
-    -e "s|@libdir@|${LIBDIR}/xmlada|" \
-    -e 's|@includedir@|/usr/include/xmlada|' \
-    -e 's|@DEFAULT_LIBRARY_TYPE@|static|' \
-    -e "s|@PACKAGE_VERSION@|${VERSION}|" xmlada-config.in > \
-$PKG/usr/bin/xmlada-config
-chmod +x $PKG/usr/bin/xmlada-config
 
 mkdir -p $PKG/usr/doc/$PRGNAM-${VERSION}
 cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-${VERSION}
-cp README TODO COPYING3 AUTHORS features* known-problems* \
+cp README.md TODO COPYING3 AUTHORS features* known-problems* \
     $PKG/usr/doc/$PRGNAM-${VERSION}
 cp -a docs/_build/html $PKG/usr/doc/$PRGNAM-${VERSION}
 

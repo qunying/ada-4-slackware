@@ -7,7 +7,7 @@
 .PHONEY: all install
 
 ECHO := echo
-LIBVER := 4.6.0.0
+LIBVER := 2016
 
 ADALIB := $(gnatls -v | grep adalib | awk '{print $$1}')
 
@@ -22,7 +22,7 @@ all: schema/lib/static/libxmlada_schema.a \
 
 # build unicode first
 unicode/lib/static/libxmlada_unicode.a: unicode/dummy_unicode.adb
-	@${ECHO} building static unicode/lib/static/libxmlada_unicode.a library
+	@${ECHO} Building static unicode/lib/static/libxmlada_unicode.a library
 	@rm -f $@
 	gnatmake -c unicode/dummy_unicode.adb -D unicode/obj/static ${STATIC_FLAGS}
 	rm unicode/obj/static/dummy*
@@ -30,7 +30,7 @@ unicode/lib/static/libxmlada_unicode.a: unicode/dummy_unicode.adb
 	ranlib unicode/lib/static/libxmlada_unicode.a
 
 unicode/lib/relocatable/libxmlada_unicode.so: unicode/dummy_unicode.adb         
-	@${ECHO} building shared library unicode/lib/relocatable/libxmlada_unicode.so
+	@${ECHO} Building shared library unicode/lib/relocatable/libxmlada_unicode.so
 	@rm -f $@ unicode/lib/relocatable/libxmlada_unicode.so.${LIBVER}
 	gnatmake -c unicode/dummy_unicode.adb -D unicode/obj/relocatable ${DYNAMIC_FLAGS}
 	rm unicode/obj/relocatable/dummy*                                       
@@ -46,7 +46,7 @@ unicode/lib/relocatable/libxmlada_unicode.so: unicode/dummy_unicode.adb
 #
 
 input_sources/lib/static/libxmlada_input_sources.a: input_sources/dummy_input_sources.adb unicode/lib/static/libxmlada_unicode.a
-	@${ECHO} building static input_sources/lib/static/libxmlada_input_sources.a library
+	@${ECHO} Building static input_sources/lib/static/libxmlada_input_sources.a library
 	@rm -f $@
 	gnatmake -c input_sources/dummy_input_sources.adb -D input_sources/obj/static -aOunicode/obj/static -aIunicode ${STATIC_FLAGS}
 	rm input_sources/obj/static/dummy*
@@ -54,8 +54,8 @@ input_sources/lib/static/libxmlada_input_sources.a: input_sources/dummy_input_so
 	ranlib input_sources/lib/static/libxmlada_input_sources.a
 
 input_sources/lib/relocatable/libxmlada_input_sources.so: input_sources/dummy_input_sources.adb unicode/lib/relocatable/libxmlada_unicode.so
-	@${ECHO} building shared library input_sources/lib/relocatable/libxmlada_input_sources.so
-	@rm -f $@ /lib/relocatable/libxmlada_input_sources.so input_sources/lib/relocatable/libxmlada_input_sources.so.${LIBVER}
+	@${ECHO} Building shared library input_sources/lib/relocatable/libxmlada_input_sources.so
+	@rm -f $@ lib/relocatable/libxmlada_input_sources.so input_sources/lib/relocatable/libxmlada_input_sources.so.${LIBVER}
 	gnatmake -c input_sources/dummy_input_sources.adb -D input_sources/obj/relocatable -aOunicode/obj/relocatable -aIunicode ${DYNAMIC_FLAGS}
 	rm input_sources/obj/relocatable/dummy*
 	gcc -shared \
@@ -71,16 +71,18 @@ input_sources/lib/relocatable/libxmlada_input_sources.so: input_sources/dummy_in
 #
 
 sax/lib/static/libxmlada_sax.a: sax/dummy_sax.adb input_sources/lib/static/libxmlada_input_sources.a
-	@${ECHO} building static sax/lib/static/libxmlada_sax.a library
+	@${ECHO} Building static sax/lib/static/libxmlada_sax.a library
 	@rm -f $@
+	@mkdir -p sax/obj/static sax/lib/static
 	gnatmake -c sax/dummy_sax.adb -D sax/obj/static -aOunicode/obj/static -aOinput_sources/obj/static -aIunicode -aIinput_sources ${STATIC_FLAGS}
 	rm sax/obj/static/dummy*
 	ar cq sax/lib/static/libxmlada_sax.a sax/obj/static/*.o
 	ranlib sax/lib/static/libxmlada_sax.a
 
 sax/lib/relocatable/libxmlada_sax.so: sax/dummy_sax.adb input_sources/lib/relocatable/libxmlada_input_sources.so
-	@${ECHO} building shared library sax/lib/relocatable/libxmlada_sax.so
+	@${ECHO} Building shared library sax/lib/relocatable/libxmlada_sax.so
 	@rm -f $@ sax/lib/relocatable/libxmlada_sax.so.${LIBVER}
+	@mkdir -p sax/obj/relocatable sax/lib/relocatable
 	gnatmake -c sax/dummy_sax.adb -D sax/obj/relocatable -aOunicode/obj/relocatable -aOinput_sources/obj/relocatable -aIunicode -aIinput_sources ${DYNAMIC_FLAGS}
 	rm sax/obj/relocatable/dummy*
 	gcc -shared \
@@ -96,7 +98,7 @@ sax/lib/relocatable/libxmlada_sax.so: sax/dummy_sax.adb input_sources/lib/reloca
 #
 
 dom/lib/static/libxmlada_dom.a: dom/dummy_dom.adb sax/lib/static/libxmlada_sax.a
-	@${ECHO} building static dom/lib/static/libxmlada_dom.a library
+	@${ECHO} Building static dom/lib/static/libxmlada_dom.a library
 	@rm -f $@
 	gnatmake -c dom/dummy_dom.adb -D dom/obj/static -aOunicode/obj/static -aOinput_sources/obj/static -aOsax/obj/static -aIunicode -aIinput_sources -aIsax ${STATIC_FLAGS}
 	rm dom/obj/static/dummy*
@@ -104,7 +106,7 @@ dom/lib/static/libxmlada_dom.a: dom/dummy_dom.adb sax/lib/static/libxmlada_sax.a
 	ranlib dom/lib/static/libxmlada_dom.a
 
 dom/lib/relocatable/libxmlada_dom.so: dom/dummy_dom.adb sax/lib/relocatable/libxmlada_sax.so
-	@${ECHO} building shared library dom/lib/relocatable/libxmlada_dom.so
+	@${ECHO} Building shared library dom/lib/relocatable/libxmlada_dom.so
 	@rm -f dom/lib/relocatable/libxmlada_dom.so dom/lib/relocatable/libxmlada_dom.so.${LIBVER}
 	gnatmake -c dom/dummy_dom.adb -D dom/obj/relocatable -aOunicode/obj/relocatable -aOinput_sources/obj/relocatable -aOsax/obj/relocatable -aIunicode -aIinput_sources -aIsax ${DYNAMIC_FLAGS}
 	rm dom/obj/relocatable/dummy*
@@ -122,16 +124,18 @@ dom/lib/relocatable/libxmlada_dom.so: dom/dummy_dom.adb sax/lib/relocatable/libx
 #
 
 schema/lib/static/libxmlada_schema.a: schema/dummy_schema.adb dom/lib/static/libxmlada_dom.a
-	@${ECHO} building static schema/lib/static/libxmlada_schema.a library
+	@${ECHO} Building static schema/lib/static/libxmlada_schema.a library
 	@rm -f $@
+	@mkdir -p schema/obj/static schema/lib/static
 	gnatmake -c schema/dummy_schema.adb -D schema/obj/static -aOunicode/obj/static -aOinput_sources/obj/static -aOsax/obj/static -aOdom/obj/static -aIunicode -aIinput_sources -aIsax -aIdom ${STATIC_FLAGS}
 	rm schema/obj/static/dummy*
 	ar cq schema/lib/static/libxmlada_schema.a schema/obj/static/*.o
 	ranlib schema/lib/static/libxmlada_schema.a
 
 schema/lib/relocatable/libxmlada_schema.so: schema/dummy_schema.adb dom/lib/relocatable/libxmlada_dom.so
-	@${ECHO} building shared library schema/lib/relocatable/libxmlada_schema.so
+	@${ECHO} Building shared library schema/lib/relocatable/libxmlada_schema.so
 	@rm -f $@ schema/lib/relocatable/libxmlada_schema.so.${LIBVER}
+	@mkdir -p schema/obj/relocatable schema/lib/relocatable
 	gnatmake -c schema/dummy_schema.adb -D schema/obj/relocatable -aOunicode/obj/relocatable -aOinput_sources/obj/relocatable -aOsax/obj/relocatable -aOdom/obj/relocatable -aIunicode -aIinput_sources -aIsax -aIdom ${DYNAMIC_FLAGS}
 	rm schema/obj/relocatable/dummy*
 	gcc -shared \
