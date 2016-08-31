@@ -21,9 +21,11 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gprbuild
-VERSION=${VERSION:-2015}
+VERSION=${VERSION:-2016}
 BUILD=${BUILD:-1}
 TAG=${TAG-_SBo}
+
+GCC_BUILD_DIR=${GCC_BUILD_DIR:/root/build-gcc}
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -71,20 +73,31 @@ for file in $CWD/patches/*.patch ; do
     cat $file | patch -p1
 done
 if [ "$ARCH" = "x86_64" ]; then
-    sed -i 's/"lib"/"lib64"/g' gnat/prj-env.adb
-    sed -i 's/\/lib\//\/lib64\//g' gnat/projects.texi \
-	share/gprconfig/compilers.xml
+#    sed -i 's/"lib"/"lib64"/g' gnat/prj-env.adb
+    sed -i 's/\/lib\//\/lib64\//g' share/gprconfig/compilers.xml
 fi
 
+
 ln -s $CWD/Makefile.SlackBuild
+#cp $CWD/fsf* src/
 
 chown -R root:root .
-sed -e "s/@host@/$ARCH-slackware-linux/g" src/gprconfig-sdefault.ads.in > src/gprconfig-sdefault.ads
 
-echo "make -f Makefile.SlackBuild PREFIX=/usr LIBDIR=/usr/lib$LIBDIRSUFFIX \
-EXTRA_FLAGS=\"$SLKCFLAGS\""
+#./configure \
+#    --prefix=/usr \
+#    --libdir=/usr/lib$LIBDIRSUFFIX  \
+#    --infodir=/usr/info \
+#    --mandir=/usr/man
+
+#make copy_gnat_src GNAT_SOURCE_DIR=/root/build-gcc/gcc-5.3.0/gcc/ada LN="ln -sf"
+#make  LIBRARY_TYPE=relocatable all
+#find -name "*adb" | xargs sed -i "/use GNAT.OS_Lib;/a\\
+#with FSF_OS_Lib;                use FSF_OS_Lib;"
+
+mkdir obj
+
 make -f Makefile.SlackBuild PREFIX=/usr LIBDIR=/usr/lib$LIBDIRSUFFIX \
-EXTRA_FLAGS="$SLKCFLAGS"
+GCC_BUILD_DIR=$GCC_BUILD_DIR EXTRA_FLAGS=\"$SLKCFLAGS\"
 
 make -f Makefile.SlackBuild PREFIX=/usr LIBDIR=/usr/lib$LIBDIRSUFFIX \
 DESTDIR=$PKG install
@@ -100,7 +113,7 @@ mkdir -p $PKG/usr/share/gps/plug-ins
 sed "s/@version@/$VERSION/" $CWD/gprbuild_gps.xml > \
     $PKG/usr/share/gps/plug-ins/gprbuild_gps.xml
 
-cp README COPYING3 CHANGES $PKG/usr/doc/$PRGNAM-$VERSION
+cp README.md COPYING3 CHANGES $PKG/usr/doc/$PRGNAM-$VERSION
 cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
 strip $PKG/usr/bin/*
 strip $PKG/usr/libexec/gprbuild/*

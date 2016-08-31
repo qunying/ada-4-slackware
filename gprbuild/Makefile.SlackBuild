@@ -3,9 +3,11 @@
 
 AFLAGS := -gnat12 -gnaty -gnatQ -gnatpn -gnatws -g1 ${NUM_JOBS} ${EXTRA_FLAGS}
 
-COBJS := obj/link.o obj/gprbuild_dummies.o
+COBJS := obj/gpr_imports.o obj/gprbuild_dummies.o
 
 LOOK := -aI./gnat -aI./gen_src \
+	-aI./gpr \
+	-aI./gpr/src \
 	-aL${PREFIX}/lib/xmlada/dom/static \
 	-aL${PREFIX}/lib/xmlada/input/static \
 	-aL${PREFIX}/lib/xmlada/sax/static \
@@ -17,7 +19,7 @@ LOOK := -aI./gnat -aI./gen_src \
 	-aI${PREFIX}/include/xmlada/schema \
 	-aI${PREFIX}/include/xmlada/unicode \
 
-LARGS := -largs ./obj/link.o \
+LARGS := -largs ./obj/gpr_imports.o \
 	-largs ./obj/gprbuild_dummies.o \
 	-largs ${LIBDIR}/xmlada/dom/static/libxmlada_dom.a \
 	-largs ${LIBDIR}/xmlada/input/static/libxmlada_input_sources.a \
@@ -86,22 +88,20 @@ gprbuild: gprconfig src/gprbuild-main.adb ${GEN_SRCS} ${COBJS}
 	gnatmake -o gprbuild ${AFLAGS} ${LOOK} \
 		./src/gprbuild-main.adb ${LARGS}
 
-obj/link.o: gnat/link.c
-	gcc -c -o ./obj/link.o gnat/link.c
+obj/gpr_imports.o: src/gpr_imports.c
+	gcc -c -o $@ $^
 
 obj/gprbuild_dummies.o: src/gprbuild_dummies.c
-	gcc -c -o ./obj/gprbuild_dummies.o src/gprbuild_dummies.c
+	gcc -c -o $@ src/gprbuild_dummies.c
 
 generate_sources:
-	if ! [ -f ./${GENDIR}/snames.ads ]; then \
-	    mkdir -p ./${GENDIR}; \
-	    (cd ./gnat && cp xsnamest.adb xutil.* snames.adb-tmpl \
-		    snames.ads-tmpl snames.h-tmpl ../${GENDIR}); \
-	    (cd ./${GENDIR} && \
-		    gnatmake -gnatf -gnatwae -gnatyg -gnatyS xsnamest && \
-		    ./xsnamest && \
-		    mv snames.ns snames.ads && \
-		    mv snames.nb snames.adb) \
-	fi
+	mkdir -p ${CURRENT_FOLDER}/${GENDIR}
+#	(cd ${CURRENT_FOLDER}/gnat && cp xsnamest.adb xutil.* snames.adb-tmpl \
+#		snames.ads-tmpl snames.h-tmpl ../${GENDIR})
+#	(cd ${CURRENT_FOLDER}/${GENDIR} && \
+#		gnatmake -gnatf -gnatwae -gnatyg -gnatyS xsnamest && \
+#		./xsnamest && \
+#		mv snames.ns snames.ads && \
+#		mv snames.nb snames.adb)
 
 ${GEN_SRCS}: generate_sources
