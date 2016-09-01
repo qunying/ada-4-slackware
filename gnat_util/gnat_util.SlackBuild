@@ -24,7 +24,7 @@ PRGNAM=gnat_util
 VERSION=${VERSION:-5.1.0}
 BUILD=${BUILD:-1}
 TAG=${TAG-_SBo}
-GCC_VERSION=${GCC_VERSION:-5.2.0}
+GCC_VERSION=${GCC_VERSION:-6.2.0}
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -41,8 +41,8 @@ TMP=${TMP:-"/tmp/SBo"}   # For consistency's sake, use this
 PKG=${TMP}/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}   # Drop the package in /tmp
 
-GCC_SRC_BASE=${GCC_SRC_BASE:-/root/build-gcc/gcc-${GCC_VERSION}}
-GCC_BLD_BASE=${GCC_BLD_BASE:-/root/build-gcc/gcc.build.lnx}
+GCC_SRC_BASE=${GCC_SRC_BASE:-/build/gcc/gcc-${GCC_VERSION}}
+GCC_BLD_BASE=${GCC_BLD_BASE:-/build/gcc/gcc.build.lnx}
 
 if [ "$ARCH" = "i586" ]; then
   SLKCFLAGS="-O2 -march=i586 -mtune=i686"

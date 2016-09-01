@@ -12,8 +12,8 @@ gnat_util: gnat_util contains components from the GNAT FSF compiler.
 gnat_util:
 gnat_util: At least for ASIS, the components used to build it must match the
 gnat_util: components in the compiler, so if building ASIS for use with
-gnat_util: (for example) FSF GCC 5.2.0 a version of GNAT Util is needed which
-gnat_util: contains components from FSF GCC 5.2.0.
+gnat_util: (for example) FSF GCC 6.2.0 a version of GNAT Util is needed which
+gnat_util: contains components from FSF GCC 6.2.0.
 gnat_util:
 gnat_util: This project provides such a library.
 gnat_util:
