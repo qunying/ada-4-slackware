@@ -28,6 +28,8 @@ VERSION=${VERSION:-6.2.0}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 OUTPUT=${OUTPUT:-/tmp}
+MA_VER=${MA_VER:-6}
+MI_VER=${MI_VER:-2}
 
 if [ -z "$ARCH" ]; then
     case "$(uname -m)" in
@@ -67,7 +69,10 @@ mkdir install
 cp $CWD/slack-desc install/
 
 cat $CWD/doinst.sh | \
-    sed "s/%lib%/lib$LIBDIRSUFFIX/;s/%GCC_GNATLIB_PATH%/gcc\/$ARCH-slackware-linux\/$VERSION\/adalib/g" \
+  sed -e "s/%lib%/lib$LIBDIRSUFFIX/g" \
+      -e "s/%GCC_GNATLIB_PATH%/gcc\/$ARCH-slackware-linux\/$VERSION\/adalib/g" \
+      -e "s/%ma_ver%/$MA_VER/g" \
+      -e "s/%mi_ver%/$MI_VER/g"  \
     > install/doinst.sh
 
 makepkg -l y -c n $OUTPUT/$PKGNAM-$VERSION-$ARCH-${BUILD}$TAG.${PKGTYPE:-tgz}
