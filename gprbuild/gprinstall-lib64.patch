@@ -1,0 +1,15 @@
+--- gprbuild-gpl-2016-src/src/gprinstall.ads	2016-09-01 17:25:57.652102533 -0700
++++ gprbuild-gpl-2016-new/src/gprinstall.ads	2016-09-01 17:28:00.389569115 -0700
+@@ -64,10 +64,10 @@
+    Global_Exec_Subdir : Param := (new String'("bin" & DS), True);
+    --  Subdirectory for executable
+ 
+-   Global_Lib_Subdir : Param := (new String'("lib" & DS), True);
++   Global_Lib_Subdir : Param := (new String'("lib64" & DS), True);
+    --  Subdirectory for libraries
+ 
+-   Global_Link_Lib_Subdir : Param := (new String'("lib" & DS), True);
++   Global_Link_Lib_Subdir : Param := (new String'("lib64" & DS), True);
+    --  Subdirectory for libraries sym links (on UNIX)
+ 
+    Global_Sources_Subdir : Param := (new String'("include" & DS), True);
