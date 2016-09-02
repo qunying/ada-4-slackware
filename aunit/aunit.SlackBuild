@@ -21,8 +21,8 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=aunit
-VERSION=${VERSION:-2015}
-SRC_VERSION=${SRC_VERSION:-3.8.0w}
+VERSION=${VERSION:-2016}
+#SRC_VERSION=${SRC_VERSION:-3.8.0w}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
@@ -65,10 +65,10 @@ set -e # Exit on most errors
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-$SRC_VERSION-src
+rm -rf $PRGNAM-gpl-$VERSION-src
 tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.tar.gz
 
-cd $PRGNAM-$SRC_VERSION-src
+cd $PRGNAM-gpl-$VERSION-src
 chown -R root:root .
 find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
