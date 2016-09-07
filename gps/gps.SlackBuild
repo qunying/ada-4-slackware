@@ -21,12 +21,12 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gps
-VERSION=${VERSION:-6.1.1}
+VERSION=${VERSION:-2016}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
-GPRBUILD_VERSION=${GPRBUILD_VERSION:-2015}
-GNATCOLL_VERSION=${GNATCOLL_VERSION:-2015}
+GPRBUILD_VERSION=${GPRBUILD_VERSION:-2016}
+GNATCOLL_VERSION=${GNATCOLL_VERSION:-16.1}
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -72,10 +72,10 @@ fi
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-$VERSION-src
-tar xvf $CWD/$PRGNAM-$VERSION-src.tar.gz || tar xvf eabc020e818b1c6b8a6dc5ea3f665a479a49bb14
+rm -rf $PRGNAM-gpl-$VERSION-src
+tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.tar.gz || tar xvf 573996dec7a447658e0affaa
 
-cd $PRGNAM-$VERSION-src
+cd $PRGNAM-gpl-$VERSION-src
 chown -R root:root .
 find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
@@ -83,28 +83,27 @@ find . \
  \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
  -exec chmod 644 {} \; || exit 1
 
-for file in $CWD/patches/*.patch ; do
-    patch -p1 < $file ;
+for file in $CWD/patches/* ; do
+    echo "patching $file"
+    patch -p0 < $file ;
 done
 
-sed -i "s/share\/doc\/gps/doc\/gps-$VERSION/" docs/Makefile.in
-
+#sed -i "s/share\/doc\/gps/doc\/gps-$VERSION/" docs/Makefile.in
+autoreconf 
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
 ./configure \
     --prefix=/usr \
     --libdir=/usr/lib${LIBDIRSUFFIX} \
     --infodir=/usr/info \
-    --enable-projects \
-    --disable-shared \
     --docdir=/usr/doc/$PRGNAM-$VERSION \
     --build=$ARCH-slackware-linux
 
 # fix document path
-sed -i "s/share\/doc\/gps/doc\/gps-$VERSION/" docs/gps_index.xml
-sed -i "s/share\/doc\/gprbuild/doc\/gprbuild-$GPRBUILD_VERSION/" docs/gps_index.xml
-sed -i "s/share\/doc\//doc\//" docs/gps_index.xml
-sed -i "s/share\/doc\/gps/doc\/gps-$VERSION/" help/src/help_module.adb
+#sed -i "s/share\/doc\/gps/doc\/gps-$VERSION/" docs/gps_index.xml
+#sed -i "s/share\/doc\/gprbuild/doc\/gprbuild-$GPRBUILD_VERSION/" docs/gps_index.xml
+#sed -i "s/share\/doc\//doc\//" docs/gps_index.xml
+#sed -i "s/share\/doc\/gps/doc\/gps-$VERSION/" help/src/help_module.adb
 
 ln -s ../gnatcoll-gpl-$GNATCOLL_VERSION-src gnatlib
 
@@ -113,12 +112,10 @@ make Build=Production OS=unix
 make prefix=$PKG/usr libdir=$PKG/usr/lib${LIBDIRSUFFIX} install
 
 strip $PKG/usr/bin/*
+mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
 mv $PKG/usr/share/examples $PKG/usr/doc/$PRGNAM-$VERSION
 cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-$VERSION
 cp README INSTALL COPYING3 $PKG/usr/doc/$PRGNAM-$VERSION
-
-#remove the local gnatcoll install
-rm -rf $PKG/usr/share/gps/support/core/gnatcoll
 
 mkdir -p $PKG/install
 cp $CWD/slack-desc $PKG/install
