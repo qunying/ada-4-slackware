@@ -8,11 +8,6 @@ COBJS := obj/gpr_imports.o obj/gprbuild_dummies.o
 LOOK := -aI./gnat -aI./gen_src \
 	-aI./gpr \
 	-aI./gpr/src \
-	-aL${PREFIX}/lib/xmlada/dom/static \
-	-aL${PREFIX}/lib/xmlada/input/static \
-	-aL${PREFIX}/lib/xmlada/sax/static \
-	-aL${PREFIX}/lib/xmlada/schema/static \
-	-aL${PREFIX}/lib/xmlada/unicode/static \
 	-aI${PREFIX}/include/xmlada/dom \
 	-aI${PREFIX}/include/xmlada/input \
 	-aI${PREFIX}/include/xmlada/sax \
@@ -35,6 +30,7 @@ DOCSDIR  := ${PREFIX}/share/doc/gprbuild
 BSD_INSTALL_PROGRAM := install
 BSD_INSTALL_DATA := install
 
+LIBGPR := lib/static/libgpr.a lib/relocatable/libgpr.so.${LIBVER}
 
 all: gprbuild
 
@@ -42,14 +38,28 @@ install:
 	mkdir -p ${DESTDIR}${PREFIX}/bin \
 		${DESTDIR}${PREFIX}/libexec/gprbuild \
 		${DESTDIR}${PREFIX}/share/gpr \
-		${DESTDIR}${PREFIX}/share/gprconfig
+		${DESTDIR}${PREFIX}/share/gprconfig \
+		${DESTDIR}${PREFIX}/include/gpr \
+		${DESTDIR}${LIBDIR}/gpr/static \
+		${DESTDIR}${LIBDIR}/gpr/relocatable \
 
 	${BSD_INSTALL_PROGRAM} \
                 ./gprclean \
+		./gprbind \
+		./gprlib \
+		./gprslave \
 		./gprinstall \
 		./gprconfig \
-		./gprslave \
 		./gprbuild ${DESTDIR}${PREFIX}/bin
+
+	cp ./gpr/src/* ${DESTDIR}${PREFIX}/include/gpr
+	rm ${DESTDIR}${PREFIX}/include/gpr/dummy*
+	cp lib/static/*ali ${DESTDIR}${LIBDIR}/gpr/static
+	cp lib/static/libgpr.a ${DESTDIR}${LIBDIR}/gpr/static
+	cp lib/relocatable/*ali ${DESTDIR}${LIBDIR}/gpr/relocatable
+	cp lib/relocatable/*.so.${LIBVER} ${DESTDIR}${LIBDIR}/gpr/relocatable
+	(cd ${DESTDIR}${LIBDIR}/gpr/relocatable; \
+	ln -s libgpr.so.${LIBVER} libgpr.so)
 
 	${BSD_INSTALL_PROGRAM} ./gprbind \
 		./gprlib ${DESTDIR}${PREFIX}/libexec/gprbuild
@@ -60,7 +70,19 @@ install:
 	${BSD_INSTALL_DATA} ./share/gprconfig/* \
 		${DESTDIR}${PREFIX}/share/gprconfig
 
-gprclean: src/gprclean-main.adb ${GEN_SRCS} ${COBJS}
+lib/static/libgpr.a: gpr/src/dummy_gpr.adb
+	gnatmake -c $^ -D lib/static $(AFLAGS)
+	rm lib/static/dummy*
+	ar cq lib/static/libgpr.a lib/static/*.o
+	ranlib lib/static/libgpr.a
+
+lib/relocatable/libgpr.so.${LIBVER}: gpr/src/dummy_gpr.adb
+	gnatmake -c $^ -D lib/relocatable -fPIC $(AFLAGS)
+	rm lib/relocatable/dummy*
+	gcc -shared -lgnat -o $@ -Wl,-soname,libgpr.so.${LIBVER} \
+	lib/relocatable/*.o
+
+gprclean: $(LIBGPR) src/gprclean-main.adb ${GEN_SRCS} ${COBJS}
 	gnatmake -o gprclean ${AFLAGS} ${LOOK} \
 		./src/gprclean-main.adb ${LARGS}
 

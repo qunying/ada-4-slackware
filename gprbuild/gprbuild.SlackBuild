@@ -69,9 +69,10 @@ tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.tar.gz || tar xvf c9d9271952a829ff1d355a01
 cd $PRGNAM-gpl-$VERSION-src
 
 # patch source according to the debian patch
-for file in $CWD/patches/*.patch ; do
-    cat $file | patch -p1
-done
+#for file in $CWD/patches/*.patch ; do
+#    cat $file | patch -p1
+#done
+
 if [ "$ARCH" = "x86_64" ]; then
 #    sed -i 's/"lib"/"lib64"/g' gnat/prj-env.adb
     sed -i 's/\/lib\//\/lib64\//g' share/gprconfig/compilers.xml
@@ -81,31 +82,40 @@ fi
 
 
 ln -s $CWD/Makefile.SlackBuild
-#cp $CWD/fsf* src/
 
 chown -R root:root .
 
-#./configure \
-#    --prefix=/usr \
-#    --libdir=/usr/lib$LIBDIRSUFFIX  \
-#    --infodir=/usr/info \
-#    --mandir=/usr/man
-
-#make copy_gnat_src GNAT_SOURCE_DIR=/root/build-gcc/gcc-5.3.0/gcc/ada LN="ln -sf"
-#make  LIBRARY_TYPE=relocatable all
-#find -name "*adb" | xargs sed -i "/use GNAT.OS_Lib;/a\\
-#with FSF_OS_Lib;                use FSF_OS_Lib;"
-
 mkdir obj
 
+mkdir -p lib/static mkdir -p lib/relocatable
+
+# create a dummy lib files to compile libgpr
+(cd gpr/src; \
+ grep --no-filename ^package *ads | \
+ awk '{print "with " $2 ";"}' | sort > dummy_gpr.adb
+cat << EOF >> dummy_gpr.adb
+procedure dummy_gpr is
+begin
+   null;
+end dummy_gpr;
+EOF
+)
+
 make -f Makefile.SlackBuild PREFIX=/usr LIBDIR=/usr/lib$LIBDIRSUFFIX \
+LIBVER=$VERSION \
 GCC_BUILD_DIR=$GCC_BUILD_DIR EXTRA_FLAGS=\"$SLKCFLAGS\"
 
 make -f Makefile.SlackBuild PREFIX=/usr LIBDIR=/usr/lib$LIBDIRSUFFIX \
+LIBVER=$VERSION \
 DESTDIR=$PKG install
 
 mkdir -p $PKG/usr/doc/gprbuild-$VERSION
-mkdir -p $PKG/usr/info
+mkdir -p $PKG/usr/info $PKG/usr/lib$LIBDIRSUFFIX/gnat
+cp $CWD/gpr.gpr $PKG/usr/lib$LIBDIRSUFFIX/gnat
+(cd $PKG/usr/lib$LIBDIRSUFFIX;
+ ln -s gpr/relocatable/libgpr.so.$VERSION;
+ ln -s gpr/relocatable/libgpr.so.$VERSION libgpr.so;
+)
 cp -a doc/html $PKG/usr/doc/gprbuild-$VERSION
 cp doc/info/*info $PKG/usr/info
 gzip $PKG/usr/info/*
@@ -122,7 +132,7 @@ strip $PKG/usr/libexec/gprbuild/*
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
-rm $PKG/usr/share/gprconfig/*.orig
+#rm $PKG/usr/share/gprconfig/*.orig
 
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-${VERSION}-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
