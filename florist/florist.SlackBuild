@@ -21,7 +21,7 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=florist
-VERSION=${VERSION:-2015}
+VERSION=${VERSION:-2016}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
@@ -62,7 +62,7 @@ mkdir -p $TMP $PKG $OUTPUT
 
 cd $TMP
 rm -rf $PRGNAM-gpl-$VERSION-src
-tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.tar.gz || tar xvf 01a5a83b6c52f1abc8ffa8983d0ad32b0d34ce4b
+tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.tar.gz || tar xvf c739f1c1e724b177a7bbc682435d2df3
 
 cd $PRGNAM-gpl-$VERSION-src
 chown -R root:root .
@@ -75,7 +75,7 @@ find . \
 sed -i -e 's/sources-subdir=floristlib/sources-subdir=$(SRC_DIR)/' \
     -e 's/sources-subdir=floristlib/sources-subdir=$(LIB_DIR)/' \
     -e 's/lib-subdir=floristlib/lib-subdir=$(LIB_DIR)/' \
-    -e 's/link-lib-subdir=floristlib/link-lib-subdir=$(LIB_DIR)/' \
+    -e "s/link-lib-subdir=floristlib/link-lib-subdir=lib$(LIBDIRSUFFIX)/" \
     -e 's/\/floristlib\//\/*\/florist\//' Makefile.in
 
 # build static library
