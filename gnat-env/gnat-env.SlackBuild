@@ -65,6 +65,7 @@ mkdir -p etc/profile.d
 sed "s/%lib%/lib$LIBDIRSUFFIX/" $CWD/ada.sh > etc/profile.d/ada.sh
 sed "s/%lib%/lib$LIBDIRSUFFIX/" $CWD/ada.csh > etc/profile.d/ada.csh
 
+chmod +x etc/profile.d/ada*
 mkdir install
 cp $CWD/slack-desc install/
 
