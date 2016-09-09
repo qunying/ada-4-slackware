@@ -14,6 +14,6 @@ adactl: rules. It is not intended to supplement checks made by the compiler,
 adactl: but rather to search for particular violations of good-practice rules,
 adactl: or to check that some rules are obeyed project-wide. 
 adactl: 
-adactl: 
 adactl: Home page: http://http://www.adalog.fr/adacontrol2.htm
 adactl: 
+adactl:
