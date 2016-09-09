@@ -21,9 +21,10 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=sparforte
-VERSION=${VERSION:-1.5.1}
+VERSION=${VERSION:-e708a06}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
+FULL_GIT_VER=e708a06a61bd8a8557a29cfea6896f3a14bd3ed9
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -61,25 +62,25 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 
 cd $TMP
-rm -rf $PRGNAM-$VERSION-src
-tar xvf $CWD/$PRGNAM-$VERSION-src.tar.?z*
+rm -rf SparForte-$FULL_GIT_VER
 
-cd $PRGNAM-$VERSION-src
+unzip $CWD/$FULL_GIT_VER.zip
+
+cd SparForte-$FULL_GIT_VER
 chown -R root:root .
-find . \
- \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
- -exec chmod 755 {} \; -o \
- \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
- -exec chmod 644 {} \; || exit 1
 
+patch -p1 < $CWD/mysql_xty.patch
 # build static library
 ./configure \
     --arch=$ARCH \
     --prefix=/usr \
-    --manprefix=/usr/man \
-    $NO_MYSQL \
-    --without-postgres
+    --manprefix=/usr/man
 
+sed -i -e "s/:libreadline.so.6/readline/g" \
+       -e "s/:libhistory.so.6/history -lncurses/" \
+       -e "s/^LIBS=-L/LIBS=/g" src/GNUmakefile
+sed -i -e "s/:libreadline.so.6/readline/g" \
+       -e"s/:libhistory.so.6/history -lncurses/" src/areadline/Makefile
 make all
 
 make RPM_BUILD_ROOT=1 DESTDIR=$PKG install
