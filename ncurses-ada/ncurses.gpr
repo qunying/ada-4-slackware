@@ -10,4 +10,11 @@ project ncurses is
 
    for Externally_Built use "true";
 
+   package Naming is
+      for dot_replacement use "-";
+      for casing use "lowercase";
+
+      for body_suffix ("ada") use ".adb";
+      for spec_suffix ("ada") use ".ads";
+   end Naming;
 end ncruses;
