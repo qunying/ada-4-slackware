@@ -97,4 +97,4 @@ cd $PKG
 
 mkdir -p $PKG/install
 cp $CWD/slack-desc $PKG/install
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$GCC_VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
