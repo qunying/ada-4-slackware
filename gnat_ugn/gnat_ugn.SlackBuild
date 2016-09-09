@@ -23,7 +23,7 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gnat_ugn # replace with name of program
-VERSION=${VERSION:-5.2.0}	# replace with version of program
+VERSION=${VERSION:-6.2.0}	# replace with version of program
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}		# the "_SBo" is required
 
@@ -41,9 +41,6 @@ cd $TMP
 mkdir -p $PKG/usr/doc/gcc-$VERSION/html
 cd $PKG/usr/doc/gcc-$VERSION/html
 tar xvf $CWD/$PRGNAM-html.tar.gz
-# need to remove some garbage output
-sed -i 's/{No\ value\ for\ `TITLESUFFIX'\''}//g' $PRGNAM/*html
-sed -i 's/{No\ value\ for\ `PLATFORM'\''}//g' $PRGNAM/*html
 
 mkdir -p $PKG/usr/share/gps/plug-ins/
 sed "s/@version@/$VERSION/g" $CWD/${PRGNAM}.xml > $PKG/usr/share/gps/plug-ins/${PRGNAM}${VERSION}.xml
