@@ -5,6 +5,6 @@ DOWNLOAD="http://sourceforge.net/projects/gnatutil/files/5.1.0/gnat_util-5.1.0.t
 MD5SUM="4a7a6642bc5c3dfe67bfacf2d14206cc"
 DOWNLOAD_x86_64=""
 MD5SUM_x86_64=""
-REQUIRES=""
+REQUIRES="gprbuild"
 MAINTAINER="Zhu Qun-Ying"
 EMAIL="zhu.qunying@gmail.com"
