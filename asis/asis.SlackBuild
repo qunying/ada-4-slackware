@@ -21,7 +21,7 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=asis
-VERSION=${VERSION:-2015}
+VERSION=${VERSION:-2016}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
@@ -71,25 +71,32 @@ find . \
  \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
  -exec chmod 644 {} \; || exit 1
 
-for file in $CWD/patches/*.patch ; do
-    patch -p1 < $file;
+for file in $CWD/patches/patch* ; do
+    patch -p0 < $file;
 done
 
-sed -i "s/share\/doc\/asis/doc\/asis-$VERSION/" documentation/asis.xml
+sed -i "s/share\/doc\/asis/doc\/asis-$VERSION/" doc/asis.xml
 
-make prefix=/usr LIBDIR_SUFFIX=$LIBDIRSUFFIX asis_version=$VERSION all tools
+if [ "$ARCH" == "x86_64" ] ; then
+    sed -i 's/lib\//lib64\//g' Makefile
+fi
+# remove the asis directory
+sed -i 's/\/asis / /g' Makefile
+sed -i "s/share\/doc\/asis/doc\/asis-$VERSION/g" asis.gpr
+sed -i "s/share\/doc\/gnat/doc\/asis-$VERSION/g" tools/gnatcheck/gnatcheck.gpr
 
-make prefix=$PKG/usr LIBDIR_SUFFIX=$LIBDIRSUFFIX asis_version=$VERSION install install-tools
+make all tools
 
-mv $PKG/usr/share/doc $PKG/usr/
-mv $PKG/usr/doc/$PRGNAM $PKG/usr/doc/$PRGNAM-$VERSION
+make prefix=$PKG/usr install install-tools
+
 mv $PKG/usr/doc/$PRGNAM-$VERSION/info $PKG/usr/
 # move gnatcheck info to the system info directory
-mv $PKG/usr/doc/gnat/info/* $PKG/usr/info
-rmdir $PKG/usr/doc/gnat/info
+rm $PKG/usr/include/*.ad{s,b}
+rm $PKG/usr/lib$LIBDIRSUFFIX/gnat/gnat*gpr
+rm $PKG/usr/lib$LIBDIRSUFFIX/gnat/manifests/gnat*
 
 gzip $PKG/usr/info/*
-cp README features* asis-2005-transition.txt $PKG/usr/doc/$PRGNAM-$VERSION
+cp README $PKG/usr/doc/$PRGNAM-$VERSION
 
 strip $PKG/usr/bin/*
 
