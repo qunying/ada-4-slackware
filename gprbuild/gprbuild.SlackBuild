@@ -25,7 +25,7 @@ VERSION=${VERSION:-2016}
 BUILD=${BUILD:-1}
 TAG=${TAG-_SBo}
 
-GCC_BUILD_DIR=${GCC_BUILD_DIR:/root/build-gcc}
+GCC_BUILD_DIR=${GCC_BUILD_DIR:-/build/gcc}
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -101,13 +101,15 @@ end dummy_gpr;
 EOF
 )
 
-make -f Makefile.SlackBuild PREFIX=/usr LIBDIR=/usr/lib$LIBDIRSUFFIX \
-LIBVER=$VERSION \
-GCC_BUILD_DIR=$GCC_BUILD_DIR EXTRA_FLAGS=\"$SLKCFLAGS\"
+EXTRA_FLAGS=$SLKCFLAGS \
+PREFIX=/usr LIBDIR=/usr/lib$LIBDIRSUFFIX \
+LIBVER=$VERSION GCC_BUILD_DIR=$GCC_BUILD_DIR \
+make -f Makefile.SlackBuild
 
-make -f Makefile.SlackBuild PREFIX=/usr LIBDIR=/usr/lib$LIBDIRSUFFIX \
+PREFIX=/usr LIBDIR=/usr/lib$LIBDIRSUFFIX \
 LIBVER=$VERSION \
-DESTDIR=$PKG install
+DESTDIR=$PKG \
+make -f Makefile.SlackBuild install
 
 mkdir -p $PKG/usr/doc/gprbuild-$VERSION
 mkdir -p $PKG/usr/info $PKG/usr/lib$LIBDIRSUFFIX/gnat
