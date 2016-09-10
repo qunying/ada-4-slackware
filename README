@@ -10,7 +10,7 @@ The build order will be
 * gtkada
 * aunit
 * gnatcoll
-* gps <= depends on pygobject3, could use build script from SlackBuids.org
+* gps
 * florist
 * asis
 * gnatmem
