@@ -75,7 +75,7 @@ find . \
 sed -i -e 's/sources-subdir=floristlib/sources-subdir=$(SRC_DIR)/' \
     -e 's/sources-subdir=floristlib/sources-subdir=$(LIB_DIR)/' \
     -e 's/lib-subdir=floristlib/lib-subdir=$(LIB_DIR)/' \
-    -e "s/link-lib-subdir=floristlib/link-lib-subdir=lib$(LIBDIRSUFFIX)/" \
+    -e "s/link-lib-subdir=floristlib/link-lib-subdir=lib$LIBDIRSUFFIX/" \
     -e 's/\/floristlib\//\/*\/florist\//' Makefile.in
 
 # build static library
