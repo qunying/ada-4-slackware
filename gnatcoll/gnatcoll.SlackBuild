@@ -92,7 +92,6 @@ sed -i -e 's/@prefix@/${DESTDIR}@prefix@/g' \
     --prefix=/usr \
     --libdir=/usr/lib$LIBDIRSUFFIX \
     --enable-shared \
-    --enable-projects \
     --build=$ARCH-slackware-linux
 make Gnatcoll_Build=Production
 make docs
@@ -107,6 +106,11 @@ cp README COPYING3 known-problems* features* $PKG/usr/doc/$PRGNAM-$VERSION
 
 mkdir -p $PKG/install
 cp $CWD/slack-desc $PKG/install
+
+#remove duplicate gpr related entry, it will case later compile error since the
+#gpr.gpr file is not valid.
+rm -rf $PKG/usr/include/gnatcoll/gpr* $PKG/usr/lib$LIBDIRSUFFIX/gnat/gpr.gpr \
+       $PKG/usr/lib$LIBDIRSUFFIX/gnatcoll/gpr*
 
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
