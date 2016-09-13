@@ -69,18 +69,16 @@ unzip $CWD/$FULL_GIT_VER.zip
 cd SparForte-$FULL_GIT_VER
 chown -R root:root .
 
-patch -p1 < $CWD/mysql_xty.patch
+for file in $CWD/patch/* ; do
+    patch -p1 < $file
+done
 # build static library
 ./configure \
     --arch=$ARCH \
     --prefix=/usr \
     --manprefix=/usr/man
 
-sed -i -e "s/:libreadline.so.6/readline/g" \
-       -e "s/:libhistory.so.6/history -lncurses/" \
-       -e "s/^LIBS=-L/LIBS=/g" src/GNUmakefile
-sed -i -e "s/:libreadline.so.6/readline/g" \
-       -e"s/:libhistory.so.6/history -lncurses/" src/areadline/Makefile
+sed -i -e "s/^LIBS=-L/LIBS=/g" src/GNUmakefile
 make all
 
 make RPM_BUILD_ROOT=1 DESTDIR=$PKG install
