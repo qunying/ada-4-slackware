@@ -145,9 +145,17 @@ cat $CWD/slack-desc.gcc-go > $PKG8/install/slack-desc
 cd $TMP
 tar xvf $CWD/gcc-$VERSION.tar.?z*
 
-( cd gcc-$VERSION/gcc
-  zcat $CWD/gcc.66782.diff.gz | patch -p0 --verbose || exit 1
-) || exit 1
+# Fix a register clobber bug that breaks compiling Wine.
+#
+# NOTE:
+# The patch still applies to the gcc source, but Wine compiles fine without
+# it now (previously an internal compiler error would cause the Wine build
+# to error out).  It seems likely that the issue was fixed elsewhere in a
+# more correct way.
+#
+#( cd gcc-$VERSION/gcc
+#  zcat $CWD/gcc.66782.diff.gz | patch -p0 --verbose || exit 1
+#) || exit 1
 
 # Copy ecj.jar into the TLD of the source. Needed for java compiler.
 # This can be retrieved from ftp://sourceware.org/pub/java
