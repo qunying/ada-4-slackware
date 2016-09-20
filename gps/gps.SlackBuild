@@ -22,11 +22,12 @@
 
 PRGNAM=gps
 VERSION=${VERSION:-2016}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 TAG=${TAG:-_SBo}
 
 GPRBUILD_VERSION=${GPRBUILD_VERSION:-2016}
 GNATCOLL_VERSION=${GNATCOLL_VERSION:-16.1}
+GCC_VERSION=${GCC_VERSION:-6.2.0}
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -100,10 +101,11 @@ CXXFLAGS="$SLKCFLAGS" \
     --build=$ARCH-slackware-linux
 
 # fix document path
-#sed -i "s/share\/doc\/gps/doc\/gps-$VERSION/" docs/gps_index.xml
-#sed -i "s/share\/doc\/gprbuild/doc\/gprbuild-$GPRBUILD_VERSION/" docs/gps_index.xml
-#sed -i "s/share\/doc\//doc\//" docs/gps_index.xml
-#sed -i "s/share\/doc\/gps/doc\/gps-$VERSION/" help/src/help_module.adb
+sed -i -e "s/share\/doc\/gps/doc\/gps-$VERSION/" \
+       -e "s/share\/doc\/gprbuild/doc\/gprbuild-$GPRBUILD_VERSION/" \
+       -e "s/share\/doc\//doc\//" \
+       -e "s/gnat\/html/gcc-$GCC_VERSION\/html/" docs/gps_index.xml
+sed -i "s/share\/doc\/gps/doc\/gps-$VERSION/" help/src/help_module.adb
 
 ln -s ../gnatcoll-gpl-$GNATCOLL_VERSION-src gnatlib
 
