@@ -78,6 +78,7 @@ done
     --prefix=/usr \
     --manprefix=/usr/man
 
+sed -i -e "s/^LIBS=-L/LIBS=/g" src/GNUmakefile
 make all
 
 make RPM_BUILD_ROOT=1 DESTDIR=$PKG install
