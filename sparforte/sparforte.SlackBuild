@@ -21,10 +21,9 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=sparforte
-VERSION=${VERSION:-e708a06}
+VERSION=${VERSION:-2.0}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
-FULL_GIT_VER=e708a06a61bd8a8557a29cfea6896f3a14bd3ed9
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -62,11 +61,11 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 
 cd $TMP
-rm -rf SparForte-$FULL_GIT_VER
+rm -rf SparForte-$VERSION
 
-unzip $CWD/$FULL_GIT_VER.zip
+tar xvf $CWD/$PRGNAM-v$VERSION.tar.gz
 
-cd SparForte-$FULL_GIT_VER
+cd SparForte-$VERSION
 chown -R root:root .
 
 for file in $CWD/patch/* ; do

@@ -1,51 +1,83 @@
 diff --git a/configure b/configure
-index cb1fc96..4b06aaf 100755
+index 69452da..2628f76 100755
 --- a/configure
 +++ b/configure
-@@ -1020,12 +1020,12 @@ else
-    fi
- fi
+@@ -1089,25 +1089,6 @@ echo "Configuring third-party APQ (Database Library)..."
+ sleep 1
  
--if [ -z "$NO_MYSQL" -a -z "$NO_POSTGRES" ] ; then
-+if [ ! -z "$HAS_MYSQL" -o ! -z "$HAS_POSTGRES" ] ; then
+ echo -n "apq library: checking for one or more database config scripts... "
+-if [ -n "$NO_MYSQL" -a -n "$NO_POSTGRES" ] ; then
+-   echo "no"
+-else
+-   if [ -z "$HAS_POSTGRES" ] ; then
+-      if [ -z "$HAS_MYSQL" ] ; then
+-         echo "no"
+-         echo
+-         echo "The APQ library uses the pg_config and mysql_config scripts to configure"
+-         echo "itself.  Not all operating systems include these, or they include them"
+-         echo "as part of the 'devel' packages.  If you don't have these scripts, you"
+-         echo "copy them from the database sources into /usr/local/bin"
+-         exit 1
+-      else
+-         echo "yes"
+-      fi
+-   else
+-      echo "yes"
+-   fi
+-fi
+ 
+ # APQ will not build with no database selected.  If no database is selected,
+ # skip this step.  Otherwise, select one database or both through the APQ
+@@ -1117,14 +1098,14 @@ fi
+ # NO_MYSQL means the user requests no MSYQL support, not that MySQL is not
+ # installed (that is HAS_MYSQL).
+ 
+-if [ -n "$NO_MYSQL" -a -n "$NO_POSTGRES" ] ; then
++if [ -z "$HAS_MYSQL" -a -z "$HAS_POSTGRES" ] ; then
+     echo "No MySQL or PostgreSQL support."
+ else
     cd apq-2.1
--   if [ ! -z "$NO_MYSQL" -a -z "$NO_POSTGRES" ] ; then
-+   if [ -z "$HAS_MYSQL" -a ! -z "$HAS_POSTGRES" ] ; then
+-   if [ -n "$NO_MYSQL" -a -z "$NO_POSTGRES" ] ; then
++   if [ -z "$HAS_MYSQL" -a -n "$HAS_POSTGRES" ] ; then
        echo "Running APQ's configure (no MySQL)..."
        HAVE_MY=0 ./configure
--   elif [ -z "$NO_MYSQL" -a ! -z "$NO_POSTGRES" ] ; then
-+   elif [ ! -z "$HAS_MYSQL" -a -z "$HAS_POSTGRES" ] ; then
+-   elif [ -z "$NO_MYSQL" -a -n "$NO_POSTGRES" ] ; then
++   elif [ -n "$HAS_MYSQL" -a -z "$HAS_POSTGRES" ] ; then
        echo "Running APQ's configure (no PostgreSQL)..."
        HAVE_PG=0 ./configure
     else
-@@ -1033,6 +1033,8 @@ if [ -z "$NO_MYSQL" -a -z "$NO_POSTGRES" ] ; then
-       ./configure
+@@ -1133,6 +1114,7 @@ else
     fi
     cd -
-+else
-+    echo "No MySQL or PostgreSQL support."
  fi
++
  #if test -f Makeincl ; then
  #   mv -f Makeincl apq-2.1/Makeincl
-@@ -1197,6 +1199,7 @@ test -f temp.adb && rm temp.adb
- # options into the file with sed.
- 
- if [ \( -z "$HAS_MYSQL" \) -a \( -z "$HAS_POSTGRES" \) ] ; then
-+   echo "Disable APQ"
-    APQMAKESUB="@echo \"Disabled\""
- else
-    APQMAKESUB='$(MAKE) -C apq-2.1\/'
-@@ -1261,7 +1264,7 @@ else
- fi
- if [ -z "$NO_READLINE" ] ; then
+ #fi
+@@ -1367,7 +1349,7 @@ if [ -z "$NO_READLINE" ] ; then
     RLINCL="\-I\.\/areadline\/"
+    # Linux Mint doesn't need ncurses and breaks...needed for Slackware?
+    #RLLIBS="\-L\/lib\/x86_64\-linux\-gnu\/\ \-l:libreadline.so.6\ \-l:libhistory.so.6\ \-lncurses"
 -   RLLIBS="\-L\/lib\/x86_64\-linux\-gnu\/\ \-l:libreadline.so.6\ \-l:libhistory.so.6"
-+   RLLIBS="\-L\/lib\/x86_64\-linux\-gnu\/\ \-lreadline \-lhistory \-lncurses"
++   RLLIBS="\-lreadline\ \-lhistory\ \-lncurses"
  else
     RLINCL=
     RLLIBS=
+diff --git a/src/GNUmakefile.orig b/src/GNUmakefile.orig
+index b68f85e..77d6d98 100644
+--- a/src/GNUmakefile.orig
++++ b/src/GNUmakefile.orig
+@@ -50,7 +50,7 @@ INCLUDE=-I./adacgi-1.6/ ${APQINCL} -I./pegasock/ ${MESAINCL} ${SDLINCL} ${BDBINC
+ INCLUDE_BIND=-I./adacgi-1.6/ ${APQINCL} -I./pegasock/ ${BDBINCL} ${RLINCL} #${MESAINCL}
+ #LIBS=-L`pg_config --libdir` -L./apq-1.92/ -lpq -lSDL ${PTHREAD_LIBS}
+ #LIBS=-L`pg_config --libdir` -L./apq-2.1/ ./apq-2.1/c_mysql.o -l SDL -l SDL_image ${PTHREAD_LIBS}
+-LIBS=-L ${PGLIBS} ${MYSQLLIBS} ${APQLIBS} -L./pegasock/ ./pegasock/c_tinyserve.o ./pegasock/c_os.o ${SDLLIBS} ${MESALIBS} ${BDBLIBS} ${RLLIBS}
++LIBS=${PGLIBS} ${MYSQLLIBS} ${APQLIBS} -L./pegasock/ ./pegasock/c_tinyserve.o ./pegasock/c_os.o ${SDLLIBS} ${MESALIBS} ${BDBLIBS} ${RLLIBS}
+ # c_mysql.o missing in APQ 2.1 library
+ 
+ # Make Rules Start
 diff --git a/src/areadline/Makefile b/src/areadline/Makefile
-index 662e226..cae3b2a 100644
+index d24b1ef..75566ea 100644
 --- a/src/areadline/Makefile
 +++ b/src/areadline/Makefile
 @@ -2,7 +2,7 @@
@@ -53,7 +85,7 @@ index 662e226..cae3b2a 100644
  	gnatmake -c -O2 -gnatfoN rl.adb
  	gnatbind -x rl.ali
 -	gnatlink rl.ali -L/lib/x86_64-linux-gnu/ -l:libreadline.so.6 -l:libhistory.so.6
-+	gnatlink rl.ali -L/lib/x86_64-linux-gnu/ -lreadline -lhistory -lcurses
++	gnatlink rl.ali -lreadline -lhistory -lncurses
+ 	#ncurses crashes Linux Mint build
+ 	#gnatlink rl.ali -L/lib/x86_64-linux-gnu/ -l:libreadline.so.6 -l:libhistory.so.6 -lcurses
  clean:
- 	rm -f *.o *.ali rl
- 
