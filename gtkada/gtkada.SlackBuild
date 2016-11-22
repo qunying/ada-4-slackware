@@ -21,7 +21,7 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gtkada
-VERSION=${VERSION:-2016}
+VERSION=${VERSION:-17.0}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
@@ -65,10 +65,10 @@ set -e # Exit on most errors
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-gpl-$VERSION-src
-tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.tar.gz || tar xvf $CWD/db00d9243e8d34c0da0a583c22903272f2d28135
+rm -rf $PRGNAM-$PRGNAME-$VERSION
+tar xvf $CWD/$PRGNAM-$VERSION.tar.gz || tar xvf $CWD/$PRGNAM-$PRGNAM-$VERSION.tar.gz
 
-cd $PRGNAM-gpl-$VERSION-src
+cd $PRGNAM-$PRGNAM-$VERSION
 chown -R root:root .
 find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
@@ -92,18 +92,21 @@ CXXFLAGS="$SLKCFLAGS" \
     --enable-shared \
     --build=$ARCH-slackware-linux
 
-#CWD/testgtk.gpr.patch
-
 if [ "$ARCH" = "x86_64" ]; then
     sed -i -e "s/prefix}\/lib/prefix}\/lib$LIBDIRSUFFIX/" \
 	-e "s/lib\/gnat/lib$LIBDIRSUFFIX\/gnat/g" \
-	-e "s/lib\/gtkada/lib$LIBDIRSUFFIX\/gtkada/g" Makefile
+	-e "s/lib\/gtkada/lib$LIBDIRSUFFIX\/gtkada/g"\
+        -e 's/=\${libdir}\//=\${DESTDIR}\${libdir}\//' Makefile
+else
+    sed -i  -e 's/=\${libdir}\//=\${DESTDIR}\${libdir}\//' Makefile
 fi
 
 make
 
 # change document location
 sed -i "s/share\/doc\/gtkada/doc\/gtkada-${VERSION}/" xml/gtkada.xml
+
+make docs
 
 make DESTDIR=$PKG install
 
