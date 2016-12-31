@@ -24,12 +24,12 @@
 
 PKGNAM=gnat-env
 # should have the same version of the GCC one
-VERSION=${VERSION:-6.2.0}
+VERSION=${VERSION:-6.3.0}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 OUTPUT=${OUTPUT:-/tmp}
-MA_VER=${MA_VER:-6}
-MI_VER=${MI_VER:-2}
+MA_VER=$(echo $VERSION | cut -d . -f 1)
+MI_VER=$(echo $VERSION | cut -d . -f 2)
 
 if [ -z "$ARCH" ]; then
     case "$(uname -m)" in
