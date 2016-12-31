@@ -3,7 +3,7 @@
 
 AFLAGS := -gnat12 -gnaty -gnatQ -gnatpn -gnatws -g1 ${NUM_JOBS} ${EXTRA_FLAGS}
 
-COBJS := obj/gpr_imports.o obj/gprbuild_dummies.o
+COBJS := obj/gpr_imports.o
 
 LOOK := -aI./gnat -aI./gen_src \
 	-aI./gpr \
@@ -15,7 +15,6 @@ LOOK := -aI./gnat -aI./gen_src \
 	-aI${PREFIX}/include/xmlada/unicode \
 
 LARGS := -largs ./obj/gpr_imports.o \
-	-largs ./obj/gprbuild_dummies.o \
 	-largs ${LIBDIR}/xmlada/dom/static/libxmlada_dom.a \
 	-largs ${LIBDIR}/xmlada/input/static/libxmlada_input_sources.a \
 	-largs ${LIBDIR}/xmlada/sax/static/libxmlada_sax.a \
@@ -112,9 +111,6 @@ gprbuild: gprconfig src/gprbuild-main.adb ${GEN_SRCS} ${COBJS}
 
 obj/gpr_imports.o: src/gpr_imports.c
 	gcc -c -o $@ $^
-
-obj/gprbuild_dummies.o: src/gprbuild_dummies.c
-	gcc -c -o $@ src/gprbuild_dummies.c
 
 generate_sources:
 	mkdir -p ${CURRENT_FOLDER}/${GENDIR}
