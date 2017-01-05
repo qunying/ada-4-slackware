@@ -1,0 +1,92 @@
+diff --git a/src/gprconfig-knowledge.adb b/src/gprconfig-knowledge.adb
+index 80a986a8..3517a683 100644
+--- a/src/gprconfig-knowledge.adb
++++ b/src/gprconfig-knowledge.adb
+@@ -48,6 +48,7 @@ with GprConfig.Sdefault; use GprConfig.Sdefault;
+ with GPR.Names;          use GPR.Names;
+ with GPR.Opt;
+ with GPR.Util;           use GPR.Util;
++with GNAT.Source_Info;   use GNAT.Source_Info;
+ 
+ package body GprConfig.Knowledge is
+ 
+@@ -826,7 +827,8 @@ package body GprConfig.Knowledge is
+ 
+             else
+                Put_Line
+-                 (Standard_Error, "Unknown XML tag in " & File & ": "
++                 (Standard_Error, Source_Location & ": Unknown XML tag in "
++                  & File & ": "
+                   & Node_Name (N));
+                raise Invalid_Knowledge_Base;
+             end if;
+@@ -950,7 +952,8 @@ package body GprConfig.Knowledge is
+ 
+                   else
+                      Put_Line
+-                       (Standard_Error, "Unknown XML tag in " & File & ": "
++                       (Standard_Error, Source_Location
++                        & ": Unknown XML tag in " & File & ": "
+                         & Node_Name (N2));
+                      raise Invalid_Knowledge_Base;
+                   end if;
+@@ -977,7 +980,8 @@ package body GprConfig.Knowledge is
+                                 Get_Attribute (N2, "name", ""));
+                      else
+                         Put_Line
+-                          (Standard_Error, "Unknown XML tag in " & File & ": "
++                          (Standard_Error, Source_Location
++                           & ": Unknown XML tag in " & File & ": "
+                            & Node_Name (N2));
+                         raise Invalid_Knowledge_Base;
+                      end if;
+@@ -1010,7 +1014,8 @@ package body GprConfig.Knowledge is
+ 
+                   else
+                      Put_Line
+-                       (Standard_Error, "Unknown XML tag in " & File & ": "
++                       (Standard_Error, Source_Location
++                        & ": Unknown XML tag in " & File & ": "
+                         & Node_Name (N2));
+                      raise Invalid_Knowledge_Base;
+                   end if;
+@@ -1028,7 +1033,8 @@ package body GprConfig.Knowledge is
+                end if;
+ 
+             else
+-               Put_Line (Standard_Error, "Unknown XML tag in " & File & ": "
++               Put_Line (Standard_Error, Source_Location
++                         & ": Unknown XML tag in " & File & ": "
+                          & Node_Name (N));
+                raise Invalid_Knowledge_Base;
+             end if;
+@@ -1061,7 +1067,8 @@ package body GprConfig.Knowledge is
+             elsif Node_Name (N) = "target" then
+                String_Lists.Append (Set, Node_Value_As_String (N));
+             else
+-               Put_Line (Standard_Error, "Unknown XML tag in " & File & ": "
++               Put_Line (Standard_Error, Source_Location
++                         & ": Unknown XML tag in " & File & ": "
+                          & Node_Name (N));
+                raise Invalid_Knowledge_Base;
+             end if;
+@@ -1112,7 +1119,8 @@ package body GprConfig.Knowledge is
+                end;
+ 
+             else
+-               Put_Line (Standard_Error, "Unknown XML tag in " & File & ": "
++               Put_Line (Standard_Error, Source_Location
++                         & ": Unknown XML tag in " & File & ": "
+                          & Node_Name (N));
+                raise Invalid_Knowledge_Base;
+             end if;
+@@ -1246,7 +1254,8 @@ package body GprConfig.Knowledge is
+ 
+                else
+                   Put_Line (Standard_Error,
+-                            "Unknown XML tag in " & Simple_Name (File) & ": "
++                            Source_Location & ": Unknown XML tag in "
++			    & Simple_Name (File) & ": "
+                             & Node_Name (N));
+                   raise Invalid_Knowledge_Base;
+                end if;

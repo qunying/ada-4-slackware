@@ -49,6 +49,8 @@ install:
 		./gprslave \
 		./gprinstall \
 		./gprconfig \
+		./gprls \
+		./gprname \
 		./gprbuild ${DESTDIR}${PREFIX}/bin
 
 	cp ./gpr/src/* ${DESTDIR}${PREFIX}/include/gpr
@@ -85,7 +87,15 @@ gprclean: $(LIBGPR) src/gprclean-main.adb ${GEN_SRCS} ${COBJS}
 	gnatmake -o gprclean ${AFLAGS} ${LOOK} \
 		./src/gprclean-main.adb ${LARGS}
 
-gprbind: gprclean src/gprslave.adb ${GEN_SRCS} ${COBJS}
+gprls: gprclean src/gprls-main.adb  ${GEN_SRCS} ${COBJS}
+	gnatmake -o gprls ${AFLAGS} ${LOOK} \
+		./src/gprls-main.adb ${LARGS}
+
+gprname: gprls src/gprname-main.adb  ${GEN_SRCS} ${COBJS}
+	gnatmake -o gprname ${AFLAGS} ${LOOK} \
+		./src/gprname-main.adb ${LARGS}
+
+gprbind: gprname src/gprslave.adb ${GEN_SRCS} ${COBJS}
 	gnatmake -o gprbind ${AFLAGS} ${LOOK} \
 		./src/gprbind.adb ${LARGS}
 
