@@ -21,8 +21,8 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gnatcoll
-VERSION=${VERSION:-16.1}
-BUILD=${BUILD:-2}
+VERSION=${VERSION:-17.0}
+BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
 # Automatically determine the architecture we're building on:
@@ -92,6 +92,8 @@ sed -i -e 's/@prefix@/${DESTDIR}@prefix@/g' \
     --prefix=/usr \
     --libdir=/usr/lib$LIBDIRSUFFIX \
     --enable-shared \
+    --without-postgresql \
+    --with-gtk=3.0 \
     --build=$ARCH-slackware-linux
 make Gnatcoll_Build=Production
 make docs
@@ -113,7 +115,6 @@ rm -rf $PKG/usr/include/gnatcoll/gpr* $PKG/usr/lib$LIBDIRSUFFIX/gnat/gpr.gpr \
 sed -i -e "/gpr.static/d" -e "/gpr.relocatable/d" \
        -e "/gnat\/gpr.gpr/d" -e "/libgpr.so/d" \
        $PKG/usr/lib$LIBDIRSUFFIX/gnat/manifests/gnatcoll
-rm $PKG/usr/lib$LIBDIRSUFFIX/libgpr.so
 
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
