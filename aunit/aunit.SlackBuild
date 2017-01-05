@@ -22,6 +22,7 @@
 
 PRGNAM=aunit
 VERSION=${VERSION:-2016}
+URL_NAME=573990c6c7a447658d00e1cb
 #SRC_VERSION=${SRC_VERSION:-3.8.0w}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
@@ -66,7 +67,7 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-gpl-$VERSION-src
-tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.tar.gz
+tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.tar.gz || tar xvf $URL_NAME
 
 cd $PRGNAM-gpl-$VERSION-src
 chown -R root:root .
