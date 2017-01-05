@@ -21,13 +21,13 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gps
-VERSION=${VERSION:-2016}
+VERSION=${VERSION:-17.0}
 BUILD=${BUILD:-2}
 TAG=${TAG:-_SBo}
 
-GPRBUILD_VERSION=${GPRBUILD_VERSION:-2016}
-GNATCOLL_VERSION=${GNATCOLL_VERSION:-16.1}
-GCC_VERSION=${GCC_VERSION:-6.2.0}
+GPRBUILD_VERSION=${GPRBUILD_VERSION:-17.1}
+GNATCOLL_VERSION=${GNATCOLL_VERSION:-17.0}
+GCC_VERSION=${GCC_VERSION:-6.3.0}
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -60,23 +60,13 @@ fi
 
 set -e # Exit on most errors
 
-# do pygobject3 test
-if ! [ -f /var/log/packages/pygobject3* ]; then
-    echo "GPS depends on pygobject3, please install it first."
-    echo "You could use the build script from SlackBuilds.org."
-    echo "http://slackbuilds.org/repository/14.1/python/pygobject3/?search=pygobject"
-    exit 1
-else
-    echo "Found pygobject3."
-fi
-
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-gpl-$VERSION-src
-tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.tar.gz || tar xvf 573996dec7a447658e0affaa
+rm -rf $PRGNAM-$PRGNAM-$VERSION
+tar xvf $CWD/$PRGNAM-$PRGNAM-$VERSION.tar.gz
 
-cd $PRGNAM-gpl-$VERSION-src
+cd $PRGNAM-$PRGNAM-$VERSION
 chown -R root:root .
 find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
@@ -98,6 +88,7 @@ CXXFLAGS="$SLKCFLAGS" \
     --libdir=/usr/lib${LIBDIRSUFFIX} \
     --infodir=/usr/info \
     --docdir=/usr/doc/$PRGNAM-$VERSION \
+    --disable-shared \
     --build=$ARCH-slackware-linux
 
 # fix document path
@@ -106,10 +97,13 @@ sed -i -e "s/share\/doc\/gps/doc\/gps-$VERSION/" \
        -e "s/share\/doc\//doc\//" \
        -e "s/gnat\/html/gcc-$GCC_VERSION\/html/" docs/gps_index.xml
 sed -i "s/share\/doc\/gps/doc\/gps-$VERSION/" help/src/help_module.adb
+sed -i "s/Tool'Image/Tool'Img/" ./prj_editor/src/toolchains_editor.adb
 
-ln -s ../gnatcoll-gpl-$GNATCOLL_VERSION-src gnatlib
+ln -s ../gnatcoll-gnatcoll-$GNATCOLL_VERSION gnatlib
 
 make Build=Production OS=unix
+
+make -C docs
 
 make prefix=$PKG/usr libdir=$PKG/usr/lib${LIBDIRSUFFIX} install
 
@@ -117,7 +111,7 @@ strip $PKG/usr/bin/*
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
 mv $PKG/usr/share/examples $PKG/usr/doc/$PRGNAM-$VERSION
 cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-$VERSION
-cp README INSTALL COPYING3 $PKG/usr/doc/$PRGNAM-$VERSION
+cp README.md INSTALL COPYING3 $PKG/usr/doc/$PRGNAM-$VERSION
 
 mkdir -p $PKG/install
 cp $CWD/slack-desc $PKG/install
