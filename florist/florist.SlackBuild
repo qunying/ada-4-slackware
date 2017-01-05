@@ -107,10 +107,6 @@ rm -rf $PKG/usr/include/florist
 make PREFIX=$PKG/usr SRC_DIR=include/florist \
 LIB_DIR=lib$LIBDIRSUFFIX/florist/relocatable install
 
-(cd $PKG/usr/lib$LIBDIRSUFFIX;
- ln -s florist/relocatable/libflorist.so.1;
- ln -s florist/relocatable/libflorist.so.1 libflorist.so;)
-
 mkdir -p $PKG/usr/lib$LIBDIRSUFFIX/gnat
 cp $CWD/florist.gpr $PKG/usr/lib$LIBDIRSUFFIX/gnat
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
