@@ -1,6 +1,6 @@
 #!/bin/sh
 # GTKAda package build script (written by zhu.qunying@gmail.com)
-# Copyright 2012,2015, Zhu Qun-Ying
+# Copyright 2012-2017, Zhu Qun-Ying
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -21,9 +21,11 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gtkada
-VERSION=${VERSION:-17.0}
-BUILD=${BUILD:-1}
+VERSION=${VERSION:-18.0w20161222}
+GIT_VERSION=fc8b2f97543611e9a174f6a0313c7b602ee85aae
+BUILD=${BUILD:-2}
 TAG=${TAG:-_SBo}
+BUILD_DOC=${BUILD_DOC:-"yes"}
 
 set -e
 # Automatically determine the architecture we're building on:
@@ -65,10 +67,10 @@ set -e # Exit on most errors
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-$PRGNAME-$VERSION
-tar xvf $CWD/$PRGNAM-$VERSION.tar.gz || tar xvf $CWD/$PRGNAM-$PRGNAM-$VERSION.tar.gz
+rm -rf $PRGNAM-$GIT_VERSION
+tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
 
-cd $PRGNAM-$PRGNAM-$VERSION
+cd $PRGNAM-$GIT_VERSION
 chown -R root:root .
 find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
@@ -106,14 +108,22 @@ make
 # change document location
 sed -i "s/share\/doc\/gtkada/doc\/gtkada-${VERSION}/" xml/gtkada.xml
 
-make docs
+if [ "$BUILD_DOC" == "yes" ]; then
+    make docs
+fi
 
 make DESTDIR=$PKG install
 
 mkdir -p $PKG/install
 mkdir -p $PKG/usr/doc
-mv $PKG/usr/share/doc/gtkada $PKG/usr/doc/$PRGNAM-$VERSION
-rmdir $PKG/usr/share/doc
+
+if [ "$BUILD_DOC" == "yes" ]; then
+    mv $PKG/usr/share/doc/gtkada $PKG/usr/doc/$PRGNAM-$VERSION
+    rmdir $PKG/usr/share/doc
+else
+    mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
+fi
+
 mv $PKG/usr/share/examples/gtkada $PKG/usr/doc/$PRGNAM-$VERSION/examples
 rmdir $PKG/usr/share/examples
 cp COPYING3 INSTALL ANNOUNCE AUTHORS \
