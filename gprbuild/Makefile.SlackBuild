@@ -76,39 +76,39 @@ lib/relocatable/libgpr.so.${LIBVER}: gpr/src/dummy_gpr.adb
 	gcc -shared -lgnat -o $@ -Wl,-soname,libgpr.so.${LIBVER} \
 	lib/relocatable/*.o
 
-gprclean: $(LIBGPR) src/gprclean-main.adb ${COBJS}
+gprclean: src/gprclean-main.adb ${COBJS} $(LIBGPR)
 	gnatmake -o gprclean ${AFLAGS} ${LOOK} \
 		./src/gprclean-main.adb ${LARGS}
 
-gprls: src/gprls-main.adb  ${COBJS}
+gprls: src/gprls-main.adb  ${COBJS} $(LIBGPR)
 	gnatmake -o gprls ${AFLAGS} ${LOOK} \
 		./src/gprls-main.adb ${LARGS}
 
-gprname: src/gprname-main.adb  ${COBJS}
+gprname: src/gprname-main.adb  ${COBJS} $(LIBGPR)
 	gnatmake -o gprname ${AFLAGS} ${LOOK} \
 		./src/gprname-main.adb ${LARGS}
 
-gprbind: src/gprslave.adb ${COBJS}
+gprbind: src/gprslave.adb ${COBJS} $(LIBGPR)
 	gnatmake -o gprbind ${AFLAGS} ${LOOK} \
 		./src/gprbind.adb ${LARGS}
 
-gprlib: src/gprslave.adb ${COBJS}
+gprlib: src/gprslave.adb ${COBJS} $(LIBGPR)
 	gnatmake -o gprlib ${AFLAGS} ${LOOK} \
 		./src/gprlib.adb ${LARGS}
 
-gprslave: src/gprslave.adb ${COBJS}
+gprslave: src/gprslave.adb ${COBJS} $(LIBGPR)
 	gnatmake -o gprslave ${AFLAGS} ${LOOK} \
 		./src/gprslave.adb ${LARGS}
 
-gprinstall: src/gprinstall-main.adb ${COBJS}
+gprinstall: src/gprinstall-main.adb ${COBJS} $(LIBGPR)
 	gnatmake -o gprinstall ${AFLAGS} ${LOOK} \
 		./src/gprinstall-main.adb ${LARGS}
 
-gprconfig: src/gprconfig-main.adb ${COBJS}
+gprconfig: src/gprconfig-main.adb ${COBJS} $(LIBGPR)
 	gnatmake -o gprconfig ${AFLAGS} ${LOOK} \
 		./src/gprconfig-main.adb ${LARGS}
 
-gprbuild: src/gprbuild-main.adb ${COBJS}
+gprbuild: src/gprbuild-main.adb ${COBJS} $(LIBGPR)
 	gnatmake -o gprbuild ${AFLAGS} ${LOOK} \
 		./src/gprbuild-main.adb ${LARGS}
 
