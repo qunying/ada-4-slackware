@@ -25,13 +25,15 @@ GENDIR   := gen_src
 GEN_SRCS := ${GENDIR}/snames.adb ${GENDIR}/snames.ads
 DOCSDIR  := ${PREFIX}/share/doc/gprbuild
 
+BIN_PROGS := gprbuild gprclean gprconfig gprinstall gprslave gprls gprname
+LIBEXEC_PROGS := gprlib gprbind
 
 BSD_INSTALL_PROGRAM := install
 BSD_INSTALL_DATA := install
 
 LIBGPR := lib/static/libgpr.a lib/relocatable/libgpr.so.${LIBVER}
 
-all: gprbuild
+all: ${BIN_PROGS} ${LIBEXEC_PROGS}
 
 install:
 	mkdir -p ${DESTDIR}${PREFIX}/bin \
@@ -42,16 +44,7 @@ install:
 		${DESTDIR}${LIBDIR}/gpr/static \
 		${DESTDIR}${LIBDIR}/gpr/relocatable \
 
-	${BSD_INSTALL_PROGRAM} \
-                ./gprclean \
-		./gprbind \
-		./gprlib \
-		./gprslave \
-		./gprinstall \
-		./gprconfig \
-		./gprls \
-		./gprname \
-		./gprbuild ${DESTDIR}${PREFIX}/bin
+	${BSD_INSTALL_PROGRAM} ${BIN_PROGS} ${DESTDIR}${PREFIX}/bin
 
 	cp ./gpr/src/* ${DESTDIR}${PREFIX}/include/gpr
 	rm ${DESTDIR}${PREFIX}/include/gpr/dummy*
@@ -83,53 +76,42 @@ lib/relocatable/libgpr.so.${LIBVER}: gpr/src/dummy_gpr.adb
 	gcc -shared -lgnat -o $@ -Wl,-soname,libgpr.so.${LIBVER} \
 	lib/relocatable/*.o
 
-gprclean: $(LIBGPR) src/gprclean-main.adb ${GEN_SRCS} ${COBJS}
+gprclean: $(LIBGPR) src/gprclean-main.adb ${COBJS}
 	gnatmake -o gprclean ${AFLAGS} ${LOOK} \
 		./src/gprclean-main.adb ${LARGS}
 
-gprls: gprclean src/gprls-main.adb  ${GEN_SRCS} ${COBJS}
+gprls: src/gprls-main.adb  ${COBJS}
 	gnatmake -o gprls ${AFLAGS} ${LOOK} \
 		./src/gprls-main.adb ${LARGS}
 
-gprname: gprls src/gprname-main.adb  ${GEN_SRCS} ${COBJS}
+gprname: src/gprname-main.adb  ${COBJS}
 	gnatmake -o gprname ${AFLAGS} ${LOOK} \
 		./src/gprname-main.adb ${LARGS}
 
-gprbind: gprname src/gprslave.adb ${GEN_SRCS} ${COBJS}
+gprbind: src/gprslave.adb ${COBJS}
 	gnatmake -o gprbind ${AFLAGS} ${LOOK} \
 		./src/gprbind.adb ${LARGS}
 
-gprlib: gprbind src/gprslave.adb ${GEN_SRCS} ${COBJS}
+gprlib: src/gprslave.adb ${COBJS}
 	gnatmake -o gprlib ${AFLAGS} ${LOOK} \
 		./src/gprlib.adb ${LARGS}
 
-gprslave: gprlib src/gprslave.adb ${GEN_SRCS} ${COBJS}
+gprslave: src/gprslave.adb ${COBJS}
 	gnatmake -o gprslave ${AFLAGS} ${LOOK} \
 		./src/gprslave.adb ${LARGS}
 
-gprinstall: gprslave src/gprinstall-main.adb ${GEN_SRCS} ${COBJS}
+gprinstall: src/gprinstall-main.adb ${COBJS}
 	gnatmake -o gprinstall ${AFLAGS} ${LOOK} \
 		./src/gprinstall-main.adb ${LARGS}
 
-gprconfig: gprinstall src/gprconfig-main.adb ${GEN_SRCS} ${COBJS}
+gprconfig: src/gprconfig-main.adb ${COBJS}
 	gnatmake -o gprconfig ${AFLAGS} ${LOOK} \
 		./src/gprconfig-main.adb ${LARGS}
 
-gprbuild: gprconfig src/gprbuild-main.adb ${GEN_SRCS} ${COBJS}
+gprbuild: src/gprbuild-main.adb ${COBJS}
 	gnatmake -o gprbuild ${AFLAGS} ${LOOK} \
 		./src/gprbuild-main.adb ${LARGS}
 
 obj/gpr_imports.o: src/gpr_imports.c
 	gcc -c -o $@ $^
 
-generate_sources:
-	mkdir -p ${CURRENT_FOLDER}/${GENDIR}
-#	(cd ${CURRENT_FOLDER}/gnat && cp xsnamest.adb xutil.* snames.adb-tmpl \
-#		snames.ads-tmpl snames.h-tmpl ../${GENDIR})
-#	(cd ${CURRENT_FOLDER}/${GENDIR} && \
-#		gnatmake -gnatf -gnatwae -gnatyg -gnatyS xsnamest && \
-#		./xsnamest && \
-#		mv snames.ns snames.ads && \
-#		mv snames.nb snames.adb)
-
-${GEN_SRCS}: generate_sources
