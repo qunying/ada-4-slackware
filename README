@@ -21,3 +21,5 @@ The resulting compiler will replace the system compiler.
 It has been updated for Slackware 14.2, GCC 6.3.0 and gnat GPL 2016 and GitHub.
 
 For gnatmem, you also need the binutils source and build the binutils first.
+
+PS. * gtkada's document now depends on gnatdoc in GPS.

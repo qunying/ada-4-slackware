@@ -5,15 +5,15 @@
 # make exactly 11 lines for the formatting to be correct.  It's also
 # customary to leave one space after the ':' except on otherwise blank lines.
 
-      |-----handy-ruler------------------------------------------------------|
-gtkada: GtkAda - a complete Ada graphical toolkit
-gtkada:
-gtkada: GtkAda is an Ada graphical toolkit based on Gtk+, providing the
-gtkada: complete set of Gtk+ widgets using the Object-Oriented features
-gtkada: of this language. 
-gtkada:
-gtkada:
-gtkada:
-gtkada:
-gtkada: Homepage: http://libre.adacore.com/libre/tools/gtkada/
-gtkada:
+          |-----handy-ruler---------------------------------------------------|
+gtkada-doc: GtkAda Documents
+gtkada-doc:
+gtkada-doc: This is the documentation pacakge for GtkAda.
+gtkada-doc:
+gtkada-doc:
+gtkada-doc: Homepage: http://libre.adacore.com/libre/tools/gtkada-doc/
+gtkada-doc:
+gtkada-doc:
+gtkada-doc:
+gtkada-doc:
+gtkada-doc:

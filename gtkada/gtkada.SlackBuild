@@ -25,7 +25,7 @@ VERSION=${VERSION:-18.0w20161222}
 GIT_VERSION=fc8b2f97543611e9a174f6a0313c7b602ee85aae
 BUILD=${BUILD:-2}
 TAG=${TAG:-_SBo}
-BUILD_DOC=${BUILD_DOC:-"yes"}
+BUILD_DOC=${BUILD_DOC:-"no"}
 
 set -e
 # Automatically determine the architecture we're building on:
