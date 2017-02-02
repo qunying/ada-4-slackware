@@ -21,7 +21,7 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=sparforte
-VERSION=${VERSION:-2.0.1}
+VERSION=${VERSION:-2.0.2}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
@@ -61,11 +61,11 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 
 cd $TMP
-rm -rf SparForte-$VERSION
+rm -rf $PRGNAM-$VERSION
 
-tar xvf $CWD/$PRGNAM-v$VERSION.tar.gz
+tar xvf $CWD/$PRGNAM-$VERSION-src.tar.bz2
 
-cd SparForte-$VERSION
+cd $PRGNAM-$VERSION
 chown -R root:root .
 
 for file in $CWD/patch/* ; do
