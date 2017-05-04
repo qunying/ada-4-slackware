@@ -21,14 +21,15 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gps
-VERSION=${VERSION:-18.0w20170109}
-GIT_VERSION=${GIT_VERSION:-e2859416c1e36e53cfa4b43597f9397f48a8b853}
+VERSION=${VERSION:-17.0}
+#VERSION=${VERSION:-18.0w20170117}
+#GIT_VERSION=${GIT_VERSION:-f8975843a8aca8c558855920cfabdfe8c3ee755a}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
 GPRBUILD_VERSION=${GPRBUILD_VERSION:-18.0w20170109}
-GNATCOLL_VERSION=${GNATCOLL_VERSION:-18.0w20170104}
-GCC_VERSION=${GCC_VERSION:-6.3.0}
+GNATCOLL_VERSION=${GNATCOLL_VERSION:-17.1}
+GCC_VERSION=${GCC_VERSION:-7.1.0}
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -80,7 +81,7 @@ for file in $CWD/patches/* ; do
     patch -p0 < $file ;
 done
 
-sed -i "s/unknown date/20190109/" ./common/core/src/config.ads.in
+sed -i "s/unknown date/20170117/" ./common/core/src/config.ads.in
 sed -i "s/share\/doc\/gps/doc\/gps-$VERSION/" docs/Makefile.in
 autoreconf 
 CFLAGS="$SLKCFLAGS" \
