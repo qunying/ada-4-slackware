@@ -23,7 +23,7 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gnat_rm # replace with name of program
-VERSION=${VERSION:-6.3.0}	# replace with version of program
+VERSION=${VERSION:-7.1.0}	# replace with version of program
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}		# the "_SBo" is required
 
