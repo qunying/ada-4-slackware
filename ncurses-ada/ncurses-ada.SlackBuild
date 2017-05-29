@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright 2000-2011, 2013, 2014, 2015  Patrick J. Volkerding, Sebeka, MN, USA
+# Copyright 2000-2011, 2013, 2014, 2015, 2016, 2017  Patrick J. Volkerding, Sebeka, MN, USA
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -28,7 +28,7 @@ PKGNAM=ncurses-ada
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
-    i?86) export ARCH=i486 ;;
+    i?86) export ARCH=i586 ;;
     arm*) export ARCH=arm ;;
     # Unless $ARCH is already set, use uname -m for all other archs:
        *) export ARCH=$( uname -m ) ;;
@@ -39,8 +39,8 @@ CWD=$(pwd)
 TMP=${TMP:-/tmp}
 PKG=$TMP/package-$PKGNAM
 
-if [ "$ARCH" = "i486" ]; then
-  SLKCFLAGS="-O2 -march=i486 -mtune=i686"
+if [ "$ARCH" = "i586" ]; then
+  SLKCFLAGS="-O2 -march=i586 -mtune=i686"
   LIBDIRSUFFIX=""
 elif [ "$ARCH" = "s390" ]; then
   SLKCFLAGS="-O2"
@@ -60,12 +60,18 @@ CFLAGS="$SLKCFLAGS" \
   --prefix=/usr \
   --libdir=/usr/lib${LIBDIRSUFFIX} \
   --mandir=/usr/man \
-  --with-gpm \
-  --disable-termcap \
-  --with-shared \
+  --enable-colorfgbg \
+  --enable-hard-tabs \
+  --enable-overwrite \
+  --enable-xmc-glitch \
   --with-cxx-shared \
-  --without-normal \
+  --with-ospeed=unsigned \
+  --with-termlib=tinfo \
+  --with-ticlib=tic \
+  --with-gpm \
+  --with-shared \
   --without-debug \
+  --disable-static \
   --without-profile \
   --enable-symlinks \
   --enable-pc-files \
@@ -87,21 +93,9 @@ tar xvf $CWD/ncurses-$VERSION.tar.?z || exit 1
 cd ncurses-$VERSION || exit 1
 chown -R root:root .
 
-# This allows some other patches to come first by making them bz2...  gz next
-if [ ! -z "$(ls $CWD/patches/ncurses*bz2 2> /dev/null)" ]; then
-  bzcat $CWD/patches/ncurses*bz2 > tmp-patch.sh
-  bash tmp-patch.sh || exit 1
-fi
-# Apply official upstream patches.
-if [ ! -z "$(ls $CWD/patches/ncurses-$VERSION-2*.patch.gz 2> /dev/null)" ]; then
-  for file in $CWD/patches/ncurses-$VERSION-2*.patch.gz ; do
-    zcat $file | patch -p1 --verbose || exit 1
-  done
-fi
-
 # Apply upstream patch collection:
-xzcat $CWD/ncurses-5.9-20141206-patch.sh.xz > ncurses-5.9-20141206-patch.sh
-sh ncurses-5.9-20141206-patch.sh
+xzcat $CWD/ncurses-6.0-20160910-patch.sh.xz > ncurses-6.0-20160910-patch.sh
+sh ncurses-6.0-20160910-patch.sh
 
 zcat $CWD/ncurses.mkhashsize.diff.gz | patch -p1 --verbose || exit 1
 
