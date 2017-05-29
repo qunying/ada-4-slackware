@@ -84,7 +84,8 @@ fi
 sed -i 's/\/asis / /g' Makefile
 sed -i "s/share\/doc\/asis/doc\/asis-$VERSION/g" asis.gpr
 sed -i "s/share\/doc\/gnat/doc\/asis-$VERSION/g" tools/gnatcheck/gnatcheck.gpr
-
+sed -i 's/Name_Find_Str/Name_Find/g' tools/tool_utils/*ad{b,s} \
+	tools/gnat2xml/*adb
 make all tools
 
 make prefix=$PKG/usr install install-tools
