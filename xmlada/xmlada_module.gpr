@@ -1,7 +1,7 @@
 -- with
 
 library project XmlAda_@module@ is
-   type BUILD_KIND is ("static", "relocatable");
+   type BUILD_KIND is ("static", "relocatable", "static-pic");
    BUILD : BUILD_KIND := external("XMLADA_BUILD", "static");
 
    for Languages use ("Ada");
@@ -15,6 +15,10 @@ library project XmlAda_@module@ is
          for Source_Dirs use ("../../include/xmlada/@module@");
          for Library_Dir use "../xmlada/@module@/static";
          for Library_Kind use "static";
+      when "static-pic" =>
+         for Source_Dirs use ("../../include/xmlada/@module@");
+         for Library_Dir use "../xmlada/@module@/static-pic";
+         for Library_Kind use "static-pic";
    end case;
 
    for Library_Name use "xmlada_@lib_name@";
@@ -28,6 +32,9 @@ library project XmlAda_@module@ is
             for body_suffix ("ada") use ".adb";
             for spec_suffix ("ada") use ".ads";
          when "static" =>
+            for body_suffix ("ada") use ".adb";
+            for spec_suffix ("ada") use ".ads";
+         when "static-pic" =>
             for body_suffix ("ada") use ".adb";
             for spec_suffix ("ada") use ".ads";
       end case;

@@ -21,10 +21,10 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=xmlada
-VERSION=${VERSION:-16.1}
+VERSION=${VERSION:-2017}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
-SRC_NAME=$PRGNAM-$VERSION
+SRC_NAME=$PRGNAM-gpl-$VERSION-src
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -66,9 +66,9 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $SRC_NAME
-tar xvf $CWD/$SRC_NAME.tar.gz || tar xvf $CWD/$PRGNAM-$SRC_NAME.tar.gz
+tar xvf $CWD/$SRC_NAME.tar.gz || tar xvf $CWD/591aeb88c7a4473fcbb154f8
 
-cd $PRGNAM-$SRC_NAME
+cd $SRC_NAME
 chown -R root:root .
 find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
@@ -121,6 +121,8 @@ for idx in ${!XMLADA_MODULES[*]} ; do
     mkdir -p $PKG/$PREFIX/include/xmlada/$gpr_module
     mkdir -p $PKG/$LIBDIR/xmlada/$gpr_module/relocatable
     mkdir -p $PKG/$LIBDIR/xmlada/$gpr_module/static
+    mkdir -p $PKG/$LIBDIR/xmlada/$gpr_module/static-pic
+
     install $submodule/*ads $submodule/*adb $PKG/usr/include/xmlada/$gpr_module
     rm $PKG/usr/include/xmlada/$gpr_module/dummy_*.adb
     install $submodule/lib/static/libxmlada_$submodule.a \
@@ -131,6 +133,12 @@ for idx in ${!XMLADA_MODULES[*]} ; do
 	    $PKG/$LIBDIR/xmlada/$gpr_module/relocatable
     install $submodule/obj/relocatable/*ali \
 	    $PKG/$LIBDIR/xmlada/$gpr_module/relocatable
+    install $submodule/lib/static-pic/libxmlada_$submodule.a \
+	    $PKG/$LIBDIR/xmlada/$gpr_module/static-pic
+    (cd $PKG/$LIBDIR/xmlada/$gpr_module/static-pic;
+     for ali_file in ../relocatable/*.ali ; do
+	   ln -s $ali_file
+     done)
     (cd $PKG/$LIBDIR;
      for file in xmlada/$gpr_module/relocatable/libxmlada_$submodule* ; do
 	 ln -sf $file
@@ -163,7 +171,7 @@ sed "s/@version@/$VERSION/" $CWD/xmlada_gps.xml > \
 
 mkdir -p $PKG/usr/doc/$PRGNAM-${VERSION}
 cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-${VERSION}
-cp README.md TODO COPYING3 AUTHORS features* known-problems* \
+cp README.md TODO COPYING3 AUTHORS \
     $PKG/usr/doc/$PRGNAM-${VERSION}
 cp -a docs/_build/html $PKG/usr/doc/$PRGNAM-${VERSION}
 
