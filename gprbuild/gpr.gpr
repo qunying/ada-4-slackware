@@ -1,5 +1,5 @@
 library project Gpr is
-   type BUILD_KIND is ("static", "relocatable");
+   type BUILD_KIND is ("static", "relocatable", "static-pic");
    BUILD : BUILD_KIND := external("LIBRARY_TYPE", "relocatable");
 
    case BUILD is
@@ -11,6 +11,10 @@ library project Gpr is
 	for Source_Dirs use ("../../include/gpr");
 	for Library_Dir use "../gpr/static";
 	for Library_Kind use "static";
+     when "static-pic" =>
+	for Source_Dirs use ("../../include/gpr");
+	for Library_Dir use "../gpr/static-pic";
+	for Library_Kind use "static-pic";
    end case;
 
    for Library_Name use "gpr";
@@ -24,6 +28,9 @@ library project Gpr is
             for body_suffix ("ada") use ".adb";
             for spec_suffix ("ada") use ".ads";
          when "static" =>
+            for body_suffix ("ada") use ".adb";
+            for spec_suffix ("ada") use ".ads";
+         when "static-pic" =>
             for body_suffix ("ada") use ".adb";
             for spec_suffix ("ada") use ".ads";
       end case;

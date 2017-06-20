@@ -21,10 +21,10 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gprbuild
-VERSION=${VERSION:-18.0w20170109}
-GIT_VERSION=${GIT_VERSION:-68ec6c38cf6f73253afcada3a26a870c72ed4d23}
+VERSION=${VERSION:-2017}
 BUILD=${BUILD:-1}
 TAG=${TAG-_SBo}
+SRC_NAME=$PRGNAM-gpl-$VERSION-src
 
 GCC_BUILD_DIR=${GCC_BUILD_DIR:-/build/gcc}
 
@@ -64,77 +64,56 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 
 cd $TMP
-rm -rf $PRGNAM-$GIT_VERSION
-tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
+rm -rf $SRC_NAME
+tar xvf $CWD/$SRC_NAME.tar.gz
 
-cd $PRGNAM-$GIT_VERSION
+cd $SRC_NAME
 
 # patch source according to the debian patch
-for file in $CWD/patches/*.patch ; do
-    cat $file | patch -p1
-done
+#for file in $CWD/patches/*.patch ; do
+#    cat $file | patch -p1
+#done
+
+sed -i -e 's/share\/doc/doc/g' \
+    -e 's/doc\/gprbuild\/info/info/g' gprbuild.gpr
 
 if [ "$ARCH" = "x86_64" ]; then
 #    sed -i 's/"lib"/"lib64"/g' gnat/prj-env.adb
     sed -i 's/\/lib\//\/lib64\//g' share/gprconfig/compilers.xml
+    sed -i 's/lib\//lib64\//g' Makefile
     # set the default lib directory to lib64
     sed -i 's/\"lib\"/\"lib64\"/g' src/gprinstall.ads
 fi
 
-sed -i -e 's/"19940713"/"20170109"/' \
-       -e 's/"2016"/"2017"/' src/gpr_version.ads
+#sed -i -e 's/"19940713"/"20170109"/' \
+#       -e 's/"2016"/"2017"/' src/gpr_version.ads
 
-ln -s $CWD/Makefile.SlackBuild
+#ln -s $CWD/Makefile.SlackBuild
+sed -i "s/input_sources/input/g" bootstrap.sh
 
-chown -R root:root .
-
-mkdir obj
-
-mkdir -p lib/static mkdir -p lib/relocatable
-
-# create a dummy lib files to compile libgpr
-(cd gpr/src; \
- grep --no-filename ^package *ads | \
- awk '{print "with " $2 ";"}' | sort > dummy_gpr.adb
-cat << EOF >> dummy_gpr.adb
-procedure dummy_gpr is
-begin
-   null;
-end dummy_gpr;
-EOF
+./bootstrap.sh --with-xmlada=/usr/include/xmlada --prefix=./bootstrap
+(export PATH=./bootstrap/bin:$PATH;
+make ENABLE_SHARED=yes prefix=/usr setup
+make LIBRARY_TYPE=relocatable all
+make libgpr.build
+make prefix=$PKG/usr install
+make prefix=$PKG/usr libgpr.install
 )
+make -C doc html
 
-EXTRA_FLAGS=$SLKCFLAGS \
-PREFIX=/usr LIBDIR=/usr/lib$LIBDIRSUFFIX \
-LIBVER=$VERSION GCC_BUILD_DIR=$GCC_BUILD_DIR \
-make -f Makefile.SlackBuild
 
-PREFIX=/usr LIBDIR=/usr/lib$LIBDIRSUFFIX \
-LIBVER=$VERSION \
-DESTDIR=$PKG \
-make -f Makefile.SlackBuild install
-
-make -C doc html info
-
-mkdir -p $PKG/usr/doc/gprbuild-$VERSION
-mkdir -p $PKG/usr/info $PKG/usr/lib$LIBDIRSUFFIX/gnat
 cp $CWD/gpr.gpr $PKG/usr/lib$LIBDIRSUFFIX/gnat
 (cd $PKG/usr/lib$LIBDIRSUFFIX;
- ln -s gpr/relocatable/libgpr.so.$VERSION;
- ln -s gpr/relocatable/libgpr.so.$VERSION libgpr.so;
+ ln -sf gpr/relocatable/libgpr.so libgpr.so;
 )
-cp -a doc/html $PKG/usr/doc/gprbuild-$VERSION
-cp doc/info/*info $PKG/usr/info
 gzip $PKG/usr/info/*
-cp -a examples $PKG/usr/doc/$PRGNAM-$VERSION/
-find $PKG/usr/doc/$PRGNAM-$VERSION/examples -name ".cvsignore"  | xargs rm
 
 mkdir -p $PKG/usr/share/gps/plug-ins
-sed "s/@version@/$VERSION/" $CWD/gprbuild_gps.xml > \
+cat $CWD/gprbuild_gps.xml > \
     $PKG/usr/share/gps/plug-ins/gprbuild_gps.xml
 
-cp README.md COPYING3 $PKG/usr/doc/$PRGNAM-$VERSION
-cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
+cp README.md COPYING3 $PKG/usr/doc/$PRGNAM
+cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM/$PRGNAM.SlackBuild
 strip $PKG/usr/bin/*
 strip $PKG/usr/libexec/gprbuild/*
 mkdir -p $PKG/install

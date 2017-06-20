@@ -112,6 +112,6 @@ gprbuild: src/gprbuild-main.adb ${COBJS} $(LIBGPR)
 	gnatmake -o gprbuild ${AFLAGS} ${LOOK} \
 		./src/gprbuild-main.adb ${LARGS}
 
-obj/gpr_imports.o: src/gpr_imports.c
+obj/gpr_imports.o: gpr/src/gpr_imports.c
 	gcc -c -o $@ $^
 

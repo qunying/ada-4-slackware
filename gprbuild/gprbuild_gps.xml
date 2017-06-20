@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <GPS>
-   <doc_path>doc/grpbuild-@version@/html</doc_path>
+   <doc_path>doc/grpbuild/html</doc_path>
    <submenu before="About">
       <title>/Help/Gprbuild</title>
    </submenu>
