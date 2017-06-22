@@ -21,8 +21,8 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=aunit
-VERSION=${VERSION:-2016}
-URL_NAME=573990c6c7a447658d00e1cb
+VERSION=${VERSION:-2017}
+URL_NAME=591c45e2c7a447af2deed000
 #SRC_VERSION=${SRC_VERSION:-3.8.0w}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
@@ -60,7 +60,6 @@ else
   LIB_ARCH=$ARCH
 fi
 
-
 set -e # Exit on most errors
 
 rm -rf $PKG
@@ -82,7 +81,8 @@ if [ "$ARCH" = "x86_64" ]; then
 fi
 
 # change gps plugin document path
-sed -i "s/share\/doc\/aunit/doc\/aunit-$VERSION/" support/$PRGNAM.xml
+sed -i -e "s/share\/doc\//doc\//" \
+    -e "s/doc\/aunit\/info/info/" support/$PRGNAM.xml lib/gnat/aunit.gpr
 
 make
 
@@ -91,16 +91,9 @@ make INSTALL=$PKG/usr \
      GPROPTS="--prefix=$PKG/usr --lib-subdir=$PKG/usr/lib$LIBDIRSUFFIX/$PRGNAM" \
      libdir=$PKG/usr/lib$LIBDIRSUFFIX install
 
-mv $PKG/usr/share/doc $PKG/usr
-mv $PKG/usr/doc/$PRGNAM $PKG/usr/doc/$PRGNAM-$VERSION
-mkdir $PKG/usr/info
-mv $PKG/usr/doc/$PRGNAM-$VERSION/aunit.info $PKG/usr/info
 gzip $PKG/usr/info/*
-mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION/examples
-mv $PKG/usr/share/examples/aunit/* $PKG/usr/doc/$PRGNAM-$VERSION/examples
-rm -rf $PKG/usr/share/examples
-cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-$VERSION/
-cp README COPYING3 features* known-problem* $PKG/usr/doc/$PRGNAM-$VERSION/
+cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM/
+cp README COPYING3 CHANGES $PKG/usr/doc/$PRGNAM/
 
 cd $PKG
 mkdir -p $PKG/install
