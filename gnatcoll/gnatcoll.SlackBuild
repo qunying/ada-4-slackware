@@ -22,10 +22,11 @@
 
 PRGNAM=gnatcoll
 #VERSION=${VERSION:-18.0w20170104}
-VERSION=${VERSION:-17.1}
+VERSION=${VERSION:-2017}
 #GIT_VERSION=${GIT_VERSION:-838001b3510805ab24c04aae7d96ee421b68e487}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
+SRC_NAME=$PRGNAM-gpl-$VERSION-src
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -63,11 +64,11 @@ mkdir -p $TMP $PKG $OUTPUT
 
 cd $TMP
 #rm -rf $PRGNAM-$GIT_VERSION
-rm -rf $PRGNAM-$PRGNAM-$VERSION
-tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
+rm -rf $SRC_NAME
+tar xvf $CWD/${SRC_NAME}.tar.gz || tar xvf $CWD/591c45e2c7a447af2deed016
 
 #cd $PRGNAM-$GIT_VERSION
-cd $PRGNAM-$PRGNAM-$VERSION
+cd $SRC_NAME
 chown -R root:root .
 find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
@@ -85,13 +86,15 @@ if [ "$ARCH" = "x86_64" ] ; then
     sed --in-place 's/lib\/gnat/lib64\/gnat/g' Makefile.conf.in
 fi
 
-sed -i "s/share\/doc\/$PRGNAM/doc\/$PRGNAM-$VERSION/" distrib/gnatcoll/__init__.py
+sed -i -e "s/share\/doc\/$PRGNAM/doc\/$PRGNAM/" \
+       -e "s/gnatcoll\/html/gnatcoll/" distrib/gnatcoll/__init__.py \
+    gnatcoll_full.gpr
+
 sed -i "s/\"-fdump-xref\",//" gnatcoll_shared.gpr.in
 sed -i -e 's/@prefix@/${DESTDIR}@prefix@/g' \
        -e 's/${DESTDIR}@datadir@/@datadir@/g' \
        -e 's/${DESTDIR}@bindir@/@bindir@/g' \
        -e 's/${DESTDIR}@includedir@/@includedir@/g' Makefile.conf.in
-
 ./configure \
     --prefix=/usr \
     --libdir=/usr/lib$LIBDIRSUFFIX \
@@ -103,14 +106,7 @@ make Gnatcoll_Build=Production
 make docs
 make  Gnatcoll_Build=Production DESTDIR=$PKG install
 
-mv $PKG/usr/share/doc $PKG/usr/doc
-mv $PKG/usr/doc/$PRGNAM $PKG/usr/doc/$PRGNAM-$VERSION
-(cd $PKG/usr/doc/$PRGNAM-$VERSION; mv html html_org;
- mv html_org/html .; rmdir html_org)
-mv $PKG/usr/share/examples $PKG/usr/doc/$PRGNAM-$VERSION
-cp README COPYING3 $PKG/usr/doc/$PRGNAM-$VERSION
-
-rm -rf $PKG/usr/doc/$PRGNAM-$VERSION/examples/gnatcoll/library/obj
+cp README COPYING3 $PKG/usr/doc/$PRGNAM
 
 mkdir -p $PKG/install
 cp $CWD/slack-desc $PKG/install
