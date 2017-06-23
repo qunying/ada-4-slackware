@@ -1,0 +1,10 @@
+PRGNAM="quex"
+VERSION=0.67.5
+HOMEPAGE="http://quex.sourceforge.net/"
+DOWNLOAD="https://sourceforge.net/projects/quex/files/DOWNLOAD/quex-0.67.5.tar.gz"
+MD5SUM="3d9070cad09f9814954b2b04613cbb21"
+DOWNLOAD_x86_64=""
+MD5SUM_x86_64=""
+REQUIRES=""
+MAINTAINER="Zhu Qun-Ying"
+EMAIL="zhu.qunying@gmail.com"
