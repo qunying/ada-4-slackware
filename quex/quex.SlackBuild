@@ -23,7 +23,7 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=quex
-VERSION=${VERSION:-0.67.5}
+VERSION=${VERSION:-0.65.4}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
@@ -52,7 +52,7 @@ rm -rf manpage
 rm quex.bat
 rm unit_test_results.txt
 cd  $PKG/usr/bin
-ln -s ../share/$QUEX/quex-exe.py $PRGNAM
+ln -s ../share/$PRGNAM/quex-exe.py $PRGNAM
 cp $CWD/quex.*sh $PKG/etc/profile.d
 
 mkdir -p $PKG/install
