@@ -21,15 +21,16 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gps
-#VERSION=${VERSION:-17.0}
-VERSION=${VERSION:-18.0w20170117}
-GIT_VERSION=${GIT_VERSION:-f8975843a8aca8c558855920cfabdfe8c3ee755a}
+VERSION=${VERSION:-2017}
+#GIT_VERSION=${GIT_VERSION:-f8975843a8aca8c558855920cfabdfe8c3ee755a}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
+PKG_SRC_NAME=$PRGNAM-gpl-$VERSION-src
 
-GPRBUILD_VERSION=${GPRBUILD_VERSION:-18.0w20170109}
-GNATCOLL_VERSION=${GNATCOLL_VERSION:-17.1}
-GCC_VERSION=${GCC_VERSION:-7.1.0}
+GPRBUILD_VERSION=${GPRBUILD_VERSION:-2017}
+GNATCOLL_VERSION=${GNATCOLL_VERSION:-2017}
+GCC_VERSION=${GCC_VERSION:-7.2.0}
+GCC_SRC_BASE=${GCC_SRC_BASE:-/build/gcc/gcc-${GCC_VERSION}}
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -65,10 +66,10 @@ set -e # Exit on most errors
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-$GIT_VERSION
-tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
+rm -rf $PKG_SRC_NAME
+tar xvf $CWD/$PKG_SRC_NAME.tar.gz
 
-cd $PRGNAM-$GIT_VERSION
+cd $PKG_SRC_NAME
 chown -R root:root .
 find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
@@ -81,8 +82,8 @@ for file in $CWD/patches/* ; do
     patch -p0 < $file ;
 done
 
-sed -i "s/unknown date/20170117/" ./common/core/src/config.ads.in
-sed -i "s/share\/doc\/gps/doc\/gps-$VERSION/" docs/Makefile.in
+ln -s $GCC_SRC_BASE/gcc/ada gnat
+sed -i "s/share\/doc\/gps/doc\/gps/" docs/Makefile.in
 autoreconf 
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
@@ -115,8 +116,6 @@ mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
 mv $PKG/usr/share/examples $PKG/usr/doc/$PRGNAM-$VERSION
 cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-$VERSION
 cp README.md INSTALL COPYING3 $PKG/usr/doc/$PRGNAM-$VERSION
-
-find $PKG -name ".gitignore" | xargs rm
 
 mkdir -p $PKG/install
 cp $CWD/slack-desc $PKG/install

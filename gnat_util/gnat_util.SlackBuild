@@ -24,7 +24,7 @@ PRGNAM=gnat_util
 VERSION=${VERSION:-5.1.0}
 BUILD=${BUILD:-1}
 TAG=${TAG-_SBo}
-GCC_VERSION=${GCC_VERSION:-7.1.0}
+GCC_VERSION=${GCC_VERSION:-7.2.0}
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then

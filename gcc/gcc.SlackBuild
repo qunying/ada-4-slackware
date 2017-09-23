@@ -54,7 +54,7 @@
 
 PKGNAM=gcc
 VERSION=${VERSION:-$(echo $PKGNAM-*.tar.xz | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 
 # How many jobs to run in parallel:
 NUMJOBS=" -j 3 "
@@ -143,15 +143,12 @@ cat $CWD/slack-desc.gcc-go > $PKG8/install/slack-desc
 cat $CWD/slack-desc.gcc-brig > $PKG9/install/slack-desc
 
 cd $TMP
-tar xvf $CWD/gcc-$VERSION.tar.?z*
+tar xvf $CWD/gcc-$VERSION.tar.xz || exit 1
 
-( cd gcc-$VERSION
+( cd gcc-$VERSION || exit 1
 
   # Smite the fixincludes:
   zcat $CWD/gcc-no_fixincludes.diff.gz | patch -p1 --verbose --backup --suffix=.orig || exit 1
-
-  # Fix gcc-7.1.0 regression (gcc generates MMX without EMMS):
-  zcat $CWD/gcc.bug.80799.diff.gz | patch -p1 --verbose || exit 1
 
   # Fix perms/owners:
   chown -R root:root .

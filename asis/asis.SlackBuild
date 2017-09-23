@@ -21,7 +21,7 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=asis
-VERSION=${VERSION:-2016}
+VERSION=${VERSION:-2017}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
@@ -71,8 +71,8 @@ find . \
  \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
  -exec chmod 644 {} \; || exit 1
 
-for file in $CWD/patches/patch* ; do
-    patch -p0 < $file;
+for file in $CWD/patches/*diff ; do
+    patch -p1 < $file;
 done
 
 sed -i "s/share\/doc\/asis/doc\/asis-$VERSION/" doc/asis.xml
@@ -92,9 +92,6 @@ make prefix=$PKG/usr install install-tools
 
 mv $PKG/usr/doc/$PRGNAM-$VERSION/info $PKG/usr/
 # move gnatcheck info to the system info directory
-rm $PKG/usr/include/*.ad{s,b}
-rm $PKG/usr/lib$LIBDIRSUFFIX/gnat/gnat*gpr
-rm $PKG/usr/lib$LIBDIRSUFFIX/gnat/manifests/gnat*
 
 gzip $PKG/usr/info/*
 cp README $PKG/usr/doc/$PRGNAM-$VERSION

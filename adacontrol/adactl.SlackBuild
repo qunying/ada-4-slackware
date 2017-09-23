@@ -23,7 +23,7 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=adactl			# replace with name of program
-VERSION=${VERSION:-1.17r3}	# replace with version of program
+VERSION=${VERSION:-1.18r9}	# replace with version of program
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}		# the "_SBo" is required
 
@@ -74,17 +74,17 @@ find . \
  \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
  -exec chmod 644 {} \;
 
-gnatmake -P src/build.gpr
-
-mkdir -p $PKG/usr/bin
-cp src/adactl $PKG/usr/bin
+make build
+sed -i 's/gprinstall/gprinstall --prefix=${PREFIX} -p/' Makefile
+make PREFIX=$PKG/usr/ install
 
 mkdir -p $PKG/usr/info
 cp doc/*info* $PKG/usr/info
 gzip $PKG/usr/info/*
 
+mv $PKG/usr/share/doc $PKG/usr/doc
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
-cp doc/*html doc/*.pdf $PKG/usr/doc/$PRGNAM-$VERSION
+cp doc/*.pdf $PKG/usr/doc/$PRGNAM-$VERSION
 cp doc/support.txt $PKG/usr/doc/$PRGNAM-$VERSION
 
 cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild

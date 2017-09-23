@@ -21,7 +21,7 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=sparforte
-VERSION=${VERSION:-2.0.3}
+VERSION=${VERSION:-2.1}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
@@ -63,9 +63,9 @@ mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-$VERSION
 
-tar xvf $CWD/$PRGNAM-$VERSION-src.tar.bz2
+tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
 
-cd $PRGNAM-$VERSION
+cd SparForte-$VERSION
 chown -R root:root .
 
 for file in $CWD/patch/* ; do
@@ -75,7 +75,8 @@ done
 ./configure \
     --arch=$ARCH \
     --prefix=/usr \
-    --manprefix=/usr/man
+    --manprefix=/usr/man \
+    --without-mysql
 
 sed -i -e "s/^LIBS=-L/LIBS=/g" src/GNUmakefile
 make all

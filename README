@@ -10,15 +10,16 @@ The build order will be
 * gtkada
 * aunit
 * gnatcoll
+* langkit
+* quex
+* libadalang
 * gps
 * florist
 * asis
 * gnatmem
 * adactl
 
-The resulting compiler will replace the system compiler.
-
-It has been updated for Slackware 14.2, GCC 6.3.0 and gnat GPL 2016 and GitHub.
+It has been updated for Slackware current, GCC 7.2.0 and gnat GPL 2017
 
 For gnatmem, you also need the binutils source and build the binutils first.
 

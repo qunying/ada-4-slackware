@@ -1,0 +1,22 @@
+Description: Use packaged libgnatvsn instead of source copies.
+ The name of this patch mentions gnatprj for historical reasons.
+Author: Nicolas Boulenguez <nicolas@debian.org>
+Forwarded: not-needed
+
+--- a/asis.gpr
++++ b/asis.gpr
+@@ -21,12 +21,13 @@
+ --                                                                          --
+ ------------------------------------------------------------------------------
+ 
++with "gnat_util";
+ with "common";
+ 
+ project Asis is
+ 
+    for Languages use ("ada");
+-   for Source_Dirs use ("asis", "gnat");
++   for Source_Dirs use ("asis");
+    for Object_Dir use "obj";
+    for Library_Name use "asis";
+    for Library_Dir use "lib";

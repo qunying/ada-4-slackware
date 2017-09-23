@@ -1,8 +1,7 @@
-diff --git a/configure b/configure
-index 69452da..2628f76 100755
---- a/configure
-+++ b/configure
-@@ -1089,25 +1089,6 @@ echo "Configuring third-party APQ (Database Library)..."
+diff -ru SparForte-2.1/configure SparForte-2.1-new/configure
+--- SparForte-2.1/configure	2017-09-01 17:51:22.000000000 -0700
++++ SparForte-2.1-new/configure	2017-09-19 13:10:13.213717488 -0700
+@@ -1202,25 +1202,6 @@
  sleep 1
  
  echo -n "apq library: checking for one or more database config scripts... "
@@ -28,7 +27,7 @@ index 69452da..2628f76 100755
  
  # APQ will not build with no database selected.  If no database is selected,
  # skip this step.  Otherwise, select one database or both through the APQ
-@@ -1117,14 +1098,14 @@ fi
+@@ -1230,14 +1211,14 @@
  # NO_MYSQL means the user requests no MSYQL support, not that MySQL is not
  # installed (that is HAS_MYSQL).
  
@@ -46,46 +45,24 @@ index 69452da..2628f76 100755
        echo "Running APQ's configure (no PostgreSQL)..."
        HAVE_PG=0 ./configure
     else
-@@ -1133,6 +1114,7 @@ else
-    fi
-    cd -
- fi
-+
- #if test -f Makeincl ; then
- #   mv -f Makeincl apq-2.1/Makeincl
- #fi
-@@ -1367,7 +1349,7 @@ if [ -z "$NO_READLINE" ] ; then
+@@ -1480,7 +1461,7 @@
     RLINCL="\-I\.\/areadline\/"
     # Linux Mint doesn't need ncurses and breaks...needed for Slackware?
     #RLLIBS="\-L\/lib\/x86_64\-linux\-gnu\/\ \-l:libreadline.so.6\ \-l:libhistory.so.6\ \-lncurses"
--   RLLIBS="\-L\/lib\/x86_64\-linux\-gnu\/\ \-l:libreadline.so.6\ \-l:libhistory.so.6"
+-   RLLIBS="\-L\/lib\/x86_64\-linux\-gnu\/\ \-l:libreadline.so.$READLINE_VERSION\ \-l:libhistory.so.$READLINE_VERSION"
 +   RLLIBS="\-lreadline\ \-lhistory\ \-lncurses"
  else
     RLINCL=
     RLLIBS=
-diff --git a/src/GNUmakefile.orig b/src/GNUmakefile.orig
-index b68f85e..77d6d98 100644
---- a/src/GNUmakefile.orig
-+++ b/src/GNUmakefile.orig
-@@ -50,7 +50,7 @@ INCLUDE=-I./adacgi-1.6/ ${APQINCL} -I./pegasock/ ${MESAINCL} ${SDLINCL} ${BDBINC
- INCLUDE_BIND=-I./adacgi-1.6/ ${APQINCL} -I./pegasock/ ${BDBINCL} ${RLINCL} #${MESAINCL}
- #LIBS=-L`pg_config --libdir` -L./apq-1.92/ -lpq -lSDL ${PTHREAD_LIBS}
- #LIBS=-L`pg_config --libdir` -L./apq-2.1/ ./apq-2.1/c_mysql.o -l SDL -l SDL_image ${PTHREAD_LIBS}
--LIBS=-L ${PGLIBS} ${MYSQLLIBS} ${APQLIBS} -L./pegasock/ ./pegasock/c_tinyserve.o ./pegasock/c_os.o ${SDLLIBS} ${MESALIBS} ${BDBLIBS} ${RLLIBS}
-+LIBS=${PGLIBS} ${MYSQLLIBS} ${APQLIBS} -L./pegasock/ ./pegasock/c_tinyserve.o ./pegasock/c_os.o ${SDLLIBS} ${MESALIBS} ${BDBLIBS} ${RLLIBS}
- # c_mysql.o missing in APQ 2.1 library
+diff -ru SparForte-2.1/src/apq-2.1/Makefile SparForte-2.1-new/src/apq-2.1/Makefile
+--- SparForte-2.1/src/apq-2.1/Makefile	2017-09-01 17:51:22.000000000 -0700
++++ SparForte-2.1-new/src/apq-2.1/Makefile	2017-09-19 13:29:18.979754152 -0700
+@@ -40,7 +40,7 @@
+ 	ADA_INCLUDE_PATH=. ADA_OBJECTS_PATH=. gnatmake -c $(AOPTS) comp_mysql
  
- # Make Rules Start
-diff --git a/src/areadline/Makefile b/src/areadline/Makefile
-index d24b1ef..75566ea 100644
---- a/src/areadline/Makefile
-+++ b/src/areadline/Makefile
-@@ -2,7 +2,7 @@
- all:
- 	gnatmake -c -O2 -gnatfoN rl.adb
- 	gnatbind -x rl.ali
--	gnatlink rl.ali -L/lib/x86_64-linux-gnu/ -l:libreadline.so.6 -l:libhistory.so.6
-+	gnatlink rl.ali -lreadline -lhistory -lncurses
- 	#ncurses crashes Linux Mint build
- 	#gnatlink rl.ali -L/lib/x86_64-linux-gnu/ -l:libreadline.so.6 -l:libhistory.so.6 -lcurses
- clean:
+ c_mysql.o: c_mysql.c
+-	$(CC) -c $(COPTS) $(ZOPTS) $(MY_INCL) c_mysql.c -o c_mysql.o
++	$(CC) -c $(COPTS) $(ZOPTS) $(MY_INCL) -I/usr/include/mysql/server c_mysql.c -o c_mysql.o
+ 
+ apq-mysql.ads: apq-mysql.ads-in mysql_generr.c mysql_xcr2 mysql_xcr3
+ 	@rm -f mysql_errmsg.h mysql_generr

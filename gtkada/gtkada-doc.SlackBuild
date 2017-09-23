@@ -20,106 +20,23 @@
 #  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-PRGNAM=gtkada
+. ./common.SlackBuild
 PKGNAM=gtkada-doc
-VERSION=${VERSION:-18.0w20170420}
-GIT_VERSION=fe175925694a890f41b1bd90aed2161aab0e8dda
-BUILD=${BUILD:-2}
-TAG=${TAG:-_SBo}
-
-set -e
-# Automatically determine the architecture we're building on:
-if [ -z "$ARCH" ]; then
-  case "$(uname -m)" in
-    i?86) ARCH=i586 ;;
-    arm*) ARCH=arm ;;
-    # Unless $ARCH is already set, use uname -m for all other archs:
-    *) ARCH=$(uname -m) ;;
-  esac
-  export ARCH
-fi
-
-CWD=$(pwd)
-TMP=${TMP:-/tmp/SBo}	# For consistency's sake, use this
-PKG=$TMP/package-$PKGNAM
-OUTPUT=${OUTPUT:-/tmp}	# Drop the package in /tmp
-
-if [ "$ARCH" = "i586" ]; then
-  SLKCFLAGS="-O2 -march=i586 -mtune=i686"
-  LIBDIRSUFFIX=""
-  LIB_ARCH=i386
-elif [ "$ARCH" = "i686" ]; then
-  SLKCFLAGS="-O2 -march=i686 -mtune=i686"
-  LIBDIRSUFFIX=""
-  LIB_ARCH=i386
-elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O2 -fPIC"
-  LIBDIRSUFFIX="64"
-  LIB_ARCH=amd64
-else
-  SLKCFLAGS="-O2"
-  LIBDIRSUFFIX=""
-  LIB_ARCH=$ARCH
-fi
-
-set -e # Exit on most errors
-
-rm -rf $PKG
-mkdir -p $TMP $PKG $OUTPUT
-cd $TMP
-rm -rf $PRGNAM-$GIT_VERSION
-tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
-
-cd $PRGNAM-$GIT_VERSION
-chown -R root:root .
-find . \
- \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
- -exec chmod 755 {} \; -o \
- \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
- -exec chmod 644 {} \; || exit 1
-
-for file in $CWD/patch/* ; do
-    patch -p0 < $file
-done
-
-autoconf
-CFLAGS="$SLKCFLAGS" \
-CXXFLAGS="$SLKCFLAGS" \
-./configure \
-    --prefix=/usr \
-    --libdir=/usr/lib${LIBDIRSUFFIX} \
-    --includedir=/usr/include \
-    --infodir=/usr/info \
-    --mandir=/usr/man \
-    --enable-shared \
-    --build=$ARCH-slackware-linux
-
-if [ "$ARCH" = "x86_64" ]; then
-    sed -i -e "s/prefix}\/lib/prefix}\/lib$LIBDIRSUFFIX/" \
-	-e "s/lib\/gnat/lib$LIBDIRSUFFIX\/gnat/g" \
-	-e "s/lib\/gtkada/lib$LIBDIRSUFFIX\/gtkada/g"\
-        -e 's/=\${libdir}\//=\${DESTDIR}\${libdir}\//' Makefile
-else
-    sed -i  -e 's/=\${libdir}\//=\${DESTDIR}\${libdir}\//' Makefile
-fi
 
 make -j 2
 
 # change document location
-sed -i "s/share\/doc\/gtkada/doc\/gtkada-${VERSION}/" xml/gtkada.xml
+sed -i "s/share\/doc\/gtkada/doc\/gtkada/" xml/gtkada.xml
 
 make docs
 
 make DESTDIR=$PKG install
 
 mkdir -p $PKG/install
-mkdir -p $PKG/usr/doc
 
-mv $PKG/usr/share/doc/gtkada $PKG/usr/doc/$PRGNAM-$VERSION
-rmdir $PKG/usr/share/doc
 rm -rf $PKG/usr/bin $PKG/usr/include $PKG/usr/lib$LIBDIRSUFFIX \
 $PKG/usr/share/examples
-cp $CWD/$PKGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-$VERSION
+cp $CWD/$PKGNAM.SlackBuild $PKG/usr/doc/$PRGNAM
 cp $CWD/slack-desc.$PKGNAM $PKG/install/slack-desc
 
 cd $PKG

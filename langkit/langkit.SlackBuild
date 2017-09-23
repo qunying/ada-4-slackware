@@ -39,15 +39,12 @@ mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 
 mkdir -p $PKG/usr/share
-mkdir -p $PKG/usr/bin
 mkdir -p $PKG/usr/doc/$PRGNAM
 
 tar xvf $CWD/$SRC_NAME.tar.gz
 mv $SRC_NAME $PKG/usr/share/$PRGNAM
 cd  $PKG/usr/share/$PRGNAM
 mv GPL COPYING3 CHANGES $PKG/usr/doc/$PRGNAM
-cd $PKG/usr/bin
-ln -s ../share/$PRGNAM/scripts/create-project.py create-project
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

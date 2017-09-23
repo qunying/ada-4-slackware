@@ -21,7 +21,7 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=florist
-VERSION=${VERSION:-2016}
+VERSION=${VERSION:-2017}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
@@ -62,7 +62,7 @@ mkdir -p $TMP $PKG $OUTPUT
 
 cd $TMP
 rm -rf $PRGNAM-gpl-$VERSION-src
-tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.tar.gz || tar xvf c739f1c1e724b177a7bbc682435d2df3
+tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.tar.gz || tar xvf 591c45e2c7a447af2deed009
 
 cd $PRGNAM-gpl-$VERSION-src
 chown -R root:root .
@@ -108,7 +108,6 @@ make PREFIX=$PKG/usr SRC_DIR=include/florist \
 LIB_DIR=lib$LIBDIRSUFFIX/florist/relocatable install
 
 mkdir -p $PKG/usr/lib$LIBDIRSUFFIX/gnat
-cp $CWD/florist.gpr $PKG/usr/lib$LIBDIRSUFFIX/gnat
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
 cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-$VERSION
 cp README INSTALL COPYING3 COPYING $PKG/usr/doc/$PRGNAM-$VERSION
