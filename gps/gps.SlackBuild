@@ -105,7 +105,7 @@ sed -i "s/Mode'Image/Mode'Img/" ./vsearch/src/vsearch.adb
 
 ln -s ../gnatcoll-gnatcoll-$GNATCOLL_VERSION gnatlib
 
-make -j 2 Build=Production OS=unix
+make Build=Production OS=unix
 
 make -C docs
 

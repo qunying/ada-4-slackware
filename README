@@ -19,7 +19,7 @@ The build order will be
 * gnatmem
 * adactl
 
-It has been updated for Slackware current, GCC 7.2.0 and gnat GPL 2017
+It has been updated for Slackware current, GCC 7.3.0 and gnat GPL 2017
 
 For gnatmem, you also need the binutils source and build the binutils first.
 

@@ -24,7 +24,7 @@
 
 PKGNAM=gnat-env
 # should have the same version of the GCC one
-VERSION=${VERSION:-7.2.0}
+VERSION=${VERSION:-7.3.0}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 OUTPUT=${OUTPUT:-/tmp}

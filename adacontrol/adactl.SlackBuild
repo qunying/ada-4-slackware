@@ -23,7 +23,7 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=adactl			# replace with name of program
-VERSION=${VERSION:-1.18r9}	# replace with version of program
+VERSION=${VERSION:-1.19r10}	# replace with version of program
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}		# the "_SBo" is required
 
@@ -73,6 +73,7 @@ find . \
  -exec chmod 755 {} \; -o \
  \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
  -exec chmod 644 {} \;
+patch -p1 < $CWD/adactl_fix.patch
 
 make build
 sed -i 's/gprinstall/gprinstall --prefix=${PREFIX} -p/' Makefile

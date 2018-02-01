@@ -21,10 +21,12 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gnat_util
-VERSION=${VERSION:-5.1.0}
+VERSION=${VERSION:-7.3.0} # same version as GCC
+HG_REP_VERSION=c013843f0ace361ac462f773353b762870c0d548
+SRC_PREFIX=gnatutil-code-$HG_REP_VERSION
 BUILD=${BUILD:-1}
 TAG=${TAG-_SBo}
-GCC_VERSION=${GCC_VERSION:-7.2.0}
+GCC_VERSION=${GCC_VERSION:-$VERSION}
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -64,10 +66,14 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 
 cd $TMP
-rm -rf $PRGNAM-$VERSION
-tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
+rm -rf $SRC_PREFIX
+unzip $CWD/$SRC_PREFIX.zip
 
-cd $PRGNAM-$VERSION
+#tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
+
+#cd $PRGNAM-$VERSION
+
+cd $SRC_PREFIX
 
 chown -R root:root .
 find . \
@@ -96,5 +102,5 @@ cp README COPYING3 $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-$VERSION/
 cd $PKG
 
 mkdir -p $PKG/install
-cp $CWD/slack-desc $PKG/install
+sed "s/GCC_VERSION/$GCC_VERSION/g" $CWD/slack-desc > $PKG/install/slack-desc
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$GCC_VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
