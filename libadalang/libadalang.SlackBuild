@@ -2,7 +2,7 @@
 
 # Slackware build script for libgadalang
 
-# Copyright 2017 Zhu Qun-Ying
+# Copyright 2017-2018 Zhu Qun-Ying
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -27,7 +27,7 @@ VERSION=${VERSION:-2017}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 SRC_NAME=$PRGNAM-gps-src
-LANGKIT_NAME=langkit-gps-src
+LANGKIT_NAME=/usr/share/langkit
 CWD=$(pwd)
 TMP=${TMP:-/tmp/SBo}
 PKG=$TMP/package-$PRGNAM
@@ -66,7 +66,6 @@ rm -rf $SRC_NAME
 tar xvf $CWD/$SRC_NAME.tar.gz || tar xvf 591c45e2c7a447af2deed042
 cd $SRC_NAME
 # setup langkit first
-tar xvf $CWD/$LANGKIT_NAME.tar.gz || tar xvf 591c45e2c7a447af2deed044
 
 # generate files
 if [ "$QUEX_PATH" = "" ]; then
@@ -75,8 +74,6 @@ if [ "$QUEX_PATH" = "" ]; then
 fi
 ln -s $LANGKIT_NAME langkit
 
-sed -i -e "s/\.static/\/static/g" \
-       -e "s/\.relocatable/\/relocatable/g" $LANGKIT_NAME/langkit/libmanage.py
 python ada/manage.py make
 python ada/manage.py install $PKG/usr
 mkdir -p $PKG/$PYTHON_PKG_DIR
