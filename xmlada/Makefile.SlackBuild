@@ -7,7 +7,7 @@
 .PHONEY: all install
 
 ECHO := echo
-LIBVER := 18.0w
+LIBVER := 2018
 
 ADALIB := $(gnatls -v | grep adalib | awk '{print $$1}')
 

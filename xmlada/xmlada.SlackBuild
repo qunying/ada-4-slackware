@@ -21,10 +21,11 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=xmlada
-VERSION=${VERSION:-2017}
+VERSION=${VERSION:-2018}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
-SRC_NAME=$PRGNAM-gpl-$VERSION-src
+SRC_NAME=$PRGNAM-gpl-$VERSION-20180524-src
+SRC_DIR=$PRGNAM-gpl-$VERSION-src
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -65,10 +66,10 @@ set -e # Exit on most errors
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $SRC_NAME
-tar xvf $CWD/$SRC_NAME.tar.gz || tar xvf $CWD/591aeb88c7a4473fcbb154f8
+rm -rf $SRC_DIR
+tar xvf $CWD/$SRC_NAME.tar.gz || tar xvf $CWD/5b0819dec7a447df26c27a40
 
-cd $SRC_NAME
+cd $SRC_DIR
 chown -R root:root .
 find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
