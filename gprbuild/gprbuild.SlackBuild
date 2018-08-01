@@ -21,10 +21,11 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gprbuild
-VERSION=${VERSION:-2017}
+VERSION=${VERSION:-2018}
 BUILD=${BUILD:-1}
 TAG=${TAG-_SBo}
-SRC_NAME=$PRGNAM-gpl-$VERSION-src
+SRC_NAME=$PRGNAM-gpl-$VERSION-20180524-src
+SRC_DIR=$PRGNAM-gpl-$VERSION-src
 
 GCC_BUILD_DIR=${GCC_BUILD_DIR:-/build/gcc}
 
@@ -64,10 +65,11 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 
 cd $TMP
-rm -rf $SRC_NAME
-tar xvf $CWD/$SRC_NAME.tar.gz
+rm -rf $SRC_DIR
+tar xvf $CWD/$SRC_NAME.tar.gz || tar xvf $CWD/5b0819dfc7a447df26c27a68
 
-cd $SRC_NAME
+cd $SRC_DIR
+
 
 # patch source according to the debian patch
 #for file in $CWD/patches/*.patch ; do
@@ -88,7 +90,7 @@ fi
 #sed -i -e 's/"19940713"/"20170109"/' \
 #       -e 's/"2016"/"2017"/' src/gpr_version.ads
 
-#ln -s $CWD/Makefile.SlackBuild
+sed -i "s/:= GPL/:= FSF/" gpr/src/gpr-version.ads
 sed -i "s/input_sources/input/g" bootstrap.sh
 
 ./bootstrap.sh --with-xmlada=/usr/include/xmlada --prefix=./bootstrap
