@@ -21,8 +21,8 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=aunit
-VERSION=${VERSION:-2017}
-URL_NAME=591c45e2c7a447af2deed000
+VERSION=${VERSION:-2018}
+URL_NAME=5b0819e0c7a447df26c27ab3
 #SRC_VERSION=${SRC_VERSION:-3.8.0w}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
@@ -66,7 +66,7 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-gpl-$VERSION-src
-tar xvf $CWD/$PRGNAM-gpl-$VERSION-src.tar.gz || tar xvf $URL_NAME
+tar xvf $CWD/$PRGNAM-gpl-$VERSION-20180524-src.tar.gz || tar xvf $URL_NAME
 
 cd $PRGNAM-gpl-$VERSION-src
 chown -R root:root .
