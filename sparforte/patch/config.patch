@@ -1,7 +1,75 @@
-diff -ru SparForte-2.1/configure SparForte-2.1-new/configure
---- SparForte-2.1/configure	2017-09-01 17:51:22.000000000 -0700
-+++ SparForte-2.1-new/configure	2017-09-19 13:10:13.213717488 -0700
-@@ -1202,25 +1202,6 @@
+--- SparForte-2.2/configure	2019-01-04 14:31:18.000000000 -0800
++++ SparForte-2.2-new/configure	2019-01-26 06:49:44.564677232 -0800
+@@ -1086,66 +1086,8 @@
+ HAS_READLINE=
+ READLINE_VERSION=
+ if [ -z "$NO_READLINE" ] ; then
+-   echo -n "checking for readline 6 (ldconfig -p, Linux)... "
+-   TMP=`$LDCONFIG_SUDO /sbin/ldconfig -p 2>/dev/null | grep libreadline.so.6`
+-   if [ -z "$TMP" ] ; then
+-      echo "no"
+-   else
+-      HAS_READLINE=1
+-      READLINE_VERSION=6
+-      echo "yes"
+-   fi
+-   if [ -z "$READLINE_VERSION" ] ; then
+-      echo -n "checking for readline 7 (ldconfig -p, Linux)... "
+-      TMP=`$LDCONFIG_SUDO sudo /sbin/ldconfig -p 2>/dev/null | grep libreadline.so.7`
+-      if [ -z "$TMP" ] ; then
+-         echo "no"
+-      else
+-         HAS_READLINE=1
+-         READLINE_VERSION=7
+-         echo "yes"
+-      fi
+-   fi
+-   if [ -z "$READLINE_VERSION" ] ; then
+-      echo -n "checking for readline (ldconfig -r, FreeBSD)... "
+-      TMP=`/sbin/ldconfig -r 2>/dev/null | grep libreadline`
+-      if [ -z "$TMP" ] ; then
+-         echo "no"
+-      else
+-         HAS_READLINE=1
+-         READLINE_VERSION=6
+-         echo "yes"
+-      fi
+-   fi
+-   if [ -z "$READLINE_VERSION" ] ; then
+-      if [ "$OS" = "cygwin" ] ; then
+-         echo -n "checking for readline (locate, Cygwin)... "
+-         TMP=`"$LOCATE" libreadline`
+-         if [ -z "$TMP" ] ; then
+-            echo "no"
+-         else
+-            HAS_READLINE=1
+-            READLINE_VERSION=
+-            echo "yes"
+-         fi
+-      else
+-         echo -n "checking for readline (locate, Darwin)... "
+-         TMP=`"$LOCATE" libreadline`
+-         if [ -z "$TMP" ] ; then
+-            echo "no"
+-         else
+-            HAS_READLINE=1
+-            READLINE_VERSION=6
+-            echo "yes"
+-         fi
+-      fi
+-   fi
+-   if [ -z "$HAS_READLINE" ] ; then
+-      echo
+-      echo "SparForte cannot find GNU readline and history libraries"
+-      echo "Please install them or run configure with --without-readline"
+-      exit 1
+-   fi
++    HAS_READLINE=1
++    READLINE_VERSION=7
+ fi
+ 
+ # GNU Make
+@@ -1252,25 +1194,6 @@
  sleep 1
  
  echo -n "apq library: checking for one or more database config scripts... "
@@ -27,7 +95,7 @@ diff -ru SparForte-2.1/configure SparForte-2.1-new/configure
  
  # APQ will not build with no database selected.  If no database is selected,
  # skip this step.  Otherwise, select one database or both through the APQ
-@@ -1230,14 +1211,14 @@
+@@ -1280,14 +1203,14 @@
  # NO_MYSQL means the user requests no MSYQL support, not that MySQL is not
  # installed (that is HAS_MYSQL).
  
@@ -45,24 +113,12 @@ diff -ru SparForte-2.1/configure SparForte-2.1-new/configure
        echo "Running APQ's configure (no PostgreSQL)..."
        HAVE_PG=0 ./configure
     else
-@@ -1480,7 +1461,7 @@
-    RLINCL="\-I\.\/areadline\/"
-    # Linux Mint doesn't need ncurses and breaks...needed for Slackware?
-    #RLLIBS="\-L\/lib\/x86_64\-linux\-gnu\/\ \-l:libreadline.so.6\ \-l:libhistory.so.6\ \-lncurses"
--   RLLIBS="\-L\/lib\/x86_64\-linux\-gnu\/\ \-l:libreadline.so.$READLINE_VERSION\ \-l:libhistory.so.$READLINE_VERSION"
-+   RLLIBS="\-lreadline\ \-lhistory\ \-lncurses"
+@@ -1535,7 +1458,7 @@
+    if [ -z "$READLINE_VERSION" ] ; then
+       RLLIBS="\-L\/lib\/x86_64\-linux\-gnu\/\ \-lreadline\ \-lhistory"
+    else
+-      RLLIBS="\-L\/lib\/x86_64\-linux\-gnu\/\ \-l:libreadline.so.$READLINE_VERSION\ \-l:libhistory.so.$READLINE_VERSION"
++      RLLIBS="\-L\/lib\/x86_64\-linux\-gnu\/\ \-lreadline\ \-lhistory \-ltinfo"
+    fi
  else
     RLINCL=
-    RLLIBS=
-diff -ru SparForte-2.1/src/apq-2.1/Makefile SparForte-2.1-new/src/apq-2.1/Makefile
---- SparForte-2.1/src/apq-2.1/Makefile	2017-09-01 17:51:22.000000000 -0700
-+++ SparForte-2.1-new/src/apq-2.1/Makefile	2017-09-19 13:29:18.979754152 -0700
-@@ -40,7 +40,7 @@
- 	ADA_INCLUDE_PATH=. ADA_OBJECTS_PATH=. gnatmake -c $(AOPTS) comp_mysql
- 
- c_mysql.o: c_mysql.c
--	$(CC) -c $(COPTS) $(ZOPTS) $(MY_INCL) c_mysql.c -o c_mysql.o
-+	$(CC) -c $(COPTS) $(ZOPTS) $(MY_INCL) -I/usr/include/mysql/server c_mysql.c -o c_mysql.o
- 
- apq-mysql.ads: apq-mysql.ads-in mysql_generr.c mysql_xcr2 mysql_xcr3
- 	@rm -f mysql_errmsg.h mysql_generr
