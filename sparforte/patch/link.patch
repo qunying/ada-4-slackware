@@ -1,0 +1,11 @@
+--- SparForte-2.4.1/src/GNUmakefile	2021-11-14 13:19:52.313406784 -0800
++++ spar-new/src/GNUmakefile	2021-11-14 13:25:54.476427679 -0800
+@@ -38,7 +38,7 @@
+ BDBINCL=
+ BDBLIBS=
+ RLINCL=-I./areadline/
+-RLLIBS=-L/lib/x86_64-linux-gnu/ -l:libreadline.so.6 -l:libhistory.so.6 c_rl.o
++RLLIBS=-lreadline -lhistory -ltinfo c_rl.o
+ RLFLAG=-DREADLINE
+ #PCREINCL=PCREINCLSUB
+ PCRELIBS=-lpcre

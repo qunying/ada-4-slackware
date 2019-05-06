@@ -1,0 +1,13 @@
+diff --git gtkada-53f75953acf.20190415/shared.gpr.in b/gtkada-new/shared.gpr.in
+index 82da108..6e20ed0 100644
+--- gtkada-53f75953acf.20190415/shared.gpr.in
++++ gtkada-new/shared.gpr.in
+@@ -48,6 +48,8 @@ project Shared is
+    GL_Include  := Gtk.GL_Default_Include  & (@GL_CFLAGS_GPR@);
+    GL_Libs     := Gtk.GL_Default_Libs     & (@GL_LIBS_GPR@);
+ 
++   for Toolchain_Name ("C") use "GCC";
++
+    package Naming is
+       for Body_Suffix ("Objective-C") use ".m";
+    end Naming;

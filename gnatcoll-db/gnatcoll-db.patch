@@ -1,0 +1,40 @@
+--- gnatcoll-db-c75234037fb4568739435fad204f206afe609a77/sqlite/gnatcoll_sqlite.gpr	2021-08-01 16:17:52.864842302 -0700
++++ gnatcoll-db-new/sqlite/gnatcoll_sqlite.gpr	2021-08-01 16:27:16.433837706 -0700
+@@ -44,6 +44,7 @@
+    for Library_Version use "lib" & Name & Gnatcoll.So_Ext & "." & Version;
+ 
+    for Languages use ("Ada", "C");
++   for Toolchain_Name ("C") use "GCC";
+ 
+    Thread_Lib := ();
+ 
+--- gnatcoll-db-c75234037fb4568739435fad204f206afe609a77/postgres/gnatcoll_postgres.gpr	2021-08-01 16:17:52.864842302 -0700
++++ gnatcoll-db-new/postgres/gnatcoll_postgres.gpr	2021-08-01 16:27:11.009837750 -0700
+@@ -53,6 +53,7 @@
+    end case;
+ 
+    for Languages use ("Ada", "C");
++   for Toolchain_Name ("C") use "GCC";
+ 
+    type OS_Kind is ("windows", "unix", "osx");
+    OS : OS_Kind := External ("GNATCOLL_OS", "unix");
+--- gnatcoll-db-c75234037fb4568739435fad204f206afe609a77/pgxs/example/module.gpr	2021-08-01 16:17:52.864842302 -0700
++++ gnatcoll-db-new/pgxs/example/module.gpr	2021-08-01 16:27:04.553837803 -0700
+@@ -8,6 +8,7 @@
+    --  $ pg_config --includedir-server
+ 
+    for Languages use ("C", "Ada");
++   for Toolchain_Name ("C") use "GCC";
+    for Object_Dir use "../.objs/module";
+    for Source_Dirs use (".", "../source", "../testsuite");
+ 
+--- gnatcoll-db-c75234037fb4568739435fad204f206afe609a77/pgxs/testsuite/module.gpr	2021-08-01 16:17:52.864842302 -0700
++++ gnatcoll-db-new/pgxs/testsuite/module.gpr	2021-08-01 16:27:00.833837833 -0700
+@@ -8,6 +8,7 @@
+    --  $ pg_config --includedir-server
+ 
+    for Languages use ("C", "Ada");
++   for Toolchain_Name ("C") use "GCC";
+    for Object_Dir use "../.objs/test";
+    for Source_Dirs use (".", "../source");
+ 

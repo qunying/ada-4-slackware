@@ -1,0 +1,31 @@
+--- gnatcoll-core-2bbccda18ef6f3d4e7919869e8457a0b7a1c465f/gnatcoll.gpr	2021-07-23 11:01:40.000000000 -0700
++++ gnatcoll-core-new/gnatcoll.gpr	2021-07-29 14:52:02.996423957 -0700
+@@ -25,7 +25,7 @@
+ 
+ project GnatColl is
+ 
+-   Version := External ("GNATCOLL_VERSION", "0.0");
++   Version := External ("GNATCOLL_VERSION", "22.0.0");
+    Name    := "gnatcoll";
+ 
+    type Yes_No is ("yes", "no");
+@@ -44,6 +44,8 @@
+ 
+    Sources := ("src", "src/os", "src/paragraph_filling");
+ 
++   for Toolchain_Name ("C") use "GCC";
++
+    case OS is
+       when "unix" | "osx" =>
+          Sources := Sources & ("src/os/unix");
+@@ -263,8 +265,8 @@
+ 
+    package Install is
+       for Artifacts ("share/examples/gnatcoll") use ("examples/*");
+-      for Artifacts ("share/doc/gnatcoll/html") use ("docs/_build/html");
+-      for Artifacts ("share/doc/gnatcoll")
++      for Artifacts ("doc/gnatcoll/html") use ("docs/_build/html/*");
++      for Artifacts ("doc/gnatcoll")
+         use ("docs/_build/latex/GNATColl.pdf");
+    end Install;
+ 

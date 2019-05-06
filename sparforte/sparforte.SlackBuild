@@ -1,6 +1,6 @@
 #!/bin/sh
-# sparforte package build script (written by zhu.qunying@gmail.com)
-# Copyright 2015-2017, Zhu Qun-Ying
+# sparforte package build script
+# Copyright 2015-2021, Zhu Qun-Ying
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -21,9 +21,9 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=sparforte
-VERSION=${VERSION:-2.2}
+VERSION=${VERSION:-2.4.1}
 BUILD=${BUILD:-1}
-TAG=${TAG:-_SBo}
+TAG=${TAG:-_sAda}
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -37,7 +37,7 @@ if [ -z "$ARCH" ]; then
 fi
 
 CWD=$(pwd)
-TMP=${TMP:-"/tmp/SBo"}
+TMP=${TMP:-"/tmp/slackAda"}
 PKG=${TMP}/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
 
@@ -61,24 +61,23 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 
 cd $TMP
-rm -rf $PRGNAM-$VERSION
+rm -rf SparForte-$VERSION
 
 tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
 
 cd SparForte-$VERSION
 chown -R root:root .
 
-for file in $CWD/patch/* ; do
-    patch -p1 < $file
-done
-# build static library
+patch -p1 < $CWD/patch/apq-conf.patch
+
 ./configure \
     --arch=$ARCH \
     --prefix=/usr \
     --manprefix=/usr/man \
-    --without-mysql
+    --without-bdb
 
-sed -i -e "s/^LIBS=-L/LIBS=/g" src/GNUmakefile
+patch -p1 < $CWD/patch/link.patch
+
 make all
 
 make RPM_BUILD_ROOT=1 DESTDIR=$PKG install

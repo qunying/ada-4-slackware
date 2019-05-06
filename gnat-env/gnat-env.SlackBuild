@@ -1,6 +1,6 @@
 #!/bin/sh
 # GCC GNAT environment setup package
-# Copyright 2016-2017 Zhu Qun-Ying
+# Copyright 2016-2019 Zhu Qun-Ying
 #
 # All rights reserved.
 #
@@ -24,9 +24,10 @@
 
 PKGNAM=gnat-env
 # should have the same version of the GCC one
-VERSION=${VERSION:-8.2.0}
+GCC_VERSION=`gcc -dumpversion`
+VERSION=${VERSION:-$GCC_VERSION}
 BUILD=${BUILD:-1}
-TAG=${TAG:-_SBo}
+TAG=${TAG:-_sAda}
 OUTPUT=${OUTPUT:-/tmp}
 MA_VER=$(echo $VERSION | cut -d . -f 1)
 MI_VER=$(echo $VERSION | cut -d . -f 2)
@@ -51,7 +52,7 @@ GCC_GNATLIB_PATH=gcc/$ARCH-slackware-linux/$VERSION/adalib
 
 CWD=$(pwd)
 
-TMP=${TMP:-/tmp/SBo/package-gnat-env}
+TMP=${TMP:-/tmp/slackAda/package-gnat-env}
 
 if [ -d $TMP ]; then
     rm -rf $TMP
@@ -62,10 +63,10 @@ mkdir -p $TMP
 cd $TMP
 
 mkdir -p etc/profile.d
-sed "s/%lib%/lib$LIBDIRSUFFIX/" $CWD/ada.sh > etc/profile.d/ada.sh
-sed "s/%lib%/lib$LIBDIRSUFFIX/" $CWD/ada.csh > etc/profile.d/ada.csh
+cat $CWD/gnat.sh > etc/profile.d/gnat.sh
+cat $CWD/gnat.csh > etc/profile.d/gnat.csh
 
-chmod +x etc/profile.d/ada*
+chmod +x etc/profile.d/gnat*
 mkdir install
 cp $CWD/slack-desc install/
 
@@ -73,7 +74,12 @@ cat $CWD/doinst.sh | \
   sed -e "s/%lib%/lib$LIBDIRSUFFIX/g" \
       -e "s/%GCC_GNATLIB_PATH%/gcc\/$ARCH-slackware-linux\/$VERSION\/adalib/g" \
       -e "s/%ma_ver%/$MA_VER/g" \
-      -e "s/%mi_ver%/$MI_VER/g"  \
     > install/doinst.sh
+
+cat $CWD/douninst.sh | \
+  sed -e "s/%lib%/lib$LIBDIRSUFFIX/g" \
+      -e "s/%GCC_GNATLIB_PATH%/gcc\/$ARCH-slackware-linux\/$VERSION\/adalib/g" \
+      -e "s/%ma_ver%/$MA_VER/g" \
+    > install/douninst.sh
 
 makepkg -l y -c n $OUTPUT/$PKGNAM-$VERSION-$ARCH-${BUILD}$TAG.${PKGTYPE:-tgz}

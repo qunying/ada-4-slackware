@@ -1,0 +1,35 @@
+--- SparForte-2.4.1/src/apq-2.1/configure	2021-04-30 12:04:04.000000000 -0700
++++ sparforte-new/src/apq-2.1/configure	2021-09-17 18:41:35.852269132 -0700
+@@ -23,32 +23,6 @@
+ 		HAVE_DB=1
+ 	fi
+ 
+-	if [ $HAVE_DB -eq 0 ] ; then
+-		cat >/dev/tty <<EOF
+--------------------------------------------------------------------------------
+-	WARNING: Unable to locate the $Command command.
+-
+-	This suggests that you do not have $Database installed.
+-
+-	Alternatively, you may need to alter your PATH variable to
+-	include $Database commands. Please check your PATH
+-	variable if you believe that $Database is installed on
+-	your system.
+--------------------------------------------------------------------------------
+-
+-EOF
+-		echo "Is it OK to build APQ without $Database support (Yes/No)?"
+-		read reply </dev/tty
+-		case "$reply" in
+-		Y* | y* )
+-			echo "Very well then. No $Database support it is."
+-			echo
+-			;;
+-		* )	echo "Configuration aborted. Please check your PATH" >/dev/tty
+-			echo "variable, and try again." >/dev/tty
+-			exit 13;;
+-		esac
+-	fi
+ 	return $HAVE_DB
+ }
+ 
