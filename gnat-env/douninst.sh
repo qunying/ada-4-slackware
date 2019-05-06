@@ -1,0 +1,7 @@
+( cd /usr/%lib%; rm -rf libgnat-%ma_ver%.so )
+( cd /usr/%lib%; rm -rf libgnat.so )
+( cd /usr/%lib%; rm -rf libgnarl-%ma_ver%.so )
+( cd /usr/%lib%; rm -rf libgnarl.so )
+( cd /usr/%lib%; rm -rf libgnat.a )
+( cd /usr/%lib%; rm -rf libgnarl.a )
+( cd /usr/%lib%; rm -rf libgmem.a )

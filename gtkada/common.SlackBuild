@@ -1,5 +1,5 @@
 # GTKAda package build script (written by zhu.qunying@gmail.com)
-# Copyright 2012-2018, Zhu Qun-Ying
+# Copyright 2012-2021, Zhu Qun-Ying
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -20,10 +20,10 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # is the common part of gtkada and gtkada-doc, as gtkada-doc required gps
 PRGNAM=gtkada
-VERSION=${VERSION:-2018}
-#GIT_VERSION=fe175925694a890f41b1bd90aed2161aab0e8dda
+VERSION=${VERSION:-013b6f475.20210707}
+GIT_VERSION=013b6f475704f6c75a1d38592b159e3af765391b
 BUILD=${BUILD:-1}
-TAG=${TAG:-_SBo}
+TAG=${TAG:-_sAda}
 
 set -e
 # Automatically determine the architecture we're building on:
@@ -38,7 +38,7 @@ if [ -z "$ARCH" ]; then
 fi
 
 CWD=$(pwd)
-TMP=${TMP:-/tmp/SBo}	# For consistency's sake, use this
+TMP=${TMP:-/tmp/slackAda}	# For consistency's sake, use this
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}	# Drop the package in /tmp
 
@@ -65,10 +65,10 @@ set -e # Exit on most errors
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-gpl-$VERSION-src
-tar xvf $CWD/$PRGNAM-gpl-$VERSION-20180524-src.tar.gz
+rm -rf $PRGNAM-$GIT_VERSION
+tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
 
-cd $PRGNAM-gpl-$VERSION-src
+cd $PRGNAM-$GIT_VERSION
 chown -R root:root .
 find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
@@ -77,8 +77,10 @@ find . \
  -exec chmod 644 {} \; || exit 1
 
 for file in $CWD/patch/* ; do
-    patch -p0 < $file
+    patch -p1 < $file
 done
+
+sed -i -e "s/18.0w/$VERSION/" configure
 
 #autoreconf -vis
 CFLAGS="$SLKCFLAGS" \
@@ -90,6 +92,7 @@ CXXFLAGS="$SLKCFLAGS" \
     --infodir=/usr/info \
     --mandir=/usr/man \
     --enable-shared \
+    --with-GL=no \
     --build=$ARCH-slackware-linux
 
 if [ "$ARCH" = "x86_64" ]; then
@@ -114,5 +117,3 @@ else
 fi
 
 sed -i 's/share\/doc/doc/g' src/gtkada.gpr
-
-

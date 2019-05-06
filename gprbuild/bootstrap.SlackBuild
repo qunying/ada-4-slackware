@@ -1,5 +1,5 @@
-#!/bin/bash
-# XMLAda package build script
+#!/bin/sh
+# gprbuild package build script (written by zhu.qunying@gmail.com)
 # Copyright 2012-2021, Zhu Qun-Ying
 # All rights reserved.
 #
@@ -20,12 +20,21 @@
 #  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-PRGNAM=xmlada
+PRGNAM=gprbuild
 VERSION=${VERSION:-22.0.0}
 BUILD=${BUILD:-1}
-TAG=${TAG:-_sAda}
+TAG=${TAG-_sAda}
 SRC_NAME=$PRGNAM-$VERSION
 SRC_DIR=$SRC_NAME
+
+KB_VERSION=${KB_VERSION:-$VERSION}
+KB_GIT_VERSION=${KB_GIT_VERSION:-7de2e39f5d1b7d67f24e274184c8215997cc7994}
+GPRCONFIG_KB=gprconfig_kb-$KB_VERSION
+GPRCONFIG_KB_SRC_DIR=gprconfig_kb-$KB_GIT_VERSION
+
+XMLADA_VERSION=${XML_VERSION:-$VERSION}
+XMLADA=xmlada-$XMLADA_VERSION
+
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
   case "$(uname -m)" in
@@ -34,72 +43,70 @@ if [ -z "$ARCH" ]; then
     # Unless $ARCH is already set, use uname -m for all other archs:
     *) ARCH=$(uname -m) ;;
   esac
-  export ARCH
 fi
 
 CWD=$(pwd)
-TMP=${TMP:-"/tmp/slackAda"}
-PKG=${TMP}/package-$PRGNAM
-OUTPUT=${OUTPUT:-/tmp}
+TMP=${TMP:-"/tmp/slackAda"}   # For consistency's sake, use this
+PKG=${TMP}/bootstrap
+OUTPUT=${OUTPUT:-/tmp}   # Drop the package in /tmp
 
-BOOSTRAP=${TMP}/bootstrap
 if [ "$ARCH" = "i586" ]; then
   SLKCFLAGS="-O2 -march=i586 -mtune=i686"
   LIBDIRSUFFIX=""
   LIB_ARCH=i386
 elif [ "$ARCH" = "i686" ]; then
-  SLKCFLAGS="-O2 -march=i686"
+  SLKCFLAGS="-O2 -march=i686 -mtune=i686"
   LIBDIRSUFFIX=""
-  LIB_ARCH=i386
 elif [ "$ARCH" = "x86_64" ]; then
   SLKCFLAGS="-O2"
   LIBDIRSUFFIX="64"
-  LIB_ARCH=amd64
 else
   SLKCFLAGS="-O2"
   LIBDIRSUFFIX=""
-  LIB_ARCH=$ARCH
 fi
 
-set -e # Exit on most errors
+set -e
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
+
 cd $TMP
 rm -rf $SRC_DIR
 tar xvf $CWD/$SRC_NAME.tar.gz
 
 cd $SRC_DIR
-chown -R root:root .
-find . \
- \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
- -exec chmod 755 {} \; -o \
- \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
- -exec chmod 644 {} \; || exit 1
 
-(export PATH=$BOOSTRAP/bin:$PATH
- echo "PATH=$PATH"
- ./configure --prefix=/usr \
-	    --libdir=/usr/lib$LIBDIRSUFFIX \
-	    --enable-shared
- gprbuild --version
- # we need to remove the document part, sphinx does not work under
- # Slackware current (due to docutil 0.18) yet
- sed -i -e '/share\/doc\/xmlada/,+2d' input_sources/xmlada_input.gpr
- make prefix=$PKG/usr all install
-)
+tar xvf $CWD/$GPRCONFIG_KB.tar.gz
 
-mkdir -p $PKG/usr/doc/$PRGNAM-${VERSION}
-cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-${VERSION}
-cp README.md TODO COPYING3 AUTHORS \
-    $PKG/usr/doc/$PRGNAM-${VERSION}
-cp distrib/xmlada.gpr $PKG/usr/share/gpr
-MD5=$(md5sum distrib/xmlada.gpr)
-(cd  $PKG/usr/share/gpr/manifests/
-  md5sum ../../gpr/xmlada.gpr | sed 's/  / /' >> xmlada)
-mkdir -p $PKG/install
-cp $CWD/slack-desc $PKG/install
+tar xvf $CWD/../xmlada/$XMLADA.tar.gz
 
-cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-${VERSION}-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+sed -i -e 's/share\/doc/doc/g' \
+    -e 's/doc\/gprbuild\/info/info/g' gprbuild.gpr
 
+if [ "$ARCH" = "x86_64" ]; then
+#    sed -i 's/"lib"/"lib64"/g' gnat/prj-env.adb
+    sed -i 's/\/lib\//\/lib64\//g' $GPRCONFIG_KB_SRC_DIR/db/compilers.xml
+    sed -i 's/\/lib\//\/lib64\//g' ./gpr/src/gpr-util.adb
+    sed -i 's/"lib"/"lib64"/g' ./gpr/src/gpr-util.adb
+    sed -i 's/lib\//lib64\//g' Makefile
+    # set the default lib directory to lib64
+    sed -i 's/\"lib\"/\"lib64\"/g' src/gprinstall.ads
+fi
+
+sed -i -e 's/"19940713"/"20211027"/' \
+       -e 's/"2016"/"2021"/' \
+       -e 's/"18.0w"/"22.0.0"/' \
+       -e 's/:= Gnatpro/:= FSF/' gpr/src/gpr-version.ads
+
+# the doc-share/ is copy from the latest git trunk to generate
+# proper documents in python3
+#cp $CWD/doc-share/* doc/share/
+#patch -p1 < $CWD/patches/relocatable-build.patch
+patch -p1 < $CWD/patches/always-use-host-gprinstall.patch
+ln -sfT ./$GPRCONFIG_KB_SRC_DIR/db/ share/gprconfig
+export OS=UNIX
+
+mkdir -p $PKG/usr/lib$LIBDIRSUFFIX/gnat
+./bootstrap.sh --with-xmlada=./$XMLADA \
+	       --with-kb=$GPRCONFIG_KB_SRC_DIR \
+	       --prefix=$PKG

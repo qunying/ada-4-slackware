@@ -1,0 +1,30 @@
+--- gnatcoll-db-22.0.0/pgxs/source/pgxs-types.ads	2021-11-13 15:13:44.062816015 -0800
++++ gnatcoll-db/pgxs/source/pgxs-types.ads	2021-11-13 14:55:53.542754251 -0800
+@@ -34,6 +34,7 @@
+ --  varchar                    VarChar*  postgres.h  Var_Char
+ 
+ with Interfaces.C;
++with Interfaces.C.Extensions;
+ 
+ with PGXS.Varlen;
+ 
+@@ -41,7 +42,7 @@
+ 
+    type Oid is private;
+ 
+-   subtype Bool is Interfaces.C.C_bool;
++   subtype Bool is Interfaces.C.Extensions.bool;
+ 
+    subtype Int_16 is Interfaces.Integer_16;
+ 
+--- gnatcoll-db-22.0.0/pgxs/source/pgxs-composites.ads	2021-09-21 06:09:40.000000000 -0700
++++ gnatcoll-db/pgxs/source/pgxs-composites.ads	2021-11-13 15:29:08.142869331 -0800
+@@ -91,7 +91,7 @@
+    type Attributes_Arrays (Size : Attribute_Count) is record
+       Descriptor : PGXS.Tuple_Desc;
+       Datums     : Datum_Array (1 .. Size);
+-      Nulls      : Bool_Array (1 .. Size) := (others => Interfaces.C.True);
++      Nulls      : Bool_Array (1 .. Size) := (others => True);
+    end record;
+ 
+    type Attributes is access all Attributes_Arrays

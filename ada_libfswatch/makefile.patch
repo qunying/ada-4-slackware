@@ -1,0 +1,24 @@
+--- ada_libfswatch-94c0a5f137b88113a791a148b60e5e7d019d6fa1/Makefile	2020-11-05 07:58:21.000000000 -0800
++++ ada_libfswatch-new/Makefile	2021-08-04 18:15:29.738313899 -0700
+@@ -3,16 +3,12 @@ DESTDIR=
+ all: generated
+ 	gprbuild -p -P ada_libfswatch
+ 
+-# warn if libfswatch/ is not populated
+-libfswatch:
+-	@echo "you need to install the libfswatch library in libfswatch/"
+-	@exit 1
+-
+ # generate the Ada binding
+-generated: libfswatch
+-	(mkdir -p generated; cd libfswatch/include/libfswatch/c/ ; \
+-		gcc -C -fdump-ada-spec libfswatch.h -D_TIMEZONE_DEFINED; \
+-	       	mv *.ads ../../../../generated/)
++generated:
++	(mkdir -p generated; cd generated ; \
++		gcc -C -fdump-ada-spec /usr/include/libfswatch/c/libfswatch.h -D_TIMEZONE_DEFINED ; \
++        rename 'libfswatch_c_' '' *.ads ; \
++        sed -i 's/libfswatch_c_//g' *.ads)
+ 
+ clean:
+ 	gprclean -P ada_libfswatch

@@ -25,11 +25,11 @@
 PRGNAM=ada-rm
 VERSION=${VERSION:-2012_tc1}
 BUILD=${BUILD:-1}
-TAG=${TAG:-_SBo}
+TAG=${TAG:-_sAda}
 FILE_SHORT_VER=${FILE_SHORT_VER:-12_w_TC1}
 
 CWD=$(pwd)
-TMP=${TMP:-/tmp/SBo}
+TMP=${TMP:-/tmp/slackAda}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
 

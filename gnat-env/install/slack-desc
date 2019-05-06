@@ -1,0 +1,12 @@
+        |---------------------------------------------------------------------|
+gnat-env: GNAT Environment setup
+gnat-env:
+gnat-env: Some environment setup for GNAT. It is strictly tight to the current
+gnat-env: version of GNAT compiler.
+gnat-env:
+gnat-env:
+gnat-env:
+gnat-env:
+gnat-env:
+gnat-env:
+gnat-env:

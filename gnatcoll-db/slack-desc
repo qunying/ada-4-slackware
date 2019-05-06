@@ -5,15 +5,15 @@
 # make exactly 11 lines for the formatting to be correct.  It's also
 # customary to leave one space after the ':' except on otherwise blank lines.
 
-     |-----handy-ruler------------------------------------------------------|
-aunit: Ada Unit test framework
-aunit:
-aunit: AUnit is an adaptation of the Java JUnit and CppUnit unit test
-aunit: frameworks for Ada code.
-aunit:
-aunit:
-aunit:
-aunit:
-aunit:
-aunit: https://github.com/AdaCore/aunit
-aunit:
+             |-----handy-ruler------------------------------------------------------|
+gnatcoll-db: GNAT Component Collection (Database packages)
+gnatcoll-db:
+gnatcoll-db: This is the database module of the GNAT Components Collection.
+gnatcoll-db: 
+gnatcoll-db: 
+gnatcoll-db:
+gnatcoll-db: Homepage: https://github.com/AdaCore/gnatcoll-db/
+gnatcoll-db:
+gnatcoll-db:
+gnatcoll-db:
+gnatcoll-db:

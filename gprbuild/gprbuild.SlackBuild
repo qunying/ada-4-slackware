@@ -1,6 +1,6 @@
 #!/bin/sh
 # gprbuild package build script (written by zhu.qunying@gmail.com)
-# Copyright 2012-2017, Zhu Qun-Ying
+# Copyright 2012-2021, Zhu Qun-Ying
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -21,13 +21,16 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gprbuild
-VERSION=${VERSION:-2018}
+VERSION=${VERSION:-22.0.0}
 BUILD=${BUILD:-1}
-TAG=${TAG-_SBo}
-SRC_NAME=$PRGNAM-gpl-$VERSION-20180524-src
-SRC_DIR=$PRGNAM-gpl-$VERSION-src
+TAG=${TAG-_sAda}
+SRC_NAME=$PRGNAM-$VERSION
+SRC_DIR=$SRC_NAME
 
-GCC_BUILD_DIR=${GCC_BUILD_DIR:-/build/gcc}
+KB_VERSION=${KB_VERSION:-22.0.0}
+KB_GIT_VERSION=${KB_GIT_VERSION:-7de2e39f5d1b7d67f24e274184c8215997cc7994}
+GPRCONFIG_KB=gprconfig_kb-$KB_VERSION
+GPRCONFIG_KB_SRC_DIR=gprconfig_kb-$KB_GIT_VERSION
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -40,9 +43,10 @@ if [ -z "$ARCH" ]; then
 fi
 
 CWD=$(pwd)
-TMP=${TMP:-"/tmp/SBo"}   # For consistency's sake, use this
+TMP=${TMP:-"/tmp/slackAda"} 
 PKG=${TMP}/package-$PRGNAM
-OUTPUT=${OUTPUT:-/tmp}   # Drop the package in /tmp
+OUTPUT=${OUTPUT:-/tmp}
+BOOSTRAP=$TMP/bootstrap/bin
 
 if [ "$ARCH" = "i586" ]; then
   SLKCFLAGS="-O2 -march=i586 -mtune=i686"
@@ -66,53 +70,68 @@ mkdir -p $TMP $PKG $OUTPUT
 
 cd $TMP
 rm -rf $SRC_DIR
-tar xvf $CWD/$SRC_NAME.tar.gz || tar xvf $CWD/5b0819dfc7a447df26c27a68
+tar xvf $CWD/$SRC_NAME.tar.gz
 
 cd $SRC_DIR
 
-
-# patch source according to the debian patch
-#for file in $CWD/patches/*.patch ; do
-#    cat $file | patch -p1
-#done
+tar xvf $CWD/$GPRCONFIG_KB.tar.gz
 
 sed -i -e 's/share\/doc/doc/g' \
     -e 's/doc\/gprbuild\/info/info/g' gprbuild.gpr
 
 if [ "$ARCH" = "x86_64" ]; then
 #    sed -i 's/"lib"/"lib64"/g' gnat/prj-env.adb
-    sed -i 's/\/lib\//\/lib64\//g' share/gprconfig/compilers.xml
+    sed -i 's/\/lib\//\/lib64\//g' $GPRCONFIG_KB_SRC_DIR/db/compilers.xml
+    sed -i 's/\/lib\//\/lib64\//g' ./gpr/src/gpr-util.adb
+    sed -i 's/"lib"/"lib64"/g' ./gpr/src/gpr-util.adb
     sed -i 's/lib\//lib64\//g' Makefile
     # set the default lib directory to lib64
     sed -i 's/\"lib\"/\"lib64\"/g' src/gprinstall.ads
 fi
 
-#sed -i -e 's/"19940713"/"20170109"/' \
-#       -e 's/"2016"/"2017"/' src/gpr_version.ads
+sed -i -e 's/"19940713"/"20211027"/' \
+       -e 's/"2016"/"2021"/' \
+       -e 's/"18.0w"/"22.0.0"/' \
+       -e 's/:= Gnatpro/:= FSF/' gpr/src/gpr-version.ads
 
-sed -i "s/:= GPL/:= FSF/" gpr/src/gpr-version.ads
-sed -i "s/input_sources/input/g" bootstrap.sh
+#sed -i "s/:= GPL/:= FSF/" gpr/src/gpr-version.ads
 
-./bootstrap.sh --with-xmlada=/usr/include/xmlada --prefix=./bootstrap
-(export PATH=./bootstrap/bin:$PATH;
-make ENABLE_SHARED=yes prefix=/usr setup
+patch -p1 < $CWD/patches/relocatable-build.patch
+patch -p1 < $CWD/patches/always-use-host-gprinstall.patch
+(cd share; ln -sfT ../$GPRCONFIG_KB_SRC_DIR/db gprconfig)
+export OS=UNIX
+#mkdir -p $PKG/usr/lib$LIBDIRSUFFIX/gnat
+(export PATH=$BOOSTRAP:$PATH
+make ENABLE_SHARED=yes BUILD=production prefix=/usr setup
 make LIBRARY_TYPE=relocatable all
 make libgpr.build
+make build
 make prefix=$PKG/usr install
 make prefix=$PKG/usr libgpr.install
 )
-make -C doc html
+#make -C doc html info
 
 
-cp $CWD/gpr.gpr $PKG/usr/lib$LIBDIRSUFFIX/gnat
 (cd $PKG/usr/lib$LIBDIRSUFFIX;
- ln -sf gpr/relocatable/libgpr.so libgpr.so;
+ ln -sf gpr/relocatable/gpr/libgpr.so libgpr.so;
 )
-gzip $PKG/usr/info/*
+(cd $PKG/usr/share/examples/gprbuild/; find -name ".cvsignore" | xargs rm)
+mkdir -p $PKG/usr/doc/$PRGNAM
+#mkdir -p $PKG/usr/info
+#cp -a doc/html $PKG/usr/doc/$PRGNAM/
+#cp doc/info/*.info $PKG/usr/info
+#gzip $PKG/usr/info/*
+#rm -rf $PKG/usr/lib$LIBDIRSUFFIX/gnat
 
-mkdir -p $PKG/usr/share/gps/plug-ins
-cat $CWD/gprbuild_gps.xml > \
-    $PKG/usr/share/gps/plug-ins/gprbuild_gps.xml
+# remove duplicate sources
+(cd $PKG/usr/include/gpr;
+ rm -rf gpr.static gpr.static-pic;
+ ln -s gpr.relocatable gpr.static;
+ ln -s gpr.relocatable gpr.static-pic;
+)
+#mkdir -p $PKG/usr/share/gps/plug-ins
+#cat $CWD/gprbuild_gps.xml > \
+#    $PKG/usr/share/gps/plug-ins/gprbuild_gps.xml
 
 cp README.md COPYING3 $PKG/usr/doc/$PRGNAM
 cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM/$PRGNAM.SlackBuild

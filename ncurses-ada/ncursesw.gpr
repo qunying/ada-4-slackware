@@ -4,7 +4,7 @@ project ncursesw is
 
    for Source_Dirs use ("../../include/ncursesw-ada");
 
-   for Library_Dir use "../ncursesw-ada";
+   for Library_Dir use "../../%lib_dir%/ncursesw-ada";
    for Library_Name use "AdaCurses";
    for Library_Kind use "static";
 
@@ -17,4 +17,4 @@ project ncursesw is
       for body_suffix ("ada") use ".adb";
       for spec_suffix ("ada") use ".ads";
    end Naming;
-end ncrusesw;
+end ncursesw;

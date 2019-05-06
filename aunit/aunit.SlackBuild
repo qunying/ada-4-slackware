@@ -1,6 +1,6 @@
 #!/bin/sh
-# aunit package build script (written by zhu.qunying@gmail.com)
-# Copyright 2012-2017, Zhu Qun-Ying
+# aunit package build script
+# Copyright 2012-2021, Zhu Qun-Ying
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -21,11 +21,10 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=aunit
-VERSION=${VERSION:-2018}
-URL_NAME=5b0819e0c7a447df26c27ab3
-#SRC_VERSION=${SRC_VERSION:-3.8.0w}
+VERSION=${VERSION:-22.0.0}
+SRC_VERSION=${SRC_VERSION:-$VERSION}
 BUILD=${BUILD:-1}
-TAG=${TAG:-_SBo}
+TAG=${TAG:-_sAda}
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -38,7 +37,7 @@ if [ -z "$ARCH" ]; then
 fi
 
 CWD=$(pwd)
-TMP=${TMP:-/tmp/SBo}	# For consistency's sake, use this
+TMP=${TMP:-/tmp/slackAda}	# For consistency's sake, use this
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}	# Drop the package in /tmp
 
@@ -65,10 +64,10 @@ set -e # Exit on most errors
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-gpl-$VERSION-src
-tar xvf $CWD/$PRGNAM-gpl-$VERSION-20180524-src.tar.gz || tar xvf $URL_NAME
+rm -rf $PRGNAM-$SRC_VERSION
+tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
 
-cd $PRGNAM-gpl-$VERSION-src
+cd $PRGNAM-$SRC_VERSION
 chown -R root:root .
 find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
@@ -84,16 +83,19 @@ fi
 sed -i -e "s/share\/doc\//doc\//" \
     -e "s/doc\/aunit\/info/info/" support/$PRGNAM.xml lib/gnat/aunit.gpr
 
+# compiled as pic code
+sed -i 's/-O2/-O2", "-fpic/' lib/gnat/aunit.gpr
+
 make
 
+mkdir -p $PKG/usr/doc/aunit
 echo "make INSTALL=/usr GPROPTS=\"--prefix=$PKG\" libdir=$PKG/usr/lib$LIBDIRSUFFIX install"
 make INSTALL=$PKG/usr \
      GPROPTS="--prefix=$PKG/usr --lib-subdir=$PKG/usr/lib$LIBDIRSUFFIX/$PRGNAM" \
      libdir=$PKG/usr/lib$LIBDIRSUFFIX install
 
-gzip $PKG/usr/info/*
 cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM/
-cp README COPYING3 CHANGES $PKG/usr/doc/$PRGNAM/
+cp README COPYING3 $PKG/usr/doc/$PRGNAM/
 
 cd $PKG
 mkdir -p $PKG/install

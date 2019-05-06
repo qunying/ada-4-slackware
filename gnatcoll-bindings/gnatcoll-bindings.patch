@@ -1,0 +1,156 @@
+--- gnatcoll-bindings-1a230fb6c1e868c0dbce662e5707f853b62087e3/gmp/gnatcoll_gmp.gpr	2021-05-26 02:56:34.000000000 -0700
++++ gnatcoll-bindings-new/gmp/gnatcoll_gmp.gpr	2021-07-31 15:57:44.434738420 -0700
+@@ -25,7 +25,7 @@
+ 
+ library project GnatColl_GMP is
+ 
+-   Version := External ("GNATCOLL_VERSION", "0.0");
++   Version := External ("GNATCOLL_VERSION", "22.0.0");
+    Name    := "gnatcoll_gmp";
+ 
+    type Build_Type is ("DEBUG", "PROD");
+@@ -44,6 +44,7 @@
+    for Library_Name    use Name;
+ 
+    for Languages use ("Ada", "C");
++   for Toolchain_Name ("C") use "GCC";
+ 
+    case Library_Type is
+       when "relocatable" =>
+--- gnatcoll-bindings-1a230fb6c1e868c0dbce662e5707f853b62087e3/iconv/gnatcoll_iconv.gpr	2021-05-26 02:56:34.000000000 -0700
++++ gnatcoll-bindings-new/iconv/gnatcoll_iconv.gpr	2021-07-31 15:57:58.706738283 -0700
+@@ -25,7 +25,7 @@
+ 
+ library project GnatColl_Iconv is
+ 
+-   Version := External ("GNATCOLL_VERSION", "0.0");
++   Version := External ("GNATCOLL_VERSION", "22.0.0");
+    Name    := "gnatcoll_iconv";
+ 
+    type Build_Type is ("DEBUG", "PROD");
+@@ -44,6 +44,7 @@
+    for Library_Name    use Name;
+ 
+    for Languages use ("Ada", "C");
++   for Toolchain_Name ("C") use "GCC";
+ 
+    Iconv_Opt := External ("GNATCOLL_ICONV_OPT", "-liconv");
+ 
+--- gnatcoll-bindings-1a230fb6c1e868c0dbce662e5707f853b62087e3/lzma/gnatcoll_lzma.gpr	2021-05-26 02:56:34.000000000 -0700
++++ gnatcoll-bindings-new/lzma/gnatcoll_lzma.gpr	2021-07-31 15:56:04.135739376 -0700
+@@ -25,7 +25,7 @@
+ 
+ library project GnatColl_LZMA is
+ 
+-   Version := External ("GNATCOLL_VERSION", "0.0");
++   Version := External ("GNATCOLL_VERSION", "22.0.0");
+    Name    := "gnatcoll_lzma";
+ 
+    type Build_Type is ("DEBUG", "PROD");
+--- gnatcoll-bindings-1a230fb6c1e868c0dbce662e5707f853b62087e3/omp/gnatcoll_omp.gpr	2021-05-26 02:56:34.000000000 -0700
++++ gnatcoll-bindings-new/omp/gnatcoll_omp.gpr	2021-07-31 15:58:17.642738103 -0700
+@@ -25,7 +25,7 @@
+ 
+ library project GnatColl_OMP is
+ 
+-   Version := External ("GNATCOLL_VERSION", "0.0");
++   Version := External ("GNATCOLL_VERSION", "22.0.0");
+    Name    := "gnatcoll_omp";
+ 
+    type Build_Type is ("DEBUG", "PROD");
+@@ -44,6 +44,7 @@
+    Link_Opt := "-fopenmp";
+ 
+    for Languages use ("Ada", "C");
++   for Toolchain_Name ("C") use "GCC";
+ 
+    case Library_Type is
+       when "relocatable" =>
+--- gnatcoll-bindings-1a230fb6c1e868c0dbce662e5707f853b62087e3/python3/gnatcoll_python.gpr	2021-05-26 02:56:34.000000000 -0700
++++ gnatcoll-bindings-new/python3/gnatcoll_python.gpr	2021-07-31 15:58:44.578737846 -0700
+@@ -25,7 +25,7 @@
+ 
+ library project GnatColl_Python is
+ 
+-   Version := External ("GNATCOLL_VERSION", "0.0");
++   Version := External ("GNATCOLL_VERSION", "22.0.0");
+    Name    := "gnatcoll_python3";
+ 
+    type Build_Type is ("DEBUG", "PROD");
+@@ -49,6 +49,7 @@
+    for Library_Name    use Name;
+ 
+    for Languages use ("Ada", "C");
++   for Toolchain_Name ("C") use "GCC";
+ 
+    case Library_Type is
+       when "relocatable" =>
+--- gnatcoll-bindings-1a230fb6c1e868c0dbce662e5707f853b62087e3/syslog/gnatcoll_syslog.gpr	2021-05-26 02:56:34.000000000 -0700
++++ gnatcoll-bindings-new/syslog/gnatcoll_syslog.gpr	2021-07-31 15:58:57.306737725 -0700
+@@ -25,7 +25,7 @@
+ 
+ library project GnatColl_Syslog is
+ 
+-   Version := External ("GNATCOLL_VERSION", "0.0");
++   Version := External ("GNATCOLL_VERSION", "22.0.0");
+    Name    := "gnatcoll_syslog";
+ 
+    type Build_Type is ("DEBUG", "PROD");
+@@ -52,6 +52,7 @@
+    end case;
+ 
+    for Languages use ("Ada", "C");
++   for Toolchain_Name ("C") use "GCC";
+ 
+    package Compiler is
+       case Build is
+--- gnatcoll-bindings-1a230fb6c1e868c0dbce662e5707f853b62087e3/zlib/gnatcoll_zlib.gpr	2021-05-26 02:56:34.000000000 -0700
++++ gnatcoll-bindings-new/zlib/gnatcoll_zlib.gpr	2021-07-31 15:56:04.135739376 -0700
+@@ -25,7 +25,7 @@
+ 
+ library project GnatColl_ZLib is
+ 
+-   Version := External ("GNATCOLL_VERSION", "0.0");
++   Version := External ("GNATCOLL_VERSION", "22.0.0");
+    Name    := "gnatcoll_zlib";
+ 
+    type Build_Type is ("DEBUG", "PROD");
+--- gnatcoll-bindings-1a230fb6c1e868c0dbce662e5707f853b62087e3/lzma/setup.py	2021-05-26 02:56:34.000000000 -0700
++++ gnatcoll-bindings-new/lzma/setup.py	2021-07-31 18:15:17.427659713 -0700
+@@ -39,6 +39,7 @@
+         result = []
+         for library_type in config.data['library_types']:
+             gpr_vars = {'LIBRARY_TYPE': library_type,
++                        'XMLADA_BUILD': library_type,
+                         'GPR_BUILD': library_type}
+             if cmd == 'install':
+                 result.append((['--build-name=%s' % library_type,
+--- gnatcoll-bindings-1a230fb6c1e868c0dbce662e5707f853b62087e3/python/gnatcoll_python.gpr	2021-07-31 18:23:28.026655034 -0700
++++ gnatcoll-bindings-new/python/gnatcoll_python.gpr	2021-07-31 18:26:08.618653503 -0700
+@@ -25,7 +25,7 @@
+ 
+ library project GnatColl_Python is
+ 
+-   Version := External ("GNATCOLL_VERSION", "0.0");
++   Version := External ("GNATCOLL_VERSION", "22.0.0");
+    Name    := "gnatcoll_python";
+ 
+    type Build_Type is ("DEBUG", "PROD");
+@@ -49,6 +49,7 @@
+    for Library_Name    use Name;
+ 
+    for Languages use ("Ada", "C");
++   for Toolchain_Name ("C") use "GCC";
+ 
+    case Library_Type is
+       when "relocatable" =>
+--- gnatcoll-bindings-1a230fb6c1e868c0dbce662e5707f853b62087e3/zlib/setup.py	2021-05-26 02:56:34.000000000 -0700
++++ gnatcoll-bindings-new/zlib/setup.py	2021-07-31 18:40:14.803645433 -0700
+@@ -39,6 +39,7 @@
+         result = []
+         for library_type in config.data['library_types']:
+             gpr_vars = {'LIBRARY_TYPE': library_type,
++                        'XMLADA_BUILD': library_type,
+                         'GPR_BUILD': library_type}
+             if cmd == 'install':
+                 result.append((['--build-name=%s' % library_type,
