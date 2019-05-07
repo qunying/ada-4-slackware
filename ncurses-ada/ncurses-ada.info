@@ -1,7 +1,7 @@
 PRGNAM="ncurses-ada"
 VERSION="6.3"
 HOMEPAGE="https://invisible-island.net/ncurses/"
-DOWNLOAD="http://mirrors.us.kernel.org/slackware/slackware64-current/source/l/ncurses/ncurses-6.3.tar.lz"
+DOWNLOAD="http://mirrors.us.kernel.org/slackware/slackware64-15.0/source/l/ncurses/ncurses-6.3.tar.lz"
 MD5SUM="fc317fa15bc67fff8bfd05b0b4c0e677"
 DOWNLOAD_x86_64=""
 MD5SUM_x86_64=""

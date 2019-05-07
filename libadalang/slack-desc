@@ -1,0 +1,13 @@
+          |-----handy-ruler---------------------------------------------------|
+libadalang: libadalang (Semantic engine for Ada)
+libadalang:
+libadalang: Libadalang is a project to build a high performance semantic
+libadalang: engine for the Ada programming language. It is meant to provide a
+libadalang: basis to write Ada tooling, including tools working on potentially
+libadalang: changing and incorrect code, such as IDEs.
+libadalang: 
+libadalang: Homepage: https://github.com/AdaCore/libadalang
+libadalang:
+libadalang:
+libadalang:
+

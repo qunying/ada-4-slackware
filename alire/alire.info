@@ -1,0 +1,46 @@
+PRGNAM="alire"
+VERSION="1.2.0"
+HOMEPAGE="https://alire.ada.dev/"
+DOWNLOAD="https://github.com/alire-project/alire/archive/v1.2.0/alire-1.2.0.tar.gz
+	  https://github.com/mosteo/aaa/archive/22fcef5c465ece2f9cf5c57b36c340d4d4154811/aaa.tar.gz
+	  https://github.com/pmderodat/ada-toml/archive/2a671ffb1039a036f2bb68bdc88afc8d3dc68c10/ada-toml.tar.gz
+	  https://github.com/mosteo/ajunitgen/archive/e5d01db5e7834d15c4066f0a8e33d780deae3cc9/ajunitgen.tar.gz
+	  https://github.com/mosteo/ansi-ada/archive/acf9afca3afe1f8b8843c061f3cef860d7567307/ansi.tar.gz
+	  https://github.com/alire-project/clic/archive/185519d65b089c3238e24cfe87f1d22db1f3e0d9/clic.tar.gz
+	  https://github.com/alire-project/gnatcoll-core/archive/e250e4e42d9743b782788cf61b4ddc10a45e69e2/gnatcoll-slim.tar.gz
+	  https://github.com/mosteo/minirest/archive/4550aa356d55b9cd55f26acd34701f646021c5ff/minirest.tar.gz
+	  https://github.com/mosteo/optional/archive/0c7d20c0c8b48ccb6b25fb648d48382e598c25c3/optional.tar.gz
+	  https://github.com/alire-project/semantic_versioning/archive/fe4e72e40786589a66d53662639f894fcdb3419c/semantic_versioning.tar.gz
+	  https://github.com/HeisenbugLtd/si_units/archive/39de6478ba6d63c24dd34dd7205a6ce2cb971703/si_units.tar.gz
+	  https://github.com/alire-project/simple_logging/archive/02a7de7568af6af7cedd1048901fae8e9477b1d9/simple_logging.tar.gz
+	  https://github.com/Fabien-Chouteau/spdx_ada/archive/2df9b1182544359c751544e52e14c94830d99fa6/spdx.tar.gz
+	  https://github.com/mosteo/stopwatch/archive/86e7302d29f360f98f568b6015755229949b2194/stopwatch.tar.gz
+	  https://github.com/mosteo/toml_slicer/archive/8b9dff0f450394b07ea71f0eb9b39d9c20e21f9c/toml_slicer.tar.gz
+	  https://github.com/mosteo/uri-ada/archive/b61eba59099b3ab39e59e228fe4529927f9e849e/uri-ada.tar.gz
+	  https://github.com/alire-project/xmlezout/archive/1fcbd0b9303d044d8f09a8ef652afa8c0400ee8b/xmlezout.tar.gz
+	  https://github.com/alire-project/libhello/archive/ce78e7706c9d3f97605df48d8befca5407f8d328/libhello.tar.gz
+	  "
+
+MD5SUM="f06f1d8fc09a831c6112224d9e88e2f7
+	c46ddbd0aee8ec718feedb2aea4753c5
+	ca4f89f54d317fe2a8dd78595ab42fb4
+	3601222f5ae9643e8560cecf1a2f083a
+	c82cc6bf7550fec11b0da5533780a9ed
+	42e002dfe2ae403fd5f9ce1feffc3d4a
+	d6308783706964c0e134fd9868461af1
+	7deab501bfbbd8860489525f81f44bd9
+	a9682f951a10e5f8ff14ce51c4691a4f
+	71834e8d6625a907a941438e55813463
+	2d4d2f60560098ff6c79d3b79609a6f0
+	44c96116f26f330eae643f6e74a14fd5
+	1b3d9b497644a42a33de6f1e3a02f65b
+	4accb8f0328ecf04ac0882cf7cdba9c6
+	19b6397ccf3b68e18ad8dbe7c79f97fd
+	7da0ac1114d806030d46ae17956ae4b3
+	73b614415163f49807a78629ee7b1210
+	251189b2384f4b0390f17fe8bd64fa36"
+DOWNLOAD_x86_64=""
+MD5SUM_x86_64=""
+REQUIRES=""
+MAINTAINER="Zhu Qun-Ying"
+EMAIL="zhu.qunying@gmail.com"

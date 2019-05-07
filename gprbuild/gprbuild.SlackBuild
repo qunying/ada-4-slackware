@@ -22,7 +22,6 @@
 
 . ./common.build
 
-
 (export PATH=$BOOTSTRAP:$PATH
 make ENABLE_SHARED=yes BUILD=production prefix=/usr setup
 make LIBRARY_TYPE=relocatable all
@@ -45,11 +44,11 @@ cp doc/info/*.info $PKG/usr/info
 gzip $PKG/usr/info/*
 
 # remove duplicate sources
-(cd $PKG/usr/include/gpr;
- rm -rf gpr.static gpr.static-pic;
- ln -s gpr.relocatable gpr.static;
- ln -s gpr.relocatable gpr.static-pic;
-)
+#(cd $PKG/usr/include/gpr;
+# rm -rf gpr.static gpr.static-pic;
+# ln -s gpr.relocatable gpr.static;
+# ln -s gpr.relocatable gpr.static-pic;
+#)
 #mkdir -p $PKG/usr/share/gps/plug-ins
 #cat $CWD/gprbuild_gps.xml > \
 #    $PKG/usr/share/gps/plug-ins/gprbuild_gps.xml

@@ -1,0 +1,109 @@
+#!/bin/sh
+
+# Slackware build script for libgadalang
+
+# Copyright 2017-2021 Zhu Qun-Ying
+# All rights reserved.
+#
+# Redistribution and use of this script, with or without modification, is
+# permitted provided that the following conditions are met:
+#
+# 1. Redistributions of this script must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED
+#  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+#  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
+#  EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+#  OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+#  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+#  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+PRGNAM=libadalang
+VERSION=${VERSION:-23.0w.20220624.894a6}
+BUILD=${BUILD:-1}
+TAG=${TAG:-_sAda}
+SRC_NAME=$PRGNAM-$VERSION
+
+LANGKIT_NAME=langkit
+LANGKIT_VER="23.0w.20220624.6e4dd"
+CWD=$(pwd)
+TMP=${TMP:-/tmp/slackAda}
+PKG=$TMP/package-$PRGNAM
+OUTPUT=${OUTPUT:-/tmp}
+# Automatically determine the architecture we're building on:                                          
+if [ -z "$ARCH" ]; then
+  case "$(uname -m)" in
+    i?86) ARCH=i586 ;;
+    arm*) ARCH=arm ;; 
+    # Unless $ARCH is already set, use uname -m for all other archs:
+    *) ARCH=$(uname -m) ;;
+  esac
+fi
+
+set -e # Exit on most errors
+if [ "$ARCH" = "i586" ]; then
+  SLKCFLAGS="-O2 -march=i586 -mtune=i686"
+  LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+  SLKCFLAGS="-O2 -march=i686"
+  LIBDIRSUFFIX=""
+elif [ "$ARCH" = "x86_64" ]; then
+  SLKCFLAGS="-O2 -fPIC"
+  LIBDIRSUFFIX="64"
+else
+  SLKCFLAGS="-O2"
+  LIBDIRSUFFIX=""
+fi
+
+rm -rf $PKG
+mkdir -p $TMP $PKG $OUTPUT
+cd $TMP
+
+rm -rf $SRC_NAME
+mkdir $SRC_NAME
+tar xvf $CWD/$SRC_NAME.tar.gz -C $SRC_NAME --strip-components=1
+cd $SRC_NAME
+#setup a virtual python3 env
+PY_V_ROOT=$TMP/py-env
+rm -rf $PY_V_ROOT
+python3 -mvenv $PY_V_ROOT
+source $PY_V_ROOT/bin/activate
+pip3 install -r  REQUIREMENTS.dev
+
+#setup langkit first
+mkdir langkit
+tar xvf $CWD/langkit-$LANGKIT_VER.tar.gz -C langkit --strip-components=1
+cd langkit
+pip3 install .
+python3 manage.py build-langkit-support --library-types=static,static-pic,relocatable
+python3 manage.py install-langkit-support --library-types=static,static-pic,relocatable $PY_V_ROOT
+cd ..
+export GPR_PROJECT_PATH=$GPR_PROJECT_PATH:$PY_V_ROOT/share/gpr
+
+python3 manage.py generate
+# insert a line to force use GCC for C file
+sed -i '/^end Libadalang;/i for Toolchain_Name ("C") use "GCC";' build/libadalang.gpr
+python3 manage.py build  --library-types=static,static-pic,relocatable
+python3 manage.py install --library-types=static,static-pic,relocatable "$PKG/usr"
+
+#build document
+#pip3 install contrib/laldoc
+#make -C user_manual html
+cd langkit
+python3 manage.py install-langkit-support --library-types=static,static-pic,relocatable $PKG/usr
+cd ..
+
+mkdir -p $PKG/install
+cp $CWD/slack-desc $PKG/install
+mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION/
+cp -a  COPYING.RUNTIME COPYING3 README.md \
+    $PKG/usr/doc/$PRGNAM-$VERSION/
+
+cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-$VERSION/
+
+cd $PKG
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
