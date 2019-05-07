@@ -21,8 +21,9 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=gnatcoll-db
-VERSION=${VERSION:-23.0w}
-GIT_VERSION=${GIT_VERSION:-$VERSION-20220117-acc68}
+VERSION=${VERSION:-23.0w.20220117.acc68}
+SHORT_VERSION="23.0w"
+GIT_VERSION=${GIT_VERSION:-$VERSION}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_sAda}
 SRC_NAME=$PRGNAM-$GIT_VERSION
@@ -74,7 +75,7 @@ find . \
  \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
  -exec chmod 644 {} \; || exit 1
 
-echo "$VERSION" > version_information
+echo "$SHORT_VERSION" > version_information
 POSTGRES=${POSTGRES:-no}
 
 if [ "$ARCH" == "x86_64" ]; then
@@ -90,7 +91,6 @@ else
     dbs=( sql sqlite xref gnatinspect postgres gnatcoll_db2ada )
 fi
 export ADA_PROJECT_PATH=$ADA_PROJECT_PATH:$PKG/usr/share/gpr
-
 
 # sphinx not working yet
 make -C docs html man

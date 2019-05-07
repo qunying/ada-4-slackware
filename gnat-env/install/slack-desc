@@ -1,8 +1,8 @@
         |---------------------------------------------------------------------|
 gnat-env: GNAT Environment setup
 gnat-env:
-gnat-env: Some environment setup for GNAT. It is strictly tight to the current
-gnat-env: version of GNAT compiler.
+gnat-env: Setup the GNAT gpr default directory environment.
+gnat-env:
 gnat-env:
 gnat-env:
 gnat-env:

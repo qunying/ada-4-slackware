@@ -18,44 +18,18 @@ sbo_pkg_install() {
 
 PKGTYPE=${PKGTYPE:-txz}
 
+echo "Updating sbopkg ..."
 sbosnap update > /dev/null
 ## grab these from SBo
 sbo_pkg_install fswatch
-#sbo_pkg_install psutil
-#sbo_pkg_install pycodestyle
-#sbo_pkg_install typed_ast
-#sbo_pkg_install typing-extensions
-#sbo_pkg_install mypy_extensions
-#sbo_pkg_install mypy
-##sbo_pkg_install pycodestyle 
-#sbo_pkg_install python-zipp
-#sbo_pkg_install python-importlib_metadata
-#sbo_pkg_install python3-mccabe
-#sbo_pkg_install python3-pyrsistent
-#sbo_pkg_install python3-jsonschema
-#sbo_pkg_install funcy
-#sbo_pkg_install Mako
-sbo_pkg_install sphinx-rtd-theme
+sbo_pkg_install	snowballstemmer
+
 
 # get source balls
 sh download.sh
 
-#  python3-autopep8 \
-#  python3-coverage \
-#  python3-e3-core \
-#  python3-e3-testsuite \
-#  python3-funcy \
-#  python3-pbr \
-#  python3-railroad-diagrams \
-#  python3-stevedore \
-#  python3-yapf \
-#  python3-pyflakes \
-#  python3-flake8 \
-#  python3-railroad-diagrams \
-#  python3-wheel \
-
 # gnat-env is special
-version=$(gcc -dumpversion)
+version=1.0
 package=gnat-env
 cd $package
 if [ -z "`find /var/log/packages/ -name $package-$version-*`" ] ; then
@@ -85,10 +59,18 @@ for dir in \
   gnatcoll-bindings \
   gnatcoll-db \
   ada_libfswatch \
+  ada-rm \
+  spawn \
+  VSS \
+  libadalang \
+  templates-parser \
+  libadalang-tools \
+  gnatstudio \
   ahven \
   ncurses-ada \
-  ada-rm \
   sparforte \
+  florist \
+  ada-rm \
   ; do
   # get the package name
   package=$dir
@@ -102,14 +84,19 @@ for dir in \
   if [ -n "`find /var/log/packages/ -name $package-$version-*`" ] ; then
       continue
   fi
+  echo "$package $version"
   # The real build starts here
-  sh ${package}.SlackBuild || exit 1
   PACKAGE="${package}-$version-*sAda.$PKGTYPE"
   if [ -f $TMP/$PACKAGE ]; then
     upgradepkg --install-new --reinstall $TMP/$PACKAGE
   else
-    echo "Error:  package to upgrade "$PACKAGE" not found in $TMP"
-    exit 1
+    sh ${package}.SlackBuild || exit 1
+    if [ -f $TMP/$PACKAGE ]; then
+	    upgradepkg --install-new --reinstall $TMP/$PACKAGE
+    else
+       echo "Error:  package to upgrade "$PACKAGE" not found in $TMP"
+       exit 1
+    fi
   fi
   
   # back to original directory

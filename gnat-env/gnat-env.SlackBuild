@@ -1,6 +1,6 @@
 #!/bin/sh
 # GCC GNAT environment setup package
-# Copyright 2016-2021 Zhu Qun-Ying
+# Copyright 2016-2022 Zhu Qun-Ying
 #
 # All rights reserved.
 #
@@ -23,40 +23,16 @@
 #
 
 PKGNAM=gnat-env
-# should have the same version of the GCC one
-GCC_VERSION=`gcc -dumpversion`
-VERSION=${VERSION:-$GCC_VERSION}
+VERSION=${VERSION:-1.0}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_sAda}
 OUTPUT=${OUTPUT:-/tmp}
-MA_VER=$(echo $VERSION | cut -d . -f 1)
-MI_VER=$(echo $VERSION | cut -d . -f 2)
-
-if [ -z "$ARCH" ]; then
-    case "$(uname -m)" in
-	i?86) ARCH=i586 ;;
-	arm*) readelf /usr/bin/file -A | egrep -q "Tag_CPU.*[4,5]" && ARCH=arm || ARCH=armv7hl ;;
-	# Unless $ARCH is already set, use uname -m for all other archs:
-	*) ARCH=$(uname -m) ;;
-    esac
-    export ARCH
-fi
-
-if [ "$ARCH" = "x86_64" ]; then
-    LIBDIRSUFFIX="64"
-else
-    LIBDIRSUFFIX=""
-fi
-
-GCC_GNATLIB_PATH=gcc/$ARCH-slackware-linux/$VERSION/adalib
 
 CWD=$(pwd)
 
 TMP=${TMP:-/tmp/slackAda/package-gnat-env}
 
-if [ -d $TMP ]; then
-    rm -rf $TMP
-fi
+rm -rf $TMP
 
 mkdir -p $TMP
 
@@ -70,4 +46,4 @@ chmod +x etc/profile.d/gnat*
 mkdir install
 cp $CWD/slack-desc install/
 
-makepkg -l y -c n $OUTPUT/$PKGNAM-$VERSION-$ARCH-${BUILD}$TAG.${PKGTYPE:-tgz}
+makepkg -l y -c n $OUTPUT/$PKGNAM-$VERSION-no-arch-${BUILD}$TAG.${PKGTYPE:-tgz}

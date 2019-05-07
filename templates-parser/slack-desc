@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+                |-----handy-ruler------------------------------------------------------|
+templates-parser: templates-parser (Ada Templates Parser)
+templates-parser:
+templates-parser: Templates_Parser library and the associated templates2ada are tools 
+templates-parser: to create templated text streams, such as dynamic HTML documents.
+templates-parser:
+templates-parser: https://github.com/AdaCore/templates-parser
+templates-parser:
+templates-parser:
+templates-parser:
+templates-parser:
+templates-parser:

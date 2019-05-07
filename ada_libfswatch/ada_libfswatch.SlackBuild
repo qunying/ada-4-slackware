@@ -23,10 +23,10 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=ada_libfswatch
-VERSION=${VERSION:-23.0w}
+VERSION=${VERSION:-23.0w.20220203.00fb7}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_sAda}
-GIT_VERSION=${GIT_VERSION:-$VERSION-20220203-00fb7}
+GIT_VERSION=${GIT_VERSION:-$VERSION}
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then

@@ -1,0 +1,220 @@
+From 8ec899310ea8ceda4e2cbd8fd2b66e6eac0a1465 Mon Sep 17 00:00:00 2001
+From: Alejandro R Mosteo <alejandro@mosteo.com>
+Date: Fri, 10 Sep 2021 14:07:35 +0200
+Subject: Port to `ada_toml` for TOML 1.0 (#836)
+
+* Port to `ada_toml` for TOML 1.0
+
+* Better check in scenario loader
+
+diff --git a/src/alire/alire-conditional_trees.adb b/src/alire/alire-conditional_trees.adb
+index a8c27b3..f708746 100644
+--- a/src/alire/alire-conditional_trees.adb
++++ b/src/alire/alire-conditional_trees.adb
+@@ -495,7 +495,7 @@ package body Alire.Conditional_Trees is
+          begin
+             case Current.Kind is
+                when TOML_Table =>
+-                  Table.Set (Key, TOML.Merge (Current, Val));
++                  Table.Set (Key, TOML_Adapters.Merge_Tables (Current, Val));
+                when TOML_Array =>
+                   case Val.Kind is
+                      when TOML.Atom_Value_Kind | TOML.TOML_Table =>
+diff --git a/src/alire/alire-dependencies-states-maps.adb b/src/alire/alire-dependencies-states-maps.adb
+index 92945d5..22bf30d 100644
+--- a/src/alire/alire-dependencies-states-maps.adb
++++ b/src/alire/alire-dependencies-states-maps.adb
+@@ -69,7 +69,7 @@ package body Alire.Dependencies.States.Maps is
+       --  Stored as an array of individual states:
+       --  [[state]]
+    begin
+-      return Arr : constant TOML_Value := Create_Array (TOML_Table) do
++      return Arr : constant TOML_Value := Create_Array do
+          for Dep of This loop
+             Arr.Append (Dep.To_TOML);
+          end loop;
+diff --git a/src/alire/alire-origins.adb b/src/alire/alire-origins.adb
+index c252d46..263626b 100644
+--- a/src/alire/alire-origins.adb
++++ b/src/alire/alire-origins.adb
+@@ -710,11 +710,14 @@ package body Alire.Origins is
+                          (+This.Data.Description)));
+ 
+          when Binary_Archive =>
+-            Table := TOML.Merge (Table,
+-                                 This.Data.Bin_Archive.As_Data.To_TOML);
++            Table := TOML_Adapters.Merge_Tables
++              (Table,
++               This.Data.Bin_Archive.As_Data.To_TOML);
+ 
+          when Source_Archive =>
+-            Table := TOML.Merge (Table, This.Data.Src_Archive.To_TOML);
++            Table := TOML_Adapters.Merge_Tables
++              (Table,
++               This.Data.Src_Archive.To_TOML);
+ 
+          when System =>
+             Table.Set (Keys.URL,
+diff --git a/src/alire/alire-properties-configurations.adb b/src/alire/alire-properties-configurations.adb
+index 9ca8cb4..ee5deff 100644
+--- a/src/alire/alire-properties-configurations.adb
++++ b/src/alire/alire-properties-configurations.adb
+@@ -45,14 +45,11 @@ package body Alire.Properties.Configurations is
+       Res : Unbounded_String;
+       First : Boolean := True;
+    begin
+-      if Str_Array.Kind /= TOML_Array
+-        and then
+-         Str_Array.Item_Kind /= TOML_String
+-      then
+-         raise Program_Error with "Invalid TOML kind for enum values";
+-      end if;
+-
+       for Index in 1 .. Str_Array.Length loop
++         if Str_Array.Item (Index).Kind /= TOML_String then
++            raise Program_Error with "Invalid TOML kind for enum values";
++         end if;
++
+          declare
+             Val : constant String := Str_Array.Item (Index).As_String;
+             Val_Str : constant Unbounded_String := +(if Wrap_With_Quotes
+@@ -139,12 +136,8 @@ package body Alire.Properties.Configurations is
+             return Image (Val.As_Integer);
+ 
+          when TOML_Array =>
+-            if Val.Item_Kind /= TOML_String then
+-               Raise_Checked_Error ("Unexpected kind '" & Val.Item_Kind'Img &
+-                                      "' in array conversion to String");
+-            else
+-               return To_String (Val);
+-            end if;
++            --  Type of elements is checked inside following call
++            return To_String (Val);
+          when others =>
+             Raise_Checked_Error ("Unexpected kind '" & Val.Kind'Img &
+                                    "' in conversion to String");
+@@ -702,10 +695,9 @@ package body Alire.Properties.Configurations is
+                when Enum =>
+                   if From.Pop ("values", Type_Def.Values) then
+                      if Type_Def.Values.Kind /= TOML_Array
+-                       or else
+-                        not Type_Def.Values.Item_Kind_Set
+-                       or else
+-                         Type_Def.Values.Item_Kind /= TOML_String
++                       or else Type_Def.Values.Length = 0
++                       or else (for some I in 1 .. Type_Def.Values.Length =>
++                                  Type_Def.Values.Item (I).Kind /= TOML_String)
+                      then
+                         From.Checked_Error
+                           ("'values' must be a not empty array of strings");
+diff --git a/src/alire/alire-properties-scenarios.adb b/src/alire/alire-properties-scenarios.adb
+index b8b96a6..28d56b2 100644
+--- a/src/alire/alire-properties-scenarios.adb
++++ b/src/alire/alire-properties-scenarios.adb
+@@ -49,21 +49,22 @@ package body Alire.Properties.Scenarios is
+                         Table.Checked_Error
+                           ("At least two values required in scenario");
+                      end if;
+-                     if Val.Item_Kind = TOML_String then
+-                        declare
+-                           use GPR;
+-                           Values : GPR.Value_Vector;
+-                        begin
+-                           for I in 1 .. Val.Length loop
+-                              Values := Values or Val.Item (I).As_String;
+-                           end loop;
+-                           Props := Props and New_Property
+-                             (GPR.Enum_Variable (Key, Values));
+-                        end;
+-                     else
+-                        Table.Checked_Error
+-                          ("scenario values must be a string array");
+-                     end if;
++
++                     declare
++                        use GPR;
++                        Values : GPR.Value_Vector;
++                     begin
++                        for I in 1 .. Val.Length loop
++                           if Val.Item (I).Kind /= TOML_String then
++                              Table.Checked_Error
++                                ("scenario values must be a string array");
++                           end if;
++
++                           Values := Values or Val.Item (I).As_String;
++                        end loop;
++                        Props := Props and New_Property
++                          (GPR.Enum_Variable (Key, Values));
++                     end;
+                   end if;
+                end;
+             end loop;
+@@ -143,8 +144,7 @@ package body Alire.Properties.Scenarios is
+       case V.Var.Element.Kind is
+          when Enumeration =>
+             declare
+-               Arr : constant TOML.TOML_Value :=
+-                 TOML.Create_Array (TOML.TOML_String);
++               Arr : constant TOML.TOML_Value := TOML.Create_Array;
+             begin
+                for Val of V.Var.Element.Values loop
+                   Arr.Append (+Val);
+diff --git a/src/alire/alire-toml_adapters.adb b/src/alire/alire-toml_adapters.adb
+index 3fa8fdf..5333e72 100644
+--- a/src/alire/alire-toml_adapters.adb
++++ b/src/alire/alire-toml_adapters.adb
+@@ -135,6 +135,30 @@ package body Alire.TOML_Adapters is
+                      Context : String) return Key_Queue is
+      (From (Value, Context));
+ 
++   ------------------
++   -- Merge_Tables --
++   ------------------
++
++   function Merge_Tables (L, R : TOML.TOML_Value) return TOML.TOML_Value
++   is
++      use TOML;
++      function Merge_Internal (Key  : Unbounded_UTF8_String;
++                      L, R : TOML_Value)
++                      return TOML_Value
++      is
++         pragma Unreferenced (Key);
++      begin
++         if L.Kind = TOML_Table and then R.Kind = L.Kind then
++            return TOML.Merge (L, R, Merge_Internal'Access);
++         else
++            Raise_Checked_Error
++              ("Ill-shaped TOML information cannot be merged");
++         end if;
++      end Merge_Internal;
++   begin
++      return TOML.Merge (L, R, Merge_Entries => Merge_Internal'Access);
++   end Merge_Tables;
++
+    ---------
+    -- Pop --
+    ---------
+@@ -374,7 +398,7 @@ package body Alire.TOML_Adapters is
+          return V;
+       else
+          declare
+-            Arr : constant TOML_Value := Create_Array (V.Kind);
++            Arr : constant TOML_Value := Create_Array;
+          begin
+             Arr.Append (V);
+             return Arr;
+diff --git a/src/alire/alire-toml_adapters.ads b/src/alire/alire-toml_adapters.ads
+index 6abb336..44c7f8f 100644
+--- a/src/alire/alire-toml_adapters.ads
++++ b/src/alire/alire-toml_adapters.ads
+@@ -153,6 +153,10 @@ package Alire.TOML_Adapters with Preelaborate is
+        Pre => Val.Kind = TOML.TOML_Array;
+    --  Take a TOML value and turn it into a vector of strings
+ 
++   function Merge_Tables (L, R : TOML.TOML_Value) return TOML.TOML_Value with
++     Pre => L.Kind in TOML.TOML_Table and then R.Kind in TOML.TOML_Table,
++     Post => Merge_Tables'Result.Kind in TOML.TOML_Table;
++
+    generic
+       type Enum is (<>);
+    function Tomify_Enum (E : Enum) return TOML.TOML_Value;

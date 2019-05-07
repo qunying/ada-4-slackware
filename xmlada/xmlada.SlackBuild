@@ -22,7 +22,7 @@
 
 PRGNAM=xmlada
 VERSION=${VERSION:-23.0w}
-SRC_VERSION=${SRC_VERSION:-23.0w-20220113-6aa50}
+SRC_VERSION=${SRC_VERSION:-${VERSION}.20220614.7446e}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_sAda}
 
@@ -121,5 +121,5 @@ mkdir -p $PKG/install
 cp $CWD/slack-desc $PKG/install
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-${VERSION}-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-${SRC_VERSION}-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
 

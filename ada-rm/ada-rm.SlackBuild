@@ -2,7 +2,7 @@
 
 # Slackware build script for ARM
 
-# Copyright 2014-2017 Zhu Qun-Ying
+# Copyright 2014-2022 Zhu Qun-Ying
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -41,9 +41,6 @@ cd $TMP
 
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION/html
 unzip $CWD/RM-${FILE_SHORT_VER}-Html.zip -d $PKG/usr/doc/$PRGNAM-$VERSION/html
-
-mkdir -p $PKG/usr/share/gnatstudio/plug-ins/
-cp $CWD/${PRGNAM}.xml $PKG/usr/share/gnatstudio/plug-ins/${PRGNAM}-${VERSION}.xml
 
 cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
 

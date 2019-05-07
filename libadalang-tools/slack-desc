@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+                |-----handy-ruler------------------------------------------------------|
+libadalang-tools: libadalang-tools (Develement tools for Ada)
+libadalang-tools:
+libadalang-tools: This package contains serveral libadalang-based development tools
+libadalang-tools: for Ada:
+libadalang-tools:  * gnatpp      a prettry-printer to reformat source code.
+libadalang-tools:  * gnatmetric  computes various source code metrics.  
+libadalang-tools:  * gnatstub    creates body stub for libary unit declarations.
+libadalang-tools:  * gnattest    creates unit-test skeletons as well as a test driver
+libadalang-tools:                infrastructre.
+libadalang-tools: 
+libadalang-tools: https://github.com/AdaCore/libadalang-tools

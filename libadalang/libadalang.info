@@ -1,0 +1,11 @@
+PRGNAM="libadalang"
+VERSION="23.0w.20220624.894a6"
+HOMEPAGE="https://github.com/AdaCore/libadalang"
+DOWNLOAD="https://github.com/AdaCore/libadalang/archive/894a6a0e2892db70e2e3c4ba07ddb868c87d9a31/libadalang-23.0w.20220624.894a6.tar.gz
+	https://github.com/AdaCore/langkit/archive/6e4dd7cf1c75e7aa10e5a4d4ed3b84f06f9aea69/langkit-23.0w.20220624.6e4dd.tar.gz"
+MD5SUM="cb1ac9c44e181f1a3bedea85727b54ee"
+DOWNLOAD_x86_64=""
+MD5SUM_x86_64=""
+REQUIRES="Mako PyYAML Sphinx coverage enum enum34 psutil sphinx-rtd-theme funcy docutils autopep8 yapf langkit"
+MAINTAINER="Zhu Qun-Ying"
+EMAIL="zhu.qunying@gmail.com"
