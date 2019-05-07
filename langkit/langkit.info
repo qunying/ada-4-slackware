@@ -1,0 +1,10 @@
+PRGNAM="langkit"
+VERSION=22.0.0
+HOMEPAGE="https://github.com/AdaCore/langkit"
+DOWNLOAD="https://github.com/AdaCore/langkit/archive/v22.0.0/langkit-22.0.0.tar.gz"
+MD5SUM="afb02f4bbec37300a8046080dfb06a7b"
+DOWNLOAD_x86_64=""
+MD5SUM_x86_64=""
+REQUIRES="autopep8 pycodestyle python3-coverage python3-funcy Mako psutil Sphinx sphinx_rtd_theme python3-yapf mypy gnatcoll-core  gnatcoll-bindings python3-flake8 python3-railroad-diagrams"
+MAINTAINER="Zhu Qun-Ying"
+EMAIL="zhu.qunying@gmail.com"

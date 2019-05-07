@@ -1,6 +1,6 @@
-#!/bin/sh
-# gnatcoll package build script (written by zhu.qunying@gmail.com)
-# Copyright 2012-2022, Zhu Qun-Ying
+#!/bin/bash
+# spawn package build script
+# Copyright 2012-2021, Zhu Qun-Ying
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -20,13 +20,10 @@
 #  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-PRGNAM=gnatcoll-db
-VERSION=${VERSION:-23.0w}
-GIT_VERSION=${GIT_VERSION:-$VERSION-20220117-acc68}
+PRGNAM=spawn
+VERSION=${VERSION:-22.0.0}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_sAda}
-SRC_NAME=$PRGNAM-$GIT_VERSION
-
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
   case "$(uname -m)" in
@@ -35,6 +32,7 @@ if [ -z "$ARCH" ]; then
     # Unless $ARCH is already set, use uname -m for all other archs:
     *) ARCH=$(uname -m) ;;
   esac
+  export ARCH
 fi
 
 CWD=$(pwd)
@@ -42,76 +40,41 @@ TMP=${TMP:-"/tmp/slackAda"}
 PKG=${TMP}/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
 
+BOOSTRAP=${TMP}/bootstrap
 if [ "$ARCH" = "i586" ]; then
   SLKCFLAGS="-O2 -march=i586 -mtune=i686"
-  LIBDIRSUFFIX=""
+  LIB_ARCH=i386
 elif [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O2 -march=i686"
-  LIBDIRSUFFIX=""
+  LIB_ARCH=i386
 elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O2 -fPIC"
-  LIBDIRSUFFIX="64"
+  SLKCFLAGS="-O2"
+  LIB_ARCH=amd64
 else
   SLKCFLAGS="-O2"
-  LIBDIRSUFFIX=""
+  LIB_ARCH=$ARCH
 fi
 
 set -e # Exit on most errors
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
-
 cd $TMP
 rm -rf $PRGNAM-$VERSION
-mkdir $PRGNAM-$VERSION
-tar xvf $CWD/${PRGNAM}-${GIT_VERSION}.tar.gz -C $PRGNAM-$VERSION --strip-components=1
+tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
 
 cd $PRGNAM-$VERSION
 chown -R root:root .
-find . \
- \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
- -exec chmod 755 {} \; -o \
- \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
- -exec chmod 644 {} \; || exit 1
 
-echo "$VERSION" > version_information
-POSTGRES=${POSTGRES:-no}
-
-if [ "$ARCH" == "x86_64" ]; then
-    find -name "*.gpr" | xargs sed -i 's/lib\//lib64\//'
+if [ "$ARCH" = "x86_64" ]; then
+    sed -i 's/\/lib/\/lib64/' Makefile
 fi
 
-patch -p1 < $CWD/gnatcoll-db.patch
-patch -p1 < $CWD/pgxs.patch
-
-if [ "$POSTGRES" == "no" ]; then
-    dbs=( sql sqlite xref gnatinspect gnatcoll_db2ada )
-else
-    dbs=( sql sqlite xref gnatinspect postgres gnatcoll_db2ada )
-fi
-export ADA_PROJECT_PATH=$ADA_PROJECT_PATH:$PKG/usr/share/gpr
-
-# sphinx not working yet
-make -C docs html man
-for db in "${dbs[@]}" ;
-do
-    echo "Building $db ..."
-    cd $db
-    make setup BUILD=PROD prefix=/usr
-    make
-    make prefix=$PKG/usr install
-    cd ..
-done
-
-mkdir -p  $PKG/usr/doc/$PRGNAM
-mkdir -p  $PKG/usr/man/man1
-cp -a docs/_build/html $PKG/usr/doc/$PRGNAM
-cat docs/_build/man/gnatcoll-db.1 | gzip -c -9 > $PKG/usr/man/man1/gnatcoll-db.1.gz
-
-cp README.md COPYING3 COPYING.RUNTIME $PKG/usr/doc/$PRGNAM
+make all install PREFIX=/usr DESTDIR=$PKG
 
 mkdir -p $PKG/install
 cp $CWD/slack-desc $PKG/install
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-${VERSION}-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+

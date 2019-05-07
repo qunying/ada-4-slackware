@@ -1,0 +1,13 @@
+       |-----handy-ruler------------------------------------------------------|
+langkit: Langkit -  Language Kit
+langkit:
+langkit: Langkit (nickname for language kit) is a tool whose purpose is to
+langkit: make it easy to create syntactic and semantic analysis engines. Write
+langkit: a language specification in our Python DSL and Langkit will generate
+langkit: for you an Ada library with bindings for the C and Python programming
+langkit: languages.
+langkit: 
+langkit: Homepage: https://github.com/AdaCore/langkit
+langkit:
+langkit:
+langkit:

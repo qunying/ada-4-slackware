@@ -21,38 +21,22 @@ PKGTYPE=${PKGTYPE:-txz}
 sbosnap update > /dev/null
 ## grab these from SBo
 sbo_pkg_install fswatch
-#sbo_pkg_install psutil
-#sbo_pkg_install pycodestyle
 #sbo_pkg_install typed_ast
 #sbo_pkg_install typing-extensions
-#sbo_pkg_install mypy_extensions
-#sbo_pkg_install mypy
-##sbo_pkg_install pycodestyle 
+sbo_pkg_install mypy_extensions
+sbo_pkg_install mypy
 #sbo_pkg_install python-zipp
 #sbo_pkg_install python-importlib_metadata
-#sbo_pkg_install python3-mccabe
+sbo_pkg_install python3-pytest
+sbo_pkg_install pytest-runner
+sbo_pkg_install python3-mccabe
 #sbo_pkg_install python3-pyrsistent
-#sbo_pkg_install python3-jsonschema
-#sbo_pkg_install funcy
-#sbo_pkg_install Mako
+sbo_pkg_install python3-jsonschema
+sbo_pkg_install Mako
 sbo_pkg_install sphinx-rtd-theme
 
 # get source balls
 sh download.sh
-
-#  python3-autopep8 \
-#  python3-coverage \
-#  python3-e3-core \
-#  python3-e3-testsuite \
-#  python3-funcy \
-#  python3-pbr \
-#  python3-railroad-diagrams \
-#  python3-stevedore \
-#  python3-yapf \
-#  python3-pyflakes \
-#  python3-flake8 \
-#  python3-railroad-diagrams \
-#  python3-wheel \
 
 # gnat-env is special
 version=$(gcc -dumpversion)
@@ -89,6 +73,26 @@ for dir in \
   ncurses-ada \
   ada-rm \
   sparforte \
+  spawn \
+  VSS \
+  pycodestyle \
+  autopep8 \
+  python3-coverage \
+  python3-e3-core \
+  python3-e3-testsuite \
+  python3-funcy \
+  psutil \
+  python3-pyflake \
+  python3-flake8 \
+  python3-railroad-diagrams \
+  python3-pbr \
+  python3-stevedore \
+  python3-yapf \
+  python3-pyflakes \
+  python3-flake8 \
+  python3-railroad-diagrams \
+  python3-wheel \
+  langkit \
   ; do
   # get the package name
   package=$dir

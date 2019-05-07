@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+               |-----handy-ruler------------------------------------------------------|
+python3-e3-core: e3-core (The e3 project)
+python3-e3-core:
+python3-e3-core: The e3 project is a Python framework to ease the development of
+python3-e3-core: portable automated build systems (compilation, dependencies
+python3-e3-core: management, binary code packaging, and automated testing).
+python3-e3-core: 
+python3-e3-core: https://github.com/AdaCore/e3-core
+python3-e3-core: 
+python3-e3-core: 
+python3-e3-core:
+python3-e3-core:
