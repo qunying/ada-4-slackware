@@ -73,10 +73,10 @@ patch -p1 < $CWD/patch/apq-conf.patch
 ./configure \
     --arch=$ARCH \
     --prefix=/usr \
-    --manprefix=/usr/man \
-    --without-bdb
+    --manprefix=/usr/man
 
 patch -p1 < $CWD/patch/link.patch
+sed -i 's/gnateEeAeEeF/gnateEeEeF/' src/bdb/GNUmakefile
 
 make all
 

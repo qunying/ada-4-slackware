@@ -1,6 +1,6 @@
 #!/bin/sh
 # GCC GNAT environment setup package
-# Copyright 2016-2019 Zhu Qun-Ying
+# Copyright 2016-2021 Zhu Qun-Ying
 #
 # All rights reserved.
 #
@@ -69,17 +69,5 @@ cat $CWD/gnat.csh > etc/profile.d/gnat.csh
 chmod +x etc/profile.d/gnat*
 mkdir install
 cp $CWD/slack-desc install/
-
-cat $CWD/doinst.sh | \
-  sed -e "s/%lib%/lib$LIBDIRSUFFIX/g" \
-      -e "s/%GCC_GNATLIB_PATH%/gcc\/$ARCH-slackware-linux\/$VERSION\/adalib/g" \
-      -e "s/%ma_ver%/$MA_VER/g" \
-    > install/doinst.sh
-
-cat $CWD/douninst.sh | \
-  sed -e "s/%lib%/lib$LIBDIRSUFFIX/g" \
-      -e "s/%GCC_GNATLIB_PATH%/gcc\/$ARCH-slackware-linux\/$VERSION\/adalib/g" \
-      -e "s/%ma_ver%/$MA_VER/g" \
-    > install/douninst.sh
 
 makepkg -l y -c n $OUTPUT/$PKGNAM-$VERSION-$ARCH-${BUILD}$TAG.${PKGTYPE:-tgz}

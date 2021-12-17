@@ -35,7 +35,7 @@ sbo_pkg_install fswatch
 #sbo_pkg_install python3-jsonschema
 #sbo_pkg_install funcy
 #sbo_pkg_install Mako
-#sbo_pkg_install sphinx-rtd-theme
+sbo_pkg_install sphinx-rtd-theme
 
 # get source balls
 sh download.sh

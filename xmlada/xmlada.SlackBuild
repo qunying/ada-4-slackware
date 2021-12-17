@@ -79,16 +79,35 @@ find . \
 
 (export PATH=$BOOSTRAP/bin:$PATH
  echo "PATH=$PATH"
+ sed -i 's/18.0w/22.0.0/g' configure configure.in
  ./configure --prefix=/usr \
 	    --libdir=/usr/lib$LIBDIRSUFFIX \
+	    --docdir=/usr/doc/xmlada-$VERSION \
 	    --enable-shared
- gprbuild --version
- # we need to remove the document part, sphinx does not work under
- # Slackware current (due to docutil 0.18) yet
- sed -i -e '/share\/doc\/xmlada/,+2d' input_sources/xmlada_input.gpr
- make prefix=$PKG/usr all install
+
+ sed -i -e "s/share\/doc\//doc\/xmlada-$VERSION\//" input_sources/xmlada_input.gpr
+ make prefix=/usr docdir=/usr/doc/xmlada-$VERSION all
+ PAPER=letter make -C docs html latexpdf
+ make prefix=$PKG/usr docdir=$PKG/usr/doc/xmlada-$VERSION install
 )
 
+(cd $PKG/usr/include/xmlada
+ rm -rf xmlada_dom.static xmlada_dom.static-pic \
+        xmlada_input.static xmlada_input.static-pic \
+	xmlada_sax.static xmlada_sax.static-pic \
+	xmlada_schema.static xmlada_schema.static-pic \
+	xmlada_unicode.static xmlada_unicode.static-pic
+ ln -s xmlada_dom.relocatable xmlada_dom.static
+ ln -s xmlada_dom.relocatable xmlada_dom.static-pic
+ ln -s xmlada_input.relocatable xmlada_input.static
+ ln -s xmlada_input.relocatable xmlada_input.static-pic
+ ln -s xmlada_sax.relocatable xmlada_sax.static
+ ln -s xmlada_sax.relocatable xmlada_sax.static-pic
+ ln -s xmlada_schema.relocatable xmlada_schema.static
+ ln -s xmlada_schema.relocatable xmlada_schema.static-pic
+ ln -s xmlada_unicode.relocatable xmlada_unicode.static
+ ln -s xmlada_unicode.relocatable xmlada_unicode.static-pic
+)
 mkdir -p $PKG/usr/doc/$PRGNAM-${VERSION}
 cp $CWD/$PRGNAM.SlackBuild $PKG/usr/doc/$PRGNAM-${VERSION}
 cp README.md TODO COPYING3 AUTHORS \

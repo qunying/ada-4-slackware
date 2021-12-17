@@ -77,7 +77,7 @@ patch -p1 < $CWD/gnatcoll.gpr.patch
 echo "$VERSION" > version_information
 make setup BUILD=PROD prefix=/usr
 make
-#make -C docs html man latexpdf
+make -C docs html man latexpdf
 mkdir -p $PKG/usr/doc/$PRGNAM
 make  prefix=$PKG/usr install
 

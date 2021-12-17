@@ -8,6 +8,6 @@ MD5SUM="bfe837f987868d4a7bb68470a70d4eab
 	
 DOWNLOAD_x86_64=""
 MD5SUM_x86_64=""
-REQUIRES="xmlada"
+REQUIRES="xmlada Sphinx sphinx-rtd-theme"
 MAINTAINER="Zhu Qun-Ying"
 EMAIL="zhu.qunying@gmail.com"

@@ -123,11 +123,12 @@ chown -R root:root .
 
 zcat $CWD/ncurses.mkhashsize.diff.gz | patch -p1 --verbose || exit 1
 
-ADA_SUPPORT="--with-ada-include=/usr/include/ncurses-ada \
- --with-ada-objects=/usr/lib$LIBDIRSUFFIX/ncurses-ada"
-ncurses_configure || exit 1
-make $NUMJOBS || exit 1
-make install DESTDIR=$PKG || exit 1
+#WIDEC=--disable-widec
+#ADA_SUPPORT="--with-ada-include=/usr/include/ncurses-ada \
+# --with-ada-objects=/usr/lib$LIBDIRSUFFIX/ncurses-ada"
+#ncurses_configure || exit 1
+#make $NUMJOBS || exit 1
+#make install DESTDIR=$PKG || exit 1
 
 # Configure/build/install again with wide character support:
 make clean

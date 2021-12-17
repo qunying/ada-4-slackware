@@ -20,8 +20,8 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # is the common part of gtkada and gtkada-doc, as gtkada-doc required gps
 PRGNAM=gtkada
-VERSION=${VERSION:-013b6f475.20210707}
-GIT_VERSION=013b6f475704f6c75a1d38592b159e3af765391b
+VERSION=${VERSION:-22.0.0}
+GIT_VERSION=$VERSION
 BUILD=${BUILD:-1}
 TAG=${TAG:-_sAda}
 
