@@ -2,7 +2,7 @@
 
 # Slackware build script for langkit
 
-# Copyright 2017-2021 Zhu Qun-Ying
+# Copyright 2017-2022 Zhu Qun-Ying
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -25,8 +25,19 @@
 PRGNAM=langkit
 VERSION=${VERSION:-22.0.0}
 BUILD=${BUILD:-1}
-TAG=${TAG:-_sADa}
+TAG=${TAG:-_sAda}
 SRC_NAME=$PRGNAM-$VERSION
+
+# Automatically determine the architecture we're building on:
+if [ -z "$ARCH" ]; then
+  case "$(uname -m)" in
+    i?86) ARCH=i586 ;;
+    arm*) ARCH=arm ;;
+    # Unless $ARCH is already set, use uname -m for all other archs:
+    *) ARCH=$(uname -m) ;;
+  esac
+  export ARCH
+fi
 CWD=$(pwd)
 TMP=${TMP:-/tmp/slackAda}
 PKG=$TMP/package-$PRGNAM
@@ -60,5 +71,5 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-noarch-$BUILD$TAG.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
 
