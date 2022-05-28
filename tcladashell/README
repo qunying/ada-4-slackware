@@ -1,0 +1,10 @@
+Tcl Ada SHell (Tash) is an Ada binding to Tcl/Tk.
+
+Its purpose is to
+
+ * allow a Tcl program to use Ada in place of C to implement Tcl
+   commands where additional execution speed, more complex data
+   structures, or better name space management is needed, and
+
+ * support the rapid development of Platform-Independent
+   Graphical User Interfaces via Tk.
