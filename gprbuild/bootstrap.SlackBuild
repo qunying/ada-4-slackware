@@ -1,6 +1,6 @@
 #!/bin/sh
 # gprbuild package build script (written by zhu.qunying@gmail.com)
-# Copyright 2012-2021, Zhu Qun-Ying
+# Copyright 2012-2022, Zhu Qun-Ying
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -23,11 +23,14 @@
 . ./common.build
 
 XMLADA_VERSION=${XML_VERSION:-$VERSION}
+XMLADA_GIT_VER="23.0w-20220113-6aa50"
+XMLADA_SRC_NAME=xmlada-$XMLADA_GIT_VER
 XMLADA=xmlada-$XMLADA_VERSION
 
-tar xvf $CWD/../xmlada/$XMLADA.tar.gz
+mkdir $XMLADA
+tar xvf $CWD/../xmlada/$XMLADA_SRC_NAME.tar.gz -C $XMLADA --strip-components=1
 
-mkdir -p $PKG/usr/lib$LIBDIRSUFFIX/gnat
+mkdir -p $BOOTSTRAP_DSTDIR
 ./bootstrap.sh --with-xmlada=./$XMLADA \
-	       --with-kb=$GPRCONFIG_KB_SRC_DIR \
-	       --prefix=$PKG
+	       --with-kb=./$GPRCONFIG_KB_SRC_DIR \
+	       --prefix=$BOOTSTRAP_DSTDIR

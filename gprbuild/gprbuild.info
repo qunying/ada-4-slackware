@@ -1,13 +1,14 @@
 PRGNAM="gprbuild"
-VERSION="22.0.0"
+VERSION="23.0w"
 HOMEPAGE="https://github.com/adacore/gprbuild"
-DOWNLOAD="https://github.com/AdaCore/gprbuild/archive/v22.0.0/gprbuild-22.0.0.tar.gz
-	 https://github.com/AdaCore/gprconfig_kb/archive/7de2e39f5d1b7d67f24e274184c8215997cc7994/gprconfig_kb-22.0.0.tar.gz"
-MD5SUM="bfe837f987868d4a7bb68470a70d4eab
-	e93453b648e12caea6b16efac1528c03"
-	
+DOWNLOAD="https://github.com/AdaCore/gprbuild/archive/2f8a61528ad363c18da6cd5a649797eb19d23c85/gprbuild-23.0w-20220526-2f8a6.tar.gz
+	 https://github.com/AdaCore/gprconfig_kb/archive/11abcaaac3d2c3429be2a88d359e8c1a78283e15/gprconfig_kb-23.0w-20220429-11abc.tar.gz
+	 https://github.com/AdaCore/xmlada/archive/6aa50ba0ae0f8d0bcc1e100360949353ed1bce78/xmlada-23.0w-20220113-6aa50.tar.gz"
+
+MD5SUM="5f344e2944336a7ec810ce1862cd6470
+	a371b8f0c70fd7d17c9d933580a5544d"
 DOWNLOAD_x86_64=""
 MD5SUM_x86_64=""
-REQUIRES="xmlada Sphinx sphinx-rtd-theme"
+REQUIRES="Sphinx sphinx-rtd-theme"
 MAINTAINER="Zhu Qun-Ying"
 EMAIL="zhu.qunying@gmail.com"

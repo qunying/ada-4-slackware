@@ -1,14 +1,13 @@
 PRGNAM=gprbuild
-VERSION=${VERSION:-22.0.0}
+VERSION=${VERSION:-23.0w}
+GIT_VERSION=${GIT_VERSION:-23.0w-20220526-2f8a6}
 BUILD=${BUILD:-1}
 TAG=${TAG-_sAda}
-SRC_NAME=$PRGNAM-$VERSION
-SRC_DIR=$SRC_NAME
 
-KB_VERSION=${KB_VERSION:-22.0.0}
-KB_GIT_VERSION=${KB_GIT_VERSION:-7de2e39f5d1b7d67f24e274184c8215997cc7994}
-GPRCONFIG_KB=gprconfig_kb-$KB_VERSION
-GPRCONFIG_KB_SRC_DIR=gprconfig_kb-$KB_GIT_VERSION
+KB_VERSION=${KB_VERSION:-23.0w}
+KB_GIT_VERSION=${KB_GIT_VERSION:-23.0w-20220429-11abc}
+GPRCONFIG_KB=gprconfig_kb-$KB_GIT_VERSION
+GPRCONFIG_KB_SRC_DIR=gprconfig_kb-$KB_VERSION
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -24,7 +23,8 @@ CWD=$(pwd)
 TMP=${TMP:-"/tmp/slackAda"} 
 PKG=${TMP}/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
-BOOSTRAP=$TMP/bootstrap/bin
+BOOTSTRAP_DSTDIR=${BOOTSTARTP_DSTDIR:-$TMP/bootstrap}
+BOOTSTRAP=$BOOTSTRAP_DSTDIR/bin
 
 if [ "$ARCH" = "i586" ]; then
   SLKCFLAGS="-O2 -march=i586 -mtune=i686"
@@ -47,12 +47,14 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 
 cd $TMP
-rm -rf $SRC_DIR
-tar xvf $CWD/$SRC_NAME.tar.gz
+rm -rf $PRGNAM-$VERSION
+mkdir $PRGNAM-$VERSION
+tar xvf $CWD/$PRGNAM-$GIT_VERSION.tar.gz -C $PRGNAM-$VERSION --strip-components=1
 
-cd $SRC_DIR
+cd $PRGNAM-$VERSION
 
-tar xvf $CWD/$GPRCONFIG_KB.tar.gz
+mkdir $GPRCONFIG_KB_SRC_DIR
+tar xvf $CWD/$GPRCONFIG_KB.tar.gz -C $GPRCONFIG_KB_SRC_DIR --strip-components=1
 
 sed -i -e 's/share\/doc/doc/g' \
     -e 's/doc\/gprbuild\/info/info/g' gprbuild.gpr
@@ -67,11 +69,10 @@ if [ "$ARCH" = "x86_64" ]; then
     sed -i 's/\"lib\"/\"lib64\"/g' src/gprinstall.ads
 fi
 
-sed -i -e 's/"19940713"/"20211027"/' \
-       -e 's/"2016"/"2021"/' \
-       -e 's/"18.0w"/"22.0.0"/' \
+sed -i -e 's/"19940713"/"20220526"/' \
+       -e 's/"2016"/"2022"/' \
+       -e 's/"18.0w"/"23.0w"/' \
        -e 's/:= Gnatpro/:= FSF/' gpr/src/gpr-version.ads
 patch -p1 < $CWD/patches/relocatable-build.patch
-patch -p1 < $CWD/patches/always-use-host-gprinstall.patch
 (cd share; ln -sfT ../$GPRCONFIG_KB_SRC_DIR/db gprconfig)
 export OS=UNIX
