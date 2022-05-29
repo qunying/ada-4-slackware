@@ -71,7 +71,8 @@ fi
 
 cd ..
 # we need to do a boot strap first
-if [ ! -f $TMP/slackAda/bootstrap/bin/gprbuild ] ; then
+BOOTSTRAP_DSTDIR=$TMP/slackAda/bootstrap
+if [ ! -f $BOOTSTRAP_DSTDIR/bin/gprbuild ] ; then
     (cd gprbuild; ./bootstrap.SlackBuild)
 fi
 # Loop for all packages:

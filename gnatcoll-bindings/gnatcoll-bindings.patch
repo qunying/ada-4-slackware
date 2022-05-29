@@ -5,7 +5,7 @@
  library project GnatColl_GMP is
  
 -   Version := External ("GNATCOLL_VERSION", "0.0");
-+   Version := External ("GNATCOLL_VERSION", "22.0.0");
++   Version := External ("GNATCOLL_VERSION", "23.0w");
     Name    := "gnatcoll_gmp";
  
     type Build_Type is ("DEBUG", "PROD");
@@ -24,7 +24,7 @@
  library project GnatColl_Iconv is
  
 -   Version := External ("GNATCOLL_VERSION", "0.0");
-+   Version := External ("GNATCOLL_VERSION", "22.0.0");
++   Version := External ("GNATCOLL_VERSION", "23.0w");
     Name    := "gnatcoll_iconv";
  
     type Build_Type is ("DEBUG", "PROD");
@@ -43,7 +43,7 @@
  library project GnatColl_LZMA is
  
 -   Version := External ("GNATCOLL_VERSION", "0.0");
-+   Version := External ("GNATCOLL_VERSION", "22.0.0");
++   Version := External ("GNATCOLL_VERSION", "23.0w");
     Name    := "gnatcoll_lzma";
  
     type Build_Type is ("DEBUG", "PROD");
@@ -54,7 +54,7 @@
  library project GnatColl_OMP is
  
 -   Version := External ("GNATCOLL_VERSION", "0.0");
-+   Version := External ("GNATCOLL_VERSION", "22.0.0");
++   Version := External ("GNATCOLL_VERSION", "23.0w");
     Name    := "gnatcoll_omp";
  
     type Build_Type is ("DEBUG", "PROD");
@@ -73,7 +73,7 @@
  library project GnatColl_Python is
  
 -   Version := External ("GNATCOLL_VERSION", "0.0");
-+   Version := External ("GNATCOLL_VERSION", "22.0.0");
++   Version := External ("GNATCOLL_VERSION", "23.0w");
     Name    := "gnatcoll_python3";
  
     type Build_Type is ("DEBUG", "PROD");
@@ -92,7 +92,7 @@
  library project GnatColl_Syslog is
  
 -   Version := External ("GNATCOLL_VERSION", "0.0");
-+   Version := External ("GNATCOLL_VERSION", "22.0.0");
++   Version := External ("GNATCOLL_VERSION", "23.0w");
     Name    := "gnatcoll_syslog";
  
     type Build_Type is ("DEBUG", "PROD");
@@ -111,7 +111,7 @@
  library project GnatColl_ZLib is
  
 -   Version := External ("GNATCOLL_VERSION", "0.0");
-+   Version := External ("GNATCOLL_VERSION", "22.0.0");
++   Version := External ("GNATCOLL_VERSION", "23.0w");
     Name    := "gnatcoll_zlib";
  
     type Build_Type is ("DEBUG", "PROD");
@@ -132,7 +132,7 @@
  library project GnatColl_Python is
  
 -   Version := External ("GNATCOLL_VERSION", "0.0");
-+   Version := External ("GNATCOLL_VERSION", "22.0.0");
++   Version := External ("GNATCOLL_VERSION", "23.0w");
     Name    := "gnatcoll_python";
  
     type Build_Type is ("DEBUG", "PROD");

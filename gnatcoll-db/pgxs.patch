@@ -24,7 +24,27 @@
        Descriptor : PGXS.Tuple_Desc;
        Datums     : Datum_Array (1 .. Size);
 -      Nulls      : Bool_Array (1 .. Size) := (others => Interfaces.C.True);
-+      Nulls      : Bool_Array (1 .. Size) := (others => True);
++      Nulls      : Bool_Array (1 .. Size) := (others => Interfaces.C.Extensions.bool(True));
     end record;
  
     type Attributes is access all Attributes_Arrays
+--- gnatcoll-db-23.0w/pgxs/source/pgxs-composites.adb	2022-01-17 06:31:55.000000000 -0800
++++ nbd/pgxs/source/pgxs-composites.adb	2022-05-28 18:10:04.772830822 -0700
+@@ -75,7 +75,7 @@
+      (Self  : in out Attributes;
+       Index : Attribute_Number) is
+    begin
+-      Self.Nulls (Index) := Interfaces.C.True;
++      Self.Nulls (Index) := Interfaces.C.Extensions.bool(True);
+    end Set_Null;
+ 
+    ---------------
+@@ -87,7 +87,7 @@
+       Index : Attribute_Number;
+       To    : PGXS.Datum) is
+    begin
+-      Self.Nulls (Index) := Interfaces.C.False;
++      Self.Nulls (Index) := Interfaces.C.Extensions.bool(False);
+       Self.Datums (Index) := To;
+    end Set_Value;
+ 
