@@ -1,6 +1,6 @@
 #!/bin/sh
 # sparforte package build script
-# Copyright 2015-2021, Zhu Qun-Ying
+# Copyright 2015-2022, Zhu Qun-Ying
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -21,7 +21,7 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=sparforte
-VERSION=${VERSION:-2.4.1}
+VERSION=${VERSION:-2.5}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_sAda}
 
@@ -61,11 +61,12 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 
 cd $TMP
-rm -rf SparForte-$VERSION
+rm -rf $PRGNAM-$VERSION
+mkdir $PRGNAM-$VERSION
 
-tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
+tar xvf $CWD/$PRGNAM-$VERSION.tar.gz -C $PRGNAM-$VERSION --strip-components=1
 
-cd SparForte-$VERSION
+cd $PRGNAM-$VERSION
 chown -R root:root .
 
 patch -p1 < $CWD/patch/apq-conf.patch
