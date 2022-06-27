@@ -71,6 +71,7 @@ for dir in \
   sparforte \
   florist \
   ada-rm \
+  alire \
   ; do
   # get the package name
   package=$dir
