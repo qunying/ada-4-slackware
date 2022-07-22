@@ -65,6 +65,7 @@ for dir in \
   libadalang \
   templates-parser \
   libadalang-tools \
+  ada_language_server \
   gnatstudio \
   ahven \
   ncurses-ada \

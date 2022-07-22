@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Slackware build script for gnatstudio
+# Slackware build script for ada_language_server
 
 # Copyright 2022, Znu, Qun-Ying
 # All rights reserved.
@@ -24,10 +24,9 @@
 
 cd $(dirname $0) ; CWD=$(pwd)
 
-PRGNAM=gnatstudio
-VERSION=${VERSION:-23.0w.20220512}
-SRC_VERSION="23.0w-20220512"
-BUILD=${BUILD:-2}
+PRGNAM=ada_language_server
+VERSION=${VERSION:-23.0.8}
+BUILD=${BUILD:-1}
 TAG=${TAG:-_sAda}
 PKGTYPE=${PKGTYPE:-tgz}
 
@@ -54,23 +53,13 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 
-mkdir -p $PKG/opt/gnatstudio
-tar xvf $CWD/$PRGNAM-$SRC_VERSION-x86_64-linux-bin.tar.gz -C $PKG/opt/gnatstudio \
- --strip-components=1
-cd $PKG/opt/gnatstudio
-rm doinstall
-mkdir -p $PKG/etc/profile.d
-cat $CWD/gnatstudio.sh > $PKG/etc/profile.d/gnatstudio.sh
-cat $CWD/gnatstudio.csh > $PKG/etc/profile.d/gnatstudio.csh
-chmod +x $PKG/etc/profile.d/*
-# remove als, clangd and use the binary release of als and
-# Slackware's system clangd
-rm -rf $PKG/opt/gnatstudio/libexec/gnatstudio/als
-rm -rf $PKG/opt/gnatstudio/libexec/gnatstudio/clang
+mkdir -p $PKG/usr/bin
+(cd $PKG/usr/bin
+ unzip -j $CWD/als-$VERSION-Linux_amd64.zip)
+mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
 
 chown -R root:root .
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
-mv COPYING3 README $PKG/usr/doc/$PRGNAM-$VERSION
 cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
 
 # Copy the slack-desc (and a custom doinst.sh if necessary) into ./install
