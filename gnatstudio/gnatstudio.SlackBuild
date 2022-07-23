@@ -27,7 +27,7 @@ cd $(dirname $0) ; CWD=$(pwd)
 PRGNAM=gnatstudio
 VERSION=${VERSION:-23.0w.20220512}
 SRC_VERSION="23.0w-20220512"
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-1}
 TAG=${TAG:-_sAda}
 PKGTYPE=${PKGTYPE:-tgz}
 
@@ -63,10 +63,6 @@ mkdir -p $PKG/etc/profile.d
 cat $CWD/gnatstudio.sh > $PKG/etc/profile.d/gnatstudio.sh
 cat $CWD/gnatstudio.csh > $PKG/etc/profile.d/gnatstudio.csh
 chmod +x $PKG/etc/profile.d/*
-# remove als, clangd and use the binary release of als and
-# Slackware's system clangd
-rm -rf $PKG/opt/gnatstudio/libexec/gnatstudio/als
-rm -rf $PKG/opt/gnatstudio/libexec/gnatstudio/clang
 
 chown -R root:root .
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
